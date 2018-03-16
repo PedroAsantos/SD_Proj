@@ -4,30 +4,41 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MonitorControlCenter implements ISpectator_Control, IBroker_Control{
-	private final ReentrantLock r1;
-	private final Condition inc;
+	private final ReentrantLock mutex;
+	private final Condition spectator_condition;
 	private final Condition div;
 	
+	private boolean spectatorHasToWait;
 	public MonitorControlCenter() {
-		r1 = new ReentrantLock(true);
-		inc = r1.newCondition();
-		div = r1.newCondition();
+		mutex = new ReentrantLock(true);
+		spectator_condition = mutex.newCondition();
+		div = mutex.newCondition();
+		spectatorHasToWait=true;
 	}
 	@Override
 	public void waitForNextRace() {
-		// TODO Auto-generated method stub
-		
+		//não basta a função goCheckHorses e eles ficam lá a dormir? 
+	/*	mutex.lock();
+		try {
+			
+			while(spectatorHasToWait) {
+				try {
+					spectator_condition.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		} finally {
+			mutex.unlock();
+		}
+		*/
 	}
 
-	@Override
-	public void goCheckHorses() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void goWatchTheRace() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

@@ -16,6 +16,8 @@ public class Horse extends Thread {
 		this.monitorTrack = monitorTrack;
 		this.monitorStable=monitorStable;
 		this.monitorPaddock=monitorPaddock;
+		
+		this.state=HorseState.AT_THE_STABLE;
 		//define state?
 	}
 	
@@ -26,23 +28,25 @@ public class Horse extends Thread {
 		while(true) {
 			//monitor.divide();	
 			switch (state) {
-			case AT_THE_STABLE:
-				
-				break;
-			case AT_THE_PADDOCK:
-				
-				break;
-			case AT_THE_START_LINE:
-				
-				break;
-			case RUNNING:
-				
-				break;
-			case AT_THE_FINISH_LINE:
-				
-				break;
-			default:
-				break;
+				case AT_THE_STABLE:
+					monitorStable.proceedToStable(id);
+					state=HorseState.AT_THE_PADDOCK;
+					break;
+				case AT_THE_PADDOCK:
+					monitorPaddock.proceedToPaddock(id);
+					//state=HorseState.AT_THE_START_LINE;
+					break;
+				case AT_THE_START_LINE:
+					
+					break;
+				case RUNNING:
+					
+					break;
+				case AT_THE_FINISH_LINE:
+					
+					break;
+				default:
+					break;
 			}
 			try {
 				Thread.sleep(500);

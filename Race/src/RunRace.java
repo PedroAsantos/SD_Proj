@@ -10,9 +10,9 @@ public class RunRace {
 		
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter();
 		MonitorControlCenter mControlCenter = new MonitorControlCenter();
-		MonitorPaddock mPaddock = new MonitorPaddock();
+		MonitorPaddock mPaddock = new MonitorPaddock(numberOfHorses);
 		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack();
-		MonitorStable mStable = new MonitorStable();
+		MonitorStable mStable = new MonitorStable(numberOfHorses);
 		
 		
 	     /* problem initialization */
@@ -20,10 +20,10 @@ public class RunRace {
 		Horse[] horses = new Horse[numberOfHorses];
 		Spectator[] spectators = new Spectator[numberOfSpectators]; 
 		
-		Broker broker = new Broker(numberOfSpectators,numberOfHorses,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter);
+		Broker broker = new Broker(numberOfSpectators,numberOfHorses,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable);
 		
 		for (int i = 0; i < spectators.length; i++) {
-			spectators[i] = new Spectator(i,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter);
+			spectators[i] = new Spectator(i,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter, (ISpectator_Paddock) mPaddock);
 		}
 		
 		for (int i = 0; i < horses.length; i++) {
@@ -35,9 +35,9 @@ public class RunRace {
 		
 		broker.start();
 		
-		for (int i = 0; i < spectators.length; i++) {
+	/*	for (int i = 0; i < spectators.length; i++) {
 			spectators[i].start();
-		}
+		}*/
 		
 		for (int i = 0; i < horses.length; i++) {
 			horses[i].start();
