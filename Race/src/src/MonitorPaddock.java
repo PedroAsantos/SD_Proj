@@ -89,6 +89,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 				}
 			}
 			
+			horse_condition.signalAll();
 			horsesCanNotGo=false;
 			
 			
