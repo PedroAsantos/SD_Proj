@@ -8,37 +8,39 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private final Condition spectator_condition;
 	private final Condition div;
 	
+	private boolean raceIsOn;
 	private boolean spectatorHasToWait;
 	public MonitorControlCenter() {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		div = mutex.newCondition();
 		spectatorHasToWait=true;
+		raceIsOn=true;
 	}
+	
+	
+
 	@Override
-	public void waitForNextRace() {
-		//não basta a função goCheckHorses e eles ficam lá a dormir? 
-	/*	mutex.lock();
+	public void goWatchTheRace(int spectator_id) {
+		
+		mutex.lock();
 		try {
 			
-			while(spectatorHasToWait) {
+			System.out.println("Spectator_"+spectator_id+" is watching the race!");
+			while(raceIsOn) {
 				try {
 					spectator_condition.await();
 				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+						
 			
-		} finally {
+	
+		}finally {
 			mutex.unlock();
 		}
-		*/
-	}
-
-
-	@Override
-	public void goWatchTheRace() {
-		
 		
 	}
 

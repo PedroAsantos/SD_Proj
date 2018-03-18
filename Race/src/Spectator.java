@@ -24,16 +24,17 @@ public class Spectator extends Thread {
 			//monitor.divide();	
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
+					monitorPaddock.waitForNextRace(id);
 					monitorPaddock.goCheckHorses(id);
-					
+			
 					state=SpectatorState.APPRAISING_THE_HORSES;
 					break;
 				case APPRAISING_THE_HORSES:
-					
+					monitorBettingCenter.placeABet(id);
 					state=SpectatorState.PLACING_A_BET;
 					break;
 				case PLACING_A_BET:
-					
+					monitorControl.goWatchTheRace(id);
 					break;
 				case WATCHING_THE_RACE:
 					

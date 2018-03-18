@@ -1,6 +1,8 @@
 import src.IBroker_BettingCenter;
 import src.IBroker_Control;
 import src.IBroker_Stable;
+import src.IBroker_Track;
+import src.MonitorRacingTrack;
 import Enum.BrokerState;
 public class Broker extends Thread {
 	private final int numberOfSpectators;
@@ -9,13 +11,15 @@ public class Broker extends Thread {
 	private final IBroker_Control monitorControl;
 	private final IBroker_BettingCenter monitorBettingCenter;
 	private final IBroker_Stable monitorStable;
+	private final IBroker_Track monitorTrack;
 	
-	public Broker(int numberOfSpectators, int numberOfHorses,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable) {
+	public Broker(int numberOfSpectators, int numberOfHorses,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack) {
 		this.numberOfSpectators=numberOfSpectators;
 		this.numberOfHorses=numberOfHorses;
 		this.monitorControl=mControl;
 		this.monitorBettingCenter=mBettingCenter;
 		this.monitorStable = monitorStable;
+		this.monitorTrack = monitorTrack;
 		this.state = BrokerState.OPENING_THE_EVENT;
 		//define state?
 	}
@@ -29,13 +33,15 @@ public class Broker extends Thread {
 				case OPENING_THE_EVENT:
 					System.out.print("Opening the event \n");
 					monitorStable.summonHorsesToPaddock();
-					
+					state=BrokerState.ANNOUNCING_NEXT_RACE;
 					break;
 				case ANNOUNCING_NEXT_RACE:
-					
+					monitorBettingCenter.acceptTheBets();
+					state=BrokerState.WAITING_FOR_THE_BETS;
 					break;
 				case WAITING_FOR_THE_BETS:
-					
+					monitorTrack.startTheRace();
+					state=BrokerState.SUPERVISING_THE_RACE;
 					break;
 				case SUPERVISING_THE_RACE:
 					
