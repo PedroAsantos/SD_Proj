@@ -1,4 +1,7 @@
+import java.util.Random;
+
 import src.*;
+import stakeholders.*;
 
 public class RunRace {
 
@@ -27,7 +30,8 @@ public class RunRace {
 		}
 		
 		for (int i = 0; i < horses.length; i++) {
-			int performace=123;
+			Random random = new Random();
+			int performace= random.nextInt(10)+1;
 			horses[i] = new Horse(i,performace,(IHorse_Track) mRacingTrack,(IHorse_Stable) mStable,(IHorse_Paddock) mPaddock);
 		}
 		

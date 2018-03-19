@@ -1,3 +1,4 @@
+package stakeholders;
 import Enum.HorseState;
 import src.*;
 import Enum.SpectatorState;

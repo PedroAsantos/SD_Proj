@@ -1,3 +1,5 @@
+package stakeholders;
+
 import src.IBroker_BettingCenter;
 import src.IBroker_Control;
 import src.IBroker_Stable;
@@ -44,7 +46,10 @@ public class Broker extends Thread {
 					state=BrokerState.SUPERVISING_THE_RACE;
 					break;
 				case SUPERVISING_THE_RACE:
-					
+					//passar do track para o control que cavalos ganharam!
+					int idHorseWinner;
+					idHorseWinner = monitorTrack.reportResults();
+					System.out.println("WINNER: "+ idHorseWinner);
 					break;
 				case SETTING_ACCOUNTS:
 					
