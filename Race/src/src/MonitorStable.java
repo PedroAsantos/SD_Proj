@@ -67,7 +67,6 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 			}
 			horseCanNotGo=false;
 			
-			
 			horse_condition.signalAll();
 			
 			System.out.println("ALL HORSES ARE GOING TO PADDOCK");

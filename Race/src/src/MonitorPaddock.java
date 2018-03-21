@@ -99,6 +99,9 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 			if(spectatorsInPaddock==totalSpectators) {
 				spectatorsCheckingHorses=false;
 				spectatorCheckHorses_condition.signalAll();
+				//last spectator wakes up the horses
+				horsesCanNotGo=false;
+				horse_condition.signalAll();
 			}
 			
 			while(spectatorsCheckingHorses) {
@@ -112,11 +115,8 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 			if(spectatorsInPaddock==0) {
 				spectatorsCheckingHorses=true;
 			}
-			horsesCanNotGo=false;
-			horse_condition.signalAll();
 			
-			
-			
+				
 			
 		} finally {
 			mutex.unlock();

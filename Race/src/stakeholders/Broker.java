@@ -5,6 +5,9 @@ import src.IBroker_Control;
 import src.IBroker_Stable;
 import src.IBroker_Track;
 import src.MonitorRacingTrack;
+
+import java.util.List;
+
 import Enum.BrokerState;
 public class Broker extends Thread {
 	private final int numberOfSpectators;
@@ -47,9 +50,9 @@ public class Broker extends Thread {
 					break;
 				case SUPERVISING_THE_RACE:
 					//passar do track para o control que cavalos ganharam!
-					int idHorseWinner;
-					idHorseWinner = monitorTrack.reportResults();
-					System.out.println("WINNER: "+ idHorseWinner);
+					List<Integer> horseWinners;
+					horseWinners = monitorTrack.reportResults();
+					System.out.println("WINNER: "+ horseWinners.get(0));
 					break;
 				case SETTING_ACCOUNTS:
 					

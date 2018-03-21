@@ -1,6 +1,8 @@
 package src;
 
+import java.util.List;
+
 public interface IBroker_Track {
 	public void startTheRace();
-	public int reportResults();
+	public List<Integer> reportResults();
 }

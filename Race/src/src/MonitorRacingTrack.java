@@ -162,6 +162,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 					try {
 						//assim, não pode acontecer o mesmo cavalo correr sem ser a vez dele?
 						horseWaitingMoving_condition.await();
+						//-> 
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -185,7 +186,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	}
 
 	@Override
-	public int reportResults() {
+	public List<Integer> reportResults() {
 		// TODO Auto-generated method stub
 	
 		mutex.lock();
@@ -209,7 +210,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		//2.number de runs
 		int[] horseArray = new int[2];
 		List<int[]> bestHorses = new ArrayList<int[]>(totalHorses);
-
+		List<Integer> bestofTheBests= new ArrayList<Integer>(totalHorses);
 		for(int i=1; i < horseRuns.length;i++) {
 			if(horseRuns[i]<min){
 				bestHorses.clear();
@@ -224,21 +225,28 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				min = horseRuns[i];
 				bestHorses.add(horseArray);
 			}
-			
 		}
-		int bestHorse=0;
+		int biggestPos=0;
 		if(bestHorses.size()==1) {
-			return bestHorses.get(0)[0];
+			bestofTheBests.add(bestHorses.get(0)[0]);
+			return bestofTheBests;
 		}else {
-			bestHorse = horsesFinalPos[bestHorses.get(1)[0]];
+			biggestPos = horsesFinalPos[bestHorses.get(0)[0]];
+		
 			for(int i=1;i<bestHorses.size();i++) {
-				if(bestHorse < horsesFinalPos[bestHorses.get(i)[0]]) {
-					bestHorse = horsesFinalPos[bestHorses.get(i)[0]];
+				if(biggestPos < horsesFinalPos[bestHorses.get(i)[0]]) {
+					bestofTheBests.clear();
+					bestofTheBests.add(bestHorses.get(i)[0]);
+					
+					biggestPos = horsesFinalPos[bestHorses.get(i)[0]];
+					
+				}else if(biggestPos ==  horsesFinalPos[bestHorses.get(i)[0]] ) {
+					bestofTheBests.add(bestHorses.get(i)[0]);
 				}
 			}
 			
 		}
-		return bestHorse; 
+		return bestofTheBests; 
 		
 	}
 
