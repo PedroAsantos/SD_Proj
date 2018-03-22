@@ -23,7 +23,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private boolean receivingDividends;
 	private boolean waitingForTheSpectator;
 	private int numberOfBets;
-	//hash map <cavalo,[espectator,money] -> assim com o contains value conseguimos ver logo se alguem ganhou e depois é fácil de retirar o valor.
+	//hash map <cavalo,[espectator,money] -> assim com o contains value conseguimos ver logo se alguem ganhou e depois e facil de retirar o valor.
 	private HashMap<Integer,List<int[]>> spectatorBets;
 	private List<Condition> receivMoneyList ;
 	private List<Integer> horseWinners;
@@ -32,7 +32,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	//index 1=bet
 	private int[] bet = new int[2];
 	private int horseId;
-	public MonitorBettingCenter(int numberOfSpectators) {
+	private HashMap<Integer,Integer> horsePerformance;
+	Repository repo;
+
+
+	public MonitorBettingCenter(int numberOfSpectators, Repository repo) {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
@@ -46,6 +50,8 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		spectatorBets = new HashMap<Integer,List<int[]>>(numberOfSpectators);
 		receivMoneyList = new ArrayList<Condition>();
 		queueToReceivMoney = new LinkedList<Spectator>();
+		this.repo=repo;
+		horsePerformance = repo.gethorsePerformance();
 	}
 	@Override
 	public void acceptTheBets() {
@@ -82,7 +88,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			}
 			numberOfBets=0;
 			spectatorsQueueBol=false;
-			//só para testes
+			//so para testes
 			/*
 			listTemp = spectatorBets.get(horseId);
 			for(int i = 0;i<listTemp.size();i++){
@@ -100,7 +106,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	@Override
 	public void goCollectTheGains(Spectator spectator) {
 		// TODO Auto-generated method stub
-		//jogar com o facto de a ordem de chegada é igual a de  saida FIFO. E dar assim a saida deles.registando a entrada
+		//jogar com o facto de a ordem de chegada e igual a de  saida FIFO. E dar assim a saida deles.registando a entrada
 		mutex.lock();
 		try {
 			queueToReceivMoney.add(spectator);

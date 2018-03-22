@@ -19,8 +19,10 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private boolean spectatorsCheckingHorses;
 	private int horsesInPaddock;
 	private int spectatorsInPaddock;
-	private HashMap<Integer,Integer> horseOdds = new HashMap<Integer,Integer>();
-	public MonitorPaddock(int total_horses, int totalSpectators) {
+	private HashMap<Integer,Integer> horsePerformance;
+	Repository repo;
+	
+	public MonitorPaddock(int total_horses, int totalSpectators, Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		spectatorWaiting_condition = mutex.newCondition();
@@ -32,6 +34,8 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		spectatorsCheckingHorses=true;
 		spectatorsInPaddock=0;
 		horsesInPaddock=0;
+		horsePerformance = repo.gethorsePerformance();
+		this.repo = repo;
 	}
 	
 
@@ -44,7 +48,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 			
 			horsesInPaddock++;
 			System.out.println("Horse_"+horse.getID()+" is going to paddock!");
-			horseOdds.put(horse.getID(),horse.getPerformance());
+			horsePerformance.put(horse.getID(),horse.getPerformance());
 			if(horsesInPaddock==total_horses) {
 				spectatorWaiting_condition.signalAll();
 			}
@@ -65,8 +69,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 				 }
 				 
 				 
-				 
-		
+			repo.sethorsePerformance(horsePerformance);
 		} finally {
 			mutex.unlock();
 		}

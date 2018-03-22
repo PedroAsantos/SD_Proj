@@ -11,14 +11,16 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	private int horsesAtStable;
 	private int totalHorses;
 	private boolean horseCanNotGo;
+	Repository repo;
 	
-	public MonitorStable(int totalHorses) {
+	public MonitorStable(int totalHorses, Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
 		horsesAtStable=0;
 		horseCanNotGo=true;
 		this.totalHorses=totalHorses;
+		this.repo = repo;
 	}
 	
 	@Override

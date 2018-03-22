@@ -26,8 +26,9 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	private int[] horsesFinalPos; 
 	private int[] horseRuns;
 	private int iter;
-	
-	public MonitorRacingTrack(int totalHorses) {
+	Repository repo;
+
+	public MonitorRacingTrack(int totalHorses, Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		horseWaitingMoving_condition = mutex.newCondition();
@@ -42,7 +43,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		horsesFinalPos = new int[totalHorses];
 		horseRuns = new int[totalHorses];
 		iter=0;
-		
+		this.repo = repo;	
 	}
 	
 	@Override
@@ -166,7 +167,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				while(horsesCanNotMove) {
 					try {
 						System.out.println(iter / totalHorses);
-						//assim, não pode acontecer o mesmo cavalo correr sem ser a vez dele?
+						//assim, nao pode acontecer o mesmo cavalo correr sem ser a vez dele?
 						horseWaitingMoving_condition.await();
 					/*	if(iter / totalHorses == horse.getRuns()) {
 							horseWaitingMoving_condition.await();

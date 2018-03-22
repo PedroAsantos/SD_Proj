@@ -12,13 +12,16 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private boolean havaIWon;
 	private boolean raceIsOn;
 	private boolean spectatorHasToWait;
-	public MonitorControlCenter() {
+	Repository repo;
+
+	public MonitorControlCenter(Repository repo) {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		div = mutex.newCondition();
 		spectatorHasToWait=true;
 		raceIsOn=true;
 		havaIWon=true;
+		this.repo=repo;
 	}
 	
 	
@@ -55,7 +58,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 			
 			while(havaIWon) {
 				try {
-					//usar outra condição?
+					//usar outra condicao?
 					spectator_condition.await();
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
