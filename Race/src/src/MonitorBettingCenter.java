@@ -2,11 +2,15 @@ package src;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.sun.javafx.collections.MappingChange.Map;
+
+import stakeholders.Spectator;
 
 public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_BettingCenter {
 	private final ReentrantLock mutex;
@@ -16,9 +20,14 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private final int numberOfSpectators;
 	private boolean spectatorsQueueBol;
 	private boolean spectatorBetAproving;
+	private boolean receivingDividends;
+	private boolean waitingForTheSpectator;
 	private int numberOfBets;
 	//hash map <cavalo,[espectator,money] -> assim com o contains value conseguimos ver logo se alguem ganhou e depois é fácil de retirar o valor.
 	private HashMap<Integer,List<int[]>> spectatorBets;
+	private List<Condition> receivMoneyList ;
+	private List<Integer> horseWinners;
+	private Queue<Spectator> queueToReceivMoney;
 	//index 0=horse
 	//index 1=bet
 	private int[] bet = new int[2];
@@ -32,7 +41,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		numberOfBets=0;
 		spectatorBetAproving=true;
 		spectatorsQueueBol=false;
+		receivingDividends=true;
+		waitingForTheSpectator = true;
 		spectatorBets = new HashMap<Integer,List<int[]>>(numberOfSpectators);
+		receivMoneyList = new ArrayList<Condition>();
+		queueToReceivMoney = new LinkedList<Spectator>();
 	}
 	@Override
 	public void acceptTheBets() {
@@ -84,14 +97,83 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		
 		
 	}
-
-	
-
+	@Override
+	public void goCollectTheGains(Spectator spectator) {
+		// TODO Auto-generated method stub
+		//jogar com o facto de a ordem de chegada é igual a de  saida FIFO. E dar assim a saida deles.registando a entrada
+		mutex.lock();
+		try {
+			queueToReceivMoney.add(spectator);
+			broker_condition.signal();
+			while(receivingDividends) {
+				try {
+					receivMoneyList .get(spectator.getID()).await();
+						
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			receivingDividends=true;
+		} finally {
+			// TODO: handle finally clause
+			mutex.lock();
+		}
+	}
 	@Override
 	public void honourTheBets() {
 		// TODO Auto-generated method stub
+		mutex.lock();
+		try {
+			List<int[]> winners = new ArrayList<int[]>();
+			for(int i=0;i<horseWinners.size();i++) {
+				winners.addAll(spectatorBets.get(horseWinners.get(i)));
+			}
+			Spectator spectatorReceivingMoney;
+			while(queueToReceivMoney.size()!=0) {
+				try {
+					broker_condition.await();
+					spectatorReceivingMoney=queueToReceivMoney.remove();
+					for(int i=0;i<winners.size();i++) {
+						if(winners.get(i)[0]==spectatorReceivingMoney.getID()) {
+							spectatorReceivingMoney.addMoney(winners.get(i)[1]);
+							break;
+						}
+						receivingDividends=false;
+						receivMoneyList.get(spectatorReceivingMoney.getID()).signal();
+					}
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+				
+		} finally {
+			mutex.unlock();
+		}
 		
 	}
+	@Override
+	public boolean areThereAnyWinners(List<Integer> horseWinners) {
+		boolean thereAreWinner=false;
+		mutex.lock();
+		try {
+			this.horseWinners = new ArrayList<>(horseWinners);
+			for(int i = 0;i < horseWinners.size();i++) {
+				if(spectatorBets.containsKey(horseWinners.get(i))) {
+					thereAreWinner=true;
+				}
+			}
+		}finally {
+			mutex.unlock();
+		}
+		return thereAreWinner;
+		
+	}
+
 
 	@Override
 	public void placeABet(int spectator_id) {

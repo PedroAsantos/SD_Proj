@@ -55,11 +55,11 @@ public class Horse extends Thread {
 					state=HorseState.AT_THE_PADDOCK;
 					break;
 				case AT_THE_PADDOCK:
-					monitorPaddock.proceedToPaddock(id);
+					monitorPaddock.proceedToPaddock(this);
 					state=HorseState.AT_THE_START_LINE;
 					break;
 				case AT_THE_START_LINE:
-					monitorTrack.proceedToStartLine(id);
+					monitorTrack.proceedToStartLine(this);
 					state=HorseState.RUNNING;
 					break;
 				case RUNNING:

@@ -8,9 +8,11 @@ public class Spectator extends Thread {
 	private final ISpectator_BettingCenter monitorBettingCenter;
 	private final ISpectator_Control monitorControl;
 	private final ISpectator_Paddock monitorPaddock;
+	private int money;
 	private SpectatorState state;
-	public Spectator(int id,ISpectator_BettingCenter monitorBettingCenter, ISpectator_Control monitorControl, ISpectator_Paddock monitorPaddock) {
+	public Spectator(int id,int money,ISpectator_BettingCenter monitorBettingCenter, ISpectator_Control monitorControl, ISpectator_Paddock monitorPaddock) {
 		this.id=id;
+		this.money=money;
 		this.monitorBettingCenter = monitorBettingCenter;
 		this.monitorControl = monitorControl;
 		this.monitorPaddock=monitorPaddock;
@@ -18,6 +20,14 @@ public class Spectator extends Thread {
 		
 	}
 	
+	
+	public void addMoney(int moneyWon) {
+		money=money+moneyWon;
+	}
+	
+	public int getID() {
+		return id;
+	}
 	@Override
 	public void run() {
 			
@@ -36,12 +46,17 @@ public class Spectator extends Thread {
 					break;
 				case PLACING_A_BET:
 					monitorControl.goWatchTheRace(id);
+					state=SpectatorState.WATCHING_THE_RACE;
 					break;
 				case WATCHING_THE_RACE:
-					
+					if(monitorControl.haveIwon()) {
+						state=SpectatorState.COLLECTING_THE_GAINS;
+					}else {
+						state=SpectatorState.WAITING_FOR_A_RACE_TO_START;
+					}
 					break;
 				case COLLECTING_THE_GAINS:
-					
+					monitorBettingCenter.goCollectTheGains(this);
 					break;
 				case CELEBRATING:
 					

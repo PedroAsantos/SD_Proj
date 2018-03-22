@@ -9,7 +9,7 @@ public class RunRace {
 				
 		int numberOfHorses = 4; //testar com números maiores.
 		int numberOfSpectators=4;
-		
+		int numberOfRaces=4;
 		
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators);
 		MonitorControlCenter mControlCenter = new MonitorControlCenter();
@@ -23,10 +23,11 @@ public class RunRace {
 		Horse[] horses = new Horse[numberOfHorses];
 		Spectator[] spectators = new Spectator[numberOfSpectators]; 
 		
-		Broker broker = new Broker(numberOfSpectators,numberOfHorses,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack);
-		
+		Broker broker = new Broker(numberOfSpectators,numberOfHorses,numberOfRaces,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack);
+		int money;
 		for (int i = 0; i < spectators.length; i++) {
-			spectators[i] = new Spectator(i,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter, (ISpectator_Paddock) mPaddock);
+			money=100;
+			spectators[i] = new Spectator(i,money,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter, (ISpectator_Paddock) mPaddock);
 		}
 		
 		for (int i = 0; i < horses.length; i++) {

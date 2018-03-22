@@ -9,16 +9,18 @@ import src.MonitorRacingTrack;
 import java.util.List;
 
 import Enum.BrokerState;
+import jdk.management.resource.internal.TotalResourceContext;
 public class Broker extends Thread {
 	private final int numberOfSpectators;
 	private final int numberOfHorses;
+	private final int numberOfRaces;
 	private BrokerState state;
 	private final IBroker_Control monitorControl;
 	private final IBroker_BettingCenter monitorBettingCenter;
 	private final IBroker_Stable monitorStable;
 	private final IBroker_Track monitorTrack;
 	
-	public Broker(int numberOfSpectators, int numberOfHorses,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack) {
+	public Broker(int numberOfSpectators, int numberOfHorses, int numberOfRaces,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack) {
 		this.numberOfSpectators=numberOfSpectators;
 		this.numberOfHorses=numberOfHorses;
 		this.monitorControl=mControl;
@@ -26,6 +28,7 @@ public class Broker extends Thread {
 		this.monitorStable = monitorStable;
 		this.monitorTrack = monitorTrack;
 		this.state = BrokerState.OPENING_THE_EVENT;
+		this.numberOfRaces=numberOfRaces;
 		//define state?
 	}
 	@Override
@@ -53,12 +56,27 @@ public class Broker extends Thread {
 					List<Integer> horseWinners;
 					horseWinners = monitorTrack.reportResults();
 					System.out.println("WINNER: "+ horseWinners.get(0));
+					monitorControl.reportResults(horseWinners);
+					if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
+						monitorBettingCenter.honourTheBets();
+						state=BrokerState.SETTING_ACCOUNTS;
+					}
+					if(numberOfRaces==0) {
+						state=BrokerState.PLAYING_HOST_AT_THE_BAR;
+					}
+					monitorStable.summonHorsesToPaddock();
+					state=BrokerState.ANNOUNCING_NEXT_RACE;
 					break;
 				case SETTING_ACCOUNTS:
-					
+					if(numberOfRaces==0) {
+						state=BrokerState.PLAYING_HOST_AT_THE_BAR;
+					}else {
+						monitorStable.summonHorsesToPaddock();
+						state=BrokerState.ANNOUNCING_NEXT_RACE;
+					}
 					break;
 				case PLAYING_HOST_AT_THE_BAR:
-					
+					System.out.println("EVENT END");
 					break;
 				default:
 					break;

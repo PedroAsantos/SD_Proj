@@ -1,7 +1,10 @@
 package src;
 
+import java.util.HashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+
+import stakeholders.Horse;
 
 public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private final ReentrantLock mutex;
@@ -16,6 +19,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private boolean spectatorsCheckingHorses;
 	private int horsesInPaddock;
 	private int spectatorsInPaddock;
+	private HashMap<Integer,Integer> horseOdds = new HashMap<Integer,Integer>();
 	public MonitorPaddock(int total_horses, int totalSpectators) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
@@ -33,14 +37,14 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 
 	
 	@Override
-	public void proceedToPaddock(int horse_id) {
+	public void proceedToPaddock(Horse horse) {
 		
 		mutex.lock();
 		try {
 			
 			horsesInPaddock++;
-			System.out.println("Horse_"+horse_id+" is going to paddock!");
-			
+			System.out.println("Horse_"+horse.getID()+" is going to paddock!");
+			horseOdds.put(horse.getID(),horse.getPerformance());
 			if(horsesInPaddock==total_horses) {
 				spectatorWaiting_condition.signalAll();
 			}

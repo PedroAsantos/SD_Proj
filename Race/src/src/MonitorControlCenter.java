@@ -1,5 +1,6 @@
 package src;
 
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -8,6 +9,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private final Condition spectator_condition;
 	private final Condition div;
 	
+	private boolean havaIWon;
 	private boolean raceIsOn;
 	private boolean spectatorHasToWait;
 	public MonitorControlCenter() {
@@ -16,6 +18,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		div = mutex.newCondition();
 		spectatorHasToWait=true;
 		raceIsOn=true;
+		havaIWon=true;
 	}
 	
 	
@@ -45,14 +48,27 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	}
 
 	@Override
-	public void haveIwon() {
+	public boolean haveIwon() {
 		// TODO Auto-generated method stub
+		mutex.lock();
+		try {
+			
+			while(havaIWon) {
+				try {
+					//usar outra condição?
+					spectator_condition.await();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} finally {
+			mutex.unlock();
+		}
 		
-	}
-
-	@Override
-	public void goCollectTheGains() {
-		// TODO Auto-generated method stub
+		
+		
+		return false;
 		
 	}
 
@@ -67,8 +83,16 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		
 	}
 	@Override
-	public void reportResults() {
-		// TODO Auto-generated method stub
+	public void reportResults(List<Integer> result) {
+		mutex.lock();
+		try {
+			
+		} finally {
+			// TODO: handle finally clause
+			mutex.unlock();
+		}
+		
+		
 		
 	}
 	@Override

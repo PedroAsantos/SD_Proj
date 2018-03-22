@@ -1,5 +1,6 @@
 package src;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.Condition;
@@ -24,6 +25,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	private boolean horsesCanNotRace;
 	private int[] horsesFinalPos; 
 	private int[] horseRuns;
+	private int iter;
+	
 	public MonitorRacingTrack(int totalHorses) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
@@ -33,11 +36,12 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		this.totalHorses=totalHorses;
 		horses_at_start_line=0;
 		horsesRacing=totalHorses;
-		raceLength=50;
+		raceLength=30;
 		horsesCanNotRace = true;
 		horsesCanNotMove = true;
 		horsesFinalPos = new int[totalHorses];
 		horseRuns = new int[totalHorses];
+		iter=0;
 		
 	}
 	
@@ -67,13 +71,13 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	}
 	
 	@Override
-	public void proceedToStartLine(int horse_id) {
-		// TODO Auto-generated method stub
+	public void proceedToStartLine(Horse horse) {
+		//use only id???
 	
 		mutex.lock();
 		try {
 			horses_at_start_line++;
-			System.out.println("Horse_"+horse_id+" is going to startLine");
+			System.out.println("Horse_"+horse.getID()+" is going to startLine");
 			if(horses_at_start_line == totalHorses) {
 				broker_condition.signal();
 			}
@@ -109,7 +113,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		    Random random = new Random();
 			horse.moveofPosition(random.nextInt(performance));
 			horse.incrementRuns();
-			System.out.println("Horse_"+horse.getID() +" moved!");
+			System.out.println("Horse_"+ horse.getID()+" is "+ horse.getPosition());
+			iter++; 
 			horsesCanNotMove=false;
 			horseWaitingMoving_condition.signal();
 			
@@ -160,8 +165,12 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			}else {
 				while(horsesCanNotMove) {
 					try {
+						System.out.println(iter / totalHorses);
 						//assim, não pode acontecer o mesmo cavalo correr sem ser a vez dele?
 						horseWaitingMoving_condition.await();
+					/*	if(iter / totalHorses == horse.getRuns()) {
+							horseWaitingMoving_condition.await();
+						}*/
 						//-> 
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block

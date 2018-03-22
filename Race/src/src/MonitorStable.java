@@ -52,6 +52,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 				
 	}
 	
+	
 	@Override
 	public void summonHorsesToPaddock() {
 		// TODO Auto-generated method stub
