@@ -8,7 +8,7 @@ public class Spectator extends Thread {
 	private final ISpectator_BettingCenter monitorBettingCenter;
 	private final ISpectator_Control monitorControl;
 	private final ISpectator_Paddock monitorPaddock;
-	private int money;
+	private double money;
 	private SpectatorState state;
 	public Spectator(int id,int money,ISpectator_BettingCenter monitorBettingCenter, ISpectator_Control monitorControl, ISpectator_Paddock monitorPaddock) {
 		this.id=id;
@@ -21,10 +21,12 @@ public class Spectator extends Thread {
 	}
 	
 	
-	public void addMoney(int moneyWon) {
+	public void addMoney(double moneyWon) {
 		money=money+moneyWon;
 	}
-	
+	public double getMoney() {
+		return money;
+	}
 	public int getID() {
 		return id;
 	}
@@ -41,7 +43,7 @@ public class Spectator extends Thread {
 					state=SpectatorState.APPRAISING_THE_HORSES;
 					break;
 				case APPRAISING_THE_HORSES:
-					monitorBettingCenter.placeABet(id);
+					monitorBettingCenter.placeABet(this);
 					state=SpectatorState.PLACING_A_BET;
 					break;
 				case PLACING_A_BET:

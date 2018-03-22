@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,15 +25,16 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private boolean waitingForTheSpectator;
 	private int numberOfBets;
 	//hash map <cavalo,[espectator,money] -> assim com o contains value conseguimos ver logo se alguem ganhou e depois e facil de retirar o valor.
-	private HashMap<Integer,List<int[]>> spectatorBets;
+	private HashMap<Integer,List<double[]>> spectatorBets;
 	private List<Condition> receivMoneyList ;
 	private List<Integer> horseWinners;
 	private Queue<Spectator> queueToReceivMoney;
 	//index 0=horse
 	//index 1=bet
-	private int[] bet = new int[2];
+	private double[] bet = new double[2];
 	private int horseId;
 	private HashMap<Integer,Integer> horsePerformance;
+	private HashMap<Integer,Double> horseProbabilities;
 	Repository repo;
 
 
@@ -47,11 +49,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		spectatorsQueueBol=false;
 		receivingDividends=true;
 		waitingForTheSpectator = true;
-		spectatorBets = new HashMap<Integer,List<int[]>>(numberOfSpectators);
+		spectatorBets = new HashMap<Integer,List<double[]>>(numberOfSpectators);
 		receivMoneyList = new ArrayList<Condition>();
 		queueToReceivMoney = new LinkedList<Spectator>();
 		this.repo=repo;
 		horsePerformance = repo.gethorsePerformance();
+		horseProbabilities = new HashMap<Integer,Double>();
 	}
 	@Override
 	public void acceptTheBets() {
@@ -59,12 +62,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		mutex.lock();
 		try {
 			System.out.println("ACCEPTING BETS BROKER");
-			List <int[]> listTemp;
+			List <double[]> listTemp;
 			while(numberOfBets < numberOfSpectators) {
 				try {
 					broker_condition.await();
 					//place bet
-					listTemp = new ArrayList<int[]>();
+					listTemp = new ArrayList<double[]>();
 					if(spectatorBets.containsKey(horseId)) {
 						listTemp = spectatorBets.get(horseId);
 						listTemp.add(bet);
@@ -131,7 +134,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
-			List<int[]> winners = new ArrayList<int[]>();
+			List<double[]> winners = new ArrayList<double[]>();
 			for(int i=0;i<horseWinners.size();i++) {
 				winners.addAll(spectatorBets.get(horseWinners.get(i)));
 			}
@@ -142,8 +145,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					spectatorReceivingMoney=queueToReceivMoney.remove();
 					for(int i=0;i<winners.size();i++) {
 						if(winners.get(i)[0]==spectatorReceivingMoney.getID()) {
-							spectatorReceivingMoney.addMoney(winners.get(i)[1]);
+							//how to knoe the horse that spectator bet
+							System.out.println(spectatorReceivingMoney.getMoney());
+							spectatorReceivingMoney.addMoney(winners.get(i)[1]*1/horseProbabilities.get(horseWinners.get(0)));
+							System.out.println(spectatorReceivingMoney.getMoney());
 							break;
+							
 						}
 						receivingDividends=false;
 						receivMoneyList.get(spectatorReceivingMoney.getID()).signal();
@@ -182,7 +189,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 
 
 	@Override
-	public void placeABet(int spectator_id) {
+	public void placeABet(Spectator spectator) {
 		mutex.lock();
 		try {
 			//if(queue==0) {
@@ -198,12 +205,39 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			}
 			//queue++;
 			spectatorsQueueBol=true;
-			System.out.println("Spectator_"+spectator_id+" is betting!");
-			this.horseId=0;  //vem de onde de fora?
-			this.bet[0]=spectator_id; //spectator_id
-			this.bet[1]=bet[1]; //money
-			broker_condition.signal();
+			System.out.println("Spectator_"+spectator.getID()+" is betting!");
+			horsePerformance=repo.gethorsePerformance();
+			if(horseProbabilities.size()==0) {
+				int totalP=0;
+				for(int i = 0 ;i<horsePerformance.size();i++) {
+					totalP+=horsePerformance.get(i);
+				}
+				double prob;
+				for(int i=0;i<horsePerformance.size();i++) {
+					prob=(double)horsePerformance.get(i)/totalP*100;
+					horseProbabilities.put(i, prob);
+				} 	
+			}
+				//->>>>
+				List<Integer> pickHorse= new ArrayList<Integer>();
+				int toPut;
+				for(int i=0;i<horseProbabilities.size();i++) {
+					toPut = horseProbabilities.get(i).intValue();
+					System.out.println("toPut:"+toPut);
+					for(int c = 0;c<toPut;c++) {
+						pickHorse.add(i);
+					}
+				}
 			
+			Random random = new Random();
+			int n = random.nextInt(pickHorse.size());
+			this.horseId=pickHorse.get(n);  //vem de onde de fora?
+			
+			this.bet[0]=spectator.getID(); //spectator_id
+			
+			this.bet[1]= random.nextDouble()*spectator.getMoney(); //money
+			System.out.println("Spectator_"+spectator.getID()+" choose horse " + horseId+" the money_" + bet[1]);
+			broker_condition.signal();
 		
 			while(spectatorBetAproving) {
 				try {

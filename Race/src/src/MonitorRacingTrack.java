@@ -37,7 +37,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		this.totalHorses=totalHorses;
 		horses_at_start_line=0;
 		horsesRacing=totalHorses;
-		raceLength=30;
+		raceLength=20;
 		horsesCanNotRace = true;
 		horsesCanNotMove = true;
 		horsesFinalPos = new int[totalHorses];
@@ -112,7 +112,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			
 			int performance = horse.getPerformance();
 		    Random random = new Random();
-			horse.moveofPosition(random.nextInt(performance));
+			horse.moveofPosition(random.nextInt(performance)+1);
 			horse.incrementRuns();
 			System.out.println("Horse_"+ horse.getID()+" is "+ horse.getPosition());
 			iter++; 
@@ -221,7 +221,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		int[] horseArray = new int[2];
 		List<int[]> bestHorses = new ArrayList<int[]>(totalHorses);
 		List<Integer> bestofTheBests= new ArrayList<Integer>(totalHorses);
-		for(int i=1; i < horseRuns.length;i++) {
+		for(int i=0; i < horseRuns.length;i++) {
 			if(horseRuns[i]<min){
 				bestHorses.clear();
 				horseArray[0]=i;
@@ -235,6 +235,10 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				min = horseRuns[i];
 				bestHorses.add(horseArray);
 			}
+		}
+		for(int i = 0;i< bestHorses.size();i++) {
+			System.out.println("best horses+ "+bestHorses.size());
+			System.out.println(bestHorses.get(i));
 		}
 		int biggestPos=0;
 		if(bestHorses.size()==1) {
