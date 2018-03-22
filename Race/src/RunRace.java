@@ -7,15 +7,17 @@ public class RunRace {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 4; //testar com números maiores.
+		int numberOfHorses = 4; //testar com numeros maiores.
 		int numberOfSpectators=4;
 		int numberOfRaces=4;
 		
-		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators);
-		MonitorControlCenter mControlCenter = new MonitorControlCenter();
-		MonitorPaddock mPaddock = new MonitorPaddock(numberOfHorses,numberOfSpectators);
-		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(numberOfHorses);
-		MonitorStable mStable = new MonitorStable(numberOfHorses);
+		Repository repo = new Repository(numberOfHorses,numberOfSpectators);
+
+		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);
+		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
+		MonitorPaddock mPaddock = new MonitorPaddock(numberOfHorses,numberOfSpectators, repo);
+		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(numberOfHorses, repo);
+		MonitorStable mStable = new MonitorStable(numberOfHorses, repo);
 		
 		
 	     /* problem initialization */
