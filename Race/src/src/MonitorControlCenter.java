@@ -89,8 +89,8 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 					for(int c=0;c<betsOnHorse.size();c++) {
 						bet=betsOnHorse.get(c);
 						if((int)bet[0]==spectator_id) {
-							System.out.println("Spectator_"+spectator_id+" won");
 							iWon=true;
+							break;
 						}
 					}
 				}

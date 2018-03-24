@@ -13,7 +13,7 @@ import jdk.management.resource.internal.TotalResourceContext;
 public class Broker extends Thread {
 	private final int numberOfSpectators;
 	private final int numberOfHorses;
-	private final int numberOfRaces;
+	private int numberOfRaces;
 	private BrokerState state;
 	private final IBroker_Control monitorControl;
 	private final IBroker_BettingCenter monitorBettingCenter;
@@ -55,19 +55,19 @@ public class Broker extends Thread {
 					//passar do track para o control que cavalos ganharam!
 					List<Integer> horseWinners;
 					horseWinners = monitorTrack.reportResults();	
-					for(int i = 0;i<horseWinners.size();i++) {
-						System.out.println("WINNER: "+ horseWinners.get(i));
-					}
 					monitorControl.reportResults(horseWinners);
 					if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
 						monitorBettingCenter.honourTheBets();
 						state=BrokerState.SETTING_ACCOUNTS;
 					}
+					numberOfRaces--;
+					System.out.println("numberofraces:"+numberOfRaces);
 					if(numberOfRaces==0) {
 						state=BrokerState.PLAYING_HOST_AT_THE_BAR;
+					}else {
+						monitorStable.summonHorsesToPaddock();
+						state=BrokerState.ANNOUNCING_NEXT_RACE;	
 					}
-					monitorStable.summonHorsesToPaddock();
-					state=BrokerState.ANNOUNCING_NEXT_RACE;
 					break;
 				case SETTING_ACCOUNTS:
 					if(numberOfRaces==0) {
