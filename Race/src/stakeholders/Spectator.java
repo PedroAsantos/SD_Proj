@@ -37,6 +37,7 @@ public class Spectator extends Thread {
 			//monitor.divide();	
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
+					System.out.println("waitint");
 					monitorPaddock.waitForNextRace(id);
 					monitorPaddock.goCheckHorses(id);
 			
@@ -51,7 +52,8 @@ public class Spectator extends Thread {
 					state=SpectatorState.WATCHING_THE_RACE;
 					break;
 				case WATCHING_THE_RACE:
-					if(monitorControl.haveIwon()) {
+					System.out.println("WATCHING THE RACE");
+					if(monitorControl.haveIwon(id)) {
 						state=SpectatorState.COLLECTING_THE_GAINS;
 					}else {
 						state=SpectatorState.WAITING_FOR_A_RACE_TO_START;
@@ -59,6 +61,7 @@ public class Spectator extends Thread {
 					break;
 				case COLLECTING_THE_GAINS:
 					monitorBettingCenter.goCollectTheGains(this);
+					state=SpectatorState.WAITING_FOR_A_RACE_TO_START;
 					break;
 				case CELEBRATING:
 					

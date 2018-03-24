@@ -1,5 +1,7 @@
 package src;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -9,9 +11,12 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private final Condition spectator_condition;
 	private final Condition div;
 	
-	private boolean havaIWon;
+	private int spectatorsWatchingRace;
+	private boolean waitinghaveIwon;
 	private boolean raceIsOn;
 	private boolean spectatorHasToWait;
+	private List<Integer> winners;
+	private HashMap<Integer,List<double[]>> bets;
 	Repository repo;
 
 	public MonitorControlCenter(Repository repo) {
@@ -20,8 +25,9 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		div = mutex.newCondition();
 		spectatorHasToWait=true;
 		raceIsOn=true;
-		havaIWon=true;
+		waitinghaveIwon=true;
 		this.repo=repo;
+		this.spectatorsWatchingRace=0;
 	}
 	
 	
@@ -31,7 +37,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		
 		mutex.lock();
 		try {
-			
+			spectatorsWatchingRace++;
 			System.out.println("Spectator_"+spectator_id+" is watching the race!");
 			while(raceIsOn) {
 				try {
@@ -41,8 +47,11 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 					e.printStackTrace();
 				}
 			}
-						
-			
+			System.out.println("Spectator_"+spectator_id+" exiting of the race");
+			spectatorsWatchingRace--;
+			if(spectatorsWatchingRace==0) {
+				raceIsOn=true;
+			}
 	
 		}finally {
 			mutex.unlock();
@@ -51,12 +60,13 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	}
 
 	@Override
-	public boolean haveIwon() {
+	public boolean haveIwon(int spectator_id) {
 		// TODO Auto-generated method stub
+		boolean iWon=false;
 		mutex.lock();
 		try {
 			
-			while(havaIWon) {
+		/*	while(waitinghaveIwon) {
 				try {
 					//usar outra condicao?
 					spectator_condition.await();
@@ -64,15 +74,35 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}*/
+			bets = repo.getspectatorBets();
+			
+			
+			System.out.println("betssize:"+ bets.size());
+			List<double[]> betsOnHorse;
+			double[] bet;
+			
+			for(int i = 0;i<winners.size();i++) {
+				System.out.println(winners.get(i));
+				if(bets.containsKey(winners.get(i))) {
+					betsOnHorse=bets.get(winners.get(i));
+					for(int c=0;c<betsOnHorse.size();c++) {
+						bet=betsOnHorse.get(c);
+						if((int)bet[0]==spectator_id) {
+							System.out.println("Spectator_"+spectator_id+" won");
+							iWon=true;
+						}
+					}
+				}
+				
 			}
+			
+			System.out.println("Spectator_"+spectator_id+" won:"+iWon);
 		} finally {
 			mutex.unlock();
 		}
 		
-		
-		
-		return false;
-		
+		return iWon;
 	}
 
 	@Override
@@ -89,7 +119,10 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	public void reportResults(List<Integer> result) {
 		mutex.lock();
 		try {
-			
+			winners = new ArrayList<Integer>(result);
+			raceIsOn=false;
+			System.out.println("Reporting Result to Spectators");
+			spectator_condition.signalAll();
 		} finally {
 			// TODO: handle finally clause
 			mutex.unlock();

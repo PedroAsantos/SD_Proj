@@ -54,8 +54,10 @@ public class Broker extends Thread {
 				case SUPERVISING_THE_RACE:
 					//passar do track para o control que cavalos ganharam!
 					List<Integer> horseWinners;
-					horseWinners = monitorTrack.reportResults();
-					System.out.println("WINNER: "+ horseWinners.get(0));
+					horseWinners = monitorTrack.reportResults();	
+					for(int i = 0;i<horseWinners.size();i++) {
+						System.out.println("WINNER: "+ horseWinners.get(i));
+					}
 					monitorControl.reportResults(horseWinners);
 					if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
 						monitorBettingCenter.honourTheBets();

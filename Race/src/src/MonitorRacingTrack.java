@@ -156,6 +156,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			
 				horsesFinalPos[horse.getID()]=horse.getPosition();
 				horseRuns[horse.getID()]=horse.getRuns();
+				horse.resetHorse();
 				horsesRacing--;
 				if(horsesRacing==0) {
 					System.out.println(horse.getID());
@@ -210,7 +211,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 					e.printStackTrace();
 				}
 			}
-			
+			//repor o valor para a próxima corrida;
+			horsesRacing=totalHorses;
 			
 		} finally {
 			mutex.unlock();
@@ -237,8 +239,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			}
 		}
 		for(int i = 0;i< bestHorses.size();i++) {
-			System.out.println("best horses+ "+bestHorses.size());
-			System.out.println(bestHorses.get(i));
+			System.out.println("best horses: "+bestHorses.size());
+			System.out.println(bestHorses.get(i)[0]);
 		}
 		int biggestPos=0;
 		if(bestHorses.size()==1) {
@@ -247,7 +249,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		}else {
 			biggestPos = horsesFinalPos[bestHorses.get(0)[0]];
 		
-			for(int i=1;i<bestHorses.size();i++) {
+			for(int i=0;i<bestHorses.size();i++) {
 				if(biggestPos < horsesFinalPos[bestHorses.get(i)[0]]) {
 					bestofTheBests.clear();
 					bestofTheBests.add(bestHorses.get(i)[0]);

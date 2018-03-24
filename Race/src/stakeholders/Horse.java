@@ -23,7 +23,10 @@ public class Horse extends Thread {
 		//define state?
 	}
 	
-	
+	public void resetHorse() {
+		runs=0;
+		position=0;
+	}
 	
 	public void moveofPosition(int movingPos ) {
 		position+=movingPos;
