@@ -6,28 +6,36 @@ import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.sun.corba.se.pept.broker.Broker;
+
 public class MonitorControlCenter implements ISpectator_Control, IBroker_Control{
 	private final ReentrantLock mutex;
 	private final Condition spectator_condition;
-	private final Condition div;
+	private final Condition broker_condidition;
 	
 	private int spectatorsWatchingRace;
 	private boolean waitinghaveIwon;
 	private boolean raceIsOn;
 	private boolean spectatorHasToWait;
+	private boolean eventNotEnd;
+	private int spectatorsRelaxing;
+	private int totalSpectators;
 	private List<Integer> winners;
 	private HashMap<Integer,List<double[]>> bets;
 	Repository repo;
 
-	public MonitorControlCenter(Repository repo) {
+	public MonitorControlCenter(Repository repo,int totalSpectators) {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
-		div = mutex.newCondition();
+		broker_condidition = mutex.newCondition();
 		spectatorHasToWait=true;
 		raceIsOn=true;
 		waitinghaveIwon=true;
+		eventNotEnd=true;
 		this.repo=repo;
-		this.spectatorsWatchingRace=0;
+		spectatorsWatchingRace=0;
+		this.totalSpectators=totalSpectators;
+		spectatorsRelaxing=0;
 	}
 	
 	
@@ -118,16 +126,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 			return false;
 		}
 	}
-	@Override
-	public void relaxABit() {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void summonHorsesToPaddock() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	@Override
 	public void reportResults(List<Integer> result) {
 		mutex.lock();
@@ -145,11 +144,55 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		
 		
 	}
+	
+	@Override
+	public void relaxABit(int spectator_id) {
+		// TODO Auto-generated method stub
+		mutex.lock();
+		try {
+			spectatorsRelaxing++;
+			if(spectatorsRelaxing==totalSpectators) {
+				broker_condidition.signal();
+			}
+			System.out.println("Spectator_"+spectator_id+" is relaxing!");
+			while(eventNotEnd){
+				try {
+					spectator_condition.await();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			spectatorsRelaxing--;
+			if(spectatorsRelaxing==0) {
+				eventNotEnd=true;
+			}
+			
+		}finally {
+			mutex.unlock();
+		}
+	}
+	
 	@Override
 	public void entertainTheGuests() {
 		// TODO Auto-generated method stub
-		
-		
+		mutex.lock();
+		try {
+			System.out.println("BROKER ENTERTAIN THE GUESTS");
+			while(spectatorsRelaxing<totalSpectators){
+				try {
+					broker_condidition.await();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			eventNotEnd=false;
+			spectator_condition.signalAll();
+			
+		}finally {
+			mutex.unlock();
+		}
 	}
 
 }

@@ -15,7 +15,7 @@ public class RunRace {
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace);
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);
-		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
+		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo,numberOfSpectators);
 		MonitorPaddock mPaddock = new MonitorPaddock(horsesPerRace,numberOfSpectators, repo);
 		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(horsesPerRace, raceLength, repo);
 		MonitorStable mStable = new MonitorStable(numberOfHorses,horsesPerRace, repo);

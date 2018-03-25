@@ -11,6 +11,8 @@ import java.util.List;
 import Enum.BrokerState;
 import jdk.management.resource.internal.TotalResourceContext;
 public class Broker extends Thread {
+	private volatile boolean running = true;
+	    
 	private final int numberOfSpectators;
 	private final int numberOfHorses;
 	private int numberOfRaces;
@@ -31,11 +33,14 @@ public class Broker extends Thread {
 		this.numberOfRaces=numberOfRaces;
 		//define state?
 	}
+	
+	
+	
 	@Override
 	public void run() {
 			
 
-		while(true) {
+		while(running) {
 			//monitor.divide();	
 			switch (state) {
 				case OPENING_THE_EVENT:
@@ -80,6 +85,7 @@ public class Broker extends Thread {
 					break;
 				case PLAYING_HOST_AT_THE_BAR:
 					System.out.println("EVENT END");
+					stopRunning();
 					break;
 				default:
 					break;
@@ -91,4 +97,9 @@ public class Broker extends Thread {
 			}
 		}
 	}
+	
+	public void stopRunning(){
+        running = false;
+	}
+
 }

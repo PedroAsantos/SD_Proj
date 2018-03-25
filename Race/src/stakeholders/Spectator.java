@@ -4,6 +4,8 @@ import src.*;
 import Enum.SpectatorState;
 
 public class Spectator extends Thread {
+	private volatile boolean running = true;
+
 	private final int id;
 	private final ISpectator_BettingCenter monitorBettingCenter;
 	private final ISpectator_Control monitorControl;
@@ -33,7 +35,7 @@ public class Spectator extends Thread {
 	@Override
 	public void run() {
 			
-		while(true) {
+		while(running) {
 			//monitor.divide();	
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
@@ -55,6 +57,7 @@ public class Spectator extends Thread {
 						state=SpectatorState.COLLECTING_THE_GAINS;
 					}else {
 						if(monitorControl.noMoreRaces()) {
+							monitorControl.relaxABit(id);
 							state=SpectatorState.CELEBRATING;
 						}else {
 							state=SpectatorState.WAITING_FOR_A_RACE_TO_START;
@@ -64,6 +67,7 @@ public class Spectator extends Thread {
 				case COLLECTING_THE_GAINS:
 					monitorBettingCenter.goCollectTheGains(this);
 					if(monitorControl.noMoreRaces()) {
+						monitorControl.relaxABit(id);
 						state=SpectatorState.CELEBRATING;
 					}else {
 						state=SpectatorState.WAITING_FOR_A_RACE_TO_START;
@@ -71,6 +75,7 @@ public class Spectator extends Thread {
 					break;
 				case CELEBRATING:
 						System.out.println("CELEBRATING");
+						stopRunning();
 					break;
 				default:
 					break;
@@ -82,4 +87,8 @@ public class Spectator extends Thread {
 			}
 		}
 	}
+	public void stopRunning(){
+        running = false;
+	}
+
 }
