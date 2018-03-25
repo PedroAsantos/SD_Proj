@@ -7,11 +7,11 @@ public class RunRace {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 20; //testar com numeros maiores.
-		int numberOfSpectators=4;
-		int numberOfRaces=5;
-		int horsesPerRace=4;
-		int raceLength=20;
+		int numberOfHorses = 200; //testar com numeros maiores.
+		int numberOfSpectators=20;
+		int numberOfRaces=20;
+		int horsesPerRace=10;
+		int raceLength=100;
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace);
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);
