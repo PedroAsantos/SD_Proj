@@ -100,6 +100,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			}
 			numberOfBets=0;
 			spectatorsQueueBol=false;
+			
 			//so para testes
 			/*
 			listTemp = spectatorBets.get(horseId);
@@ -137,30 +138,37 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			spectatorsQueueBol=true;
 			System.out.println("Spectator_"+spectator.getID()+" is betting!");
 			horsePerformance=repo.gethorsePerformance();
-			if(horseProbabilities.size()==0) {
+			List<Integer> horsesRunning = repo.getHorsesRunning();
+		//	if(horseProbabilities.size()==0) {
 				int totalP=0;
-				for(int i = 0 ;i<horsePerformance.size();i++) {
-					totalP+=horsePerformance.get(i);
+				for(int i = 0 ;i<horsesRunning.size();i++) {
+					totalP+=horsePerformance.get(horsesRunning.get(i));
 				}
 				double prob;
-				for(int i=0;i<horsePerformance.size();i++) {
-					prob=(double)horsePerformance.get(i)/totalP*100;
-					horseProbabilities.put(i, prob);
+				for(int i=0;i<horsesRunning.size();i++) {
+					prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
+					horseProbabilities.put(horsesRunning.get(i), prob);
 				} 	
-			}
-				//->>>>
+			//}
+
 				List<Integer> pickHorse= new ArrayList<Integer>();
 				int toPut;
-				for(int i=0;i<horseProbabilities.size();i++) {
-					toPut = horseProbabilities.get(i).intValue();
-					for(int c = 0;c<toPut;c++) {
-						pickHorse.add(i);
+//				System.out.println("SIze horses RUnning"+horsesRunning.size());
+//   			System.out.println("SIze horses PROBS"+horseProbabilities.size());
+		
+				for(int i=0;i<horsesRunning.size();i++) {
+					if(horseProbabilities.containsKey(horsesRunning.get(i))) {
+						toPut = horseProbabilities.get(horsesRunning.get(i)).intValue();
+						for(int c = 0;c<toPut;c++) {
+							pickHorse.add(horsesRunning.get(i));
+						}
 					}
 				}
 			
+				
 			Random random = new Random();
 			int n = random.nextInt(pickHorse.size());
-			this.horseId=pickHorse.get(n);  //vem de onde de fora?
+			this.horseId=pickHorse.get(n); 
 			this.bet[0]=spectator.getID(); //spectator_id
 			
 			this.bet[1]= random.nextDouble()*spectator.getMoney(); //money
@@ -207,11 +215,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					e.printStackTrace();
 				}
 			}
-			Object[] temp = queueToReceivMoney.toArray();
+		/*	Object[] temp = queueToReceivMoney.toArray();
 			for (int i = 0; i < temp.length; i++) {
 				Spectator tt = (Spectator)temp[i];
 				System.out.println("queueu elemtn: "+tt.getID());
-			}
+			}*/
 			brokerIsOccupied=true;
 			broker_condition.signal();
 			System.out.println("Spectator_"+spectator.getID()+" waiting to collect the gains!");
@@ -228,16 +236,14 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		
 			//System.out.println("queu size"+queueToReceivMoney.size()+"->"+queueToReceivMoney.peek().getID());
 			if(!queueToReceivMoney.isEmpty()) {
-				System.out.println("queue is not empty");
 				receivingDividends=true;
 				receivMoneyList[queueToReceivMoney.peek().getID()].signal();
 			}else {
-				System.out.println("Queueu Empty");
 				receivingDividends=true;
 			}
 			///----------------------
 			System.out.println("Spectator_"+spectator.getID()+" received the money!");
-			
+			repo.getNumberOfRaces();
 		} finally {
 			// TODO: handle finally clause
 			mutex.unlock();
@@ -264,12 +270,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			}
 			Spectator spectatorReceivingMoney;
 			int betsPayed=0;
-			System.out.println("winnersSize: "+winners.size());
+		//	System.out.println("winnersSize: "+winners.size());
 			while(betsPayed<winners.size()|| openHonorStand) {
 				try {
 					broker_condition.await();
 					spectatorReceivingMoney=queueToReceivMoney.remove();
-					System.out.println("spectator receiving money:" +spectatorReceivingMoney);
 					for(int i=0;i<winners.size();i++) {
 						if(winners.get(i)[0]==spectatorReceivingMoney.getID()) {
 							//how to knoe the horse that spectator bet
@@ -280,7 +285,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 						}
 						
 					}
-					System.out.println("queueu size:"+queueToReceivMoney.size());
+					
 					receivingDividends=false;
 					receivMoneyList[spectatorReceivingMoney.getID()].signal();
 					
@@ -290,9 +295,10 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 				}
 					
 			}
-			System.out.println("OUTqueueu size:"+queueToReceivMoney.size());
+			
 			openHonorStand=true;
 			spectatorBets.clear();
+			horseProbabilities.clear();
 		} finally {
 			mutex.unlock();
 		}

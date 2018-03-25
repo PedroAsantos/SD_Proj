@@ -78,12 +78,11 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 			bets = repo.getspectatorBets();
 			
 			
-			System.out.println("betssize:"+ bets.size());
+		
 			List<double[]> betsOnHorse;
 			double[] bet;
 			
 			for(int i = 0;i<winners.size();i++) {
-				System.out.println(winners.get(i));
 				if(bets.containsKey(winners.get(i))) {
 					betsOnHorse=bets.get(winners.get(i));
 					for(int c=0;c<betsOnHorse.size();c++) {
@@ -97,14 +96,28 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 				
 			}
 			
-			System.out.println("Spectator_"+spectator_id+" won:"+iWon);
+			System.out.println("Spectator_"+spectator_id+" won: "+iWon);
 		} finally {
 			mutex.unlock();
 		}
 		
 		return iWon;
 	}
-
+	@Override
+	public boolean noMoreRaces() {
+		int numberOfRaces=0;
+		mutex.lock();
+		try {
+			numberOfRaces = repo.getNumberOfRaces();
+		} finally {
+			mutex.unlock();
+		}
+		if(numberOfRaces<=0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 	@Override
 	public void relaxABit() {
 		// TODO Auto-generated method stub
@@ -121,6 +134,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		try {
 			winners = new ArrayList<Integer>(result);
 			raceIsOn=false;
+			repo.clearhorsesRunning();
 			System.out.println("Reporting Result to Spectators");
 			spectator_condition.signalAll();
 		} finally {
@@ -134,6 +148,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	@Override
 	public void entertainTheGuests() {
 		// TODO Auto-generated method stub
+		
 		
 	}
 

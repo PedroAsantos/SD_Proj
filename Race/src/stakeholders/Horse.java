@@ -54,7 +54,7 @@ public class Horse extends Thread {
 			//monitor.divide();	
 			switch (state) {
 				case AT_THE_STABLE:
-					monitorStable.proceedToStable(id);
+					monitorStable.proceedToStable(this);
 					state=HorseState.AT_THE_PADDOCK;
 					break;
 				case AT_THE_PADDOCK:

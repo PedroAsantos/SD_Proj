@@ -55,22 +55,23 @@ public class Broker extends Thread {
 					//passar do track para o control que cavalos ganharam!
 					List<Integer> horseWinners;
 					horseWinners = monitorTrack.reportResults();	
+					numberOfRaces--;
 					monitorControl.reportResults(horseWinners);
 					if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
 						monitorBettingCenter.honourTheBets();
 						state=BrokerState.SETTING_ACCOUNTS;
 					}
-					numberOfRaces--;
-					System.out.println("numberofraces:"+numberOfRaces);
 					if(numberOfRaces==0) {
+						monitorControl.entertainTheGuests();
 						state=BrokerState.PLAYING_HOST_AT_THE_BAR;
 					}else {
 						monitorStable.summonHorsesToPaddock();
-						state=BrokerState.ANNOUNCING_NEXT_RACE;	
+						state=BrokerState.ANNOUNCING_NEXT_RACE;
 					}
 					break;
 				case SETTING_ACCOUNTS:
 					if(numberOfRaces==0) {
+						monitorControl.entertainTheGuests();
 						state=BrokerState.PLAYING_HOST_AT_THE_BAR;
 					}else {
 						monitorStable.summonHorsesToPaddock();

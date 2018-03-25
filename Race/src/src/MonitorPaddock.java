@@ -11,7 +11,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private final Condition horse_condition;
 	private final Condition spectatorWaiting_condition;
 	private final Condition spectatorCheckHorses_condition;
-	private final int total_horses;
+	private final int horsesPerRace;
 	private final int totalSpectators;
 	
 	private boolean spectatorHasToWait;
@@ -19,22 +19,20 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private boolean spectatorsCheckingHorses;
 	private int horsesInPaddock;
 	private int spectatorsInPaddock;
-	private HashMap<Integer,Integer> horsePerformance;
 	Repository repo;
 	
-	public MonitorPaddock(int total_horses, int totalSpectators, Repository repo) {
+	public MonitorPaddock(int horsesPerRace, int totalSpectators, Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		spectatorWaiting_condition = mutex.newCondition();
 		spectatorCheckHorses_condition = mutex.newCondition();
-		this.total_horses=total_horses;
+		this.horsesPerRace=horsesPerRace;
 		this.horsesCanNotGo=true;
 		this.totalSpectators=totalSpectators;
 		spectatorHasToWait=true;
 		spectatorsCheckingHorses=true;
 		spectatorsInPaddock=0;
 		horsesInPaddock=0;
-		horsePerformance = repo.gethorsePerformance();
 		this.repo = repo;
 	}
 	
@@ -48,8 +46,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 			
 			horsesInPaddock++;
 			System.out.println("Horse_"+horse.getID()+" is going to paddock!");
-			horsePerformance.put(horse.getID(),horse.getPerformance());
-			if(horsesInPaddock==total_horses) {
+			if(horsesInPaddock==horsesPerRace) {
 				spectatorWaiting_condition.signalAll();
 			}
 			
@@ -69,7 +66,6 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 				 }
 				 
 				 
-			repo.sethorsePerformance(horsePerformance);
 		} finally {
 			mutex.unlock();
 		}
@@ -81,7 +77,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		mutex.lock();
 		try {
 			System.out.println("Spectator_"+spectator_id+" is waiting for checking the horses!");
-			while(horsesInPaddock < total_horses) {
+			while(horsesInPaddock < horsesPerRace) {
 				try {
 					spectatorWaiting_condition.await();
 				} catch (InterruptedException e) {

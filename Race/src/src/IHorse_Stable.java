@@ -1,7 +1,8 @@
 package src;
 
+import stakeholders.Horse;
+
 public interface IHorse_Stable {
-	 public void proceedToStable(int id);
-	 public void proceedToPaddock();
+	 public void proceedToStable(Horse horse);
 
 }
