@@ -22,7 +22,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private boolean spectatorsQueueBol;
 	private boolean spectatorBetAproving;
 	private boolean receivingDividends;
-	private boolean waitingForTheSpectator;
+//	private boolean waitingForTheSpectator;
 	private int numberOfBets;
 	//hash map <cavalo,[espectator,money] -> assim com o contains value conseguimos ver logo se alguem ganhou e depois e facil de retirar o valor.
 	private HashMap<Integer,List<double[]>> spectatorBets;
@@ -50,7 +50,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		spectatorBetAproving=true;
 		spectatorsQueueBol=false;
 		receivingDividends=true;
-		waitingForTheSpectator = true;
+	//	waitingForTheSpectator = true;
 		openHonorStand=true;
 		brokerIsOccupied=false;
 		spectatorBets = new HashMap<Integer,List<double[]>>(numberOfSpectators);

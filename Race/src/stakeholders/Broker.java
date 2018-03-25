@@ -13,8 +13,8 @@ import jdk.management.resource.internal.TotalResourceContext;
 public class Broker extends Thread {
 	private volatile boolean running = true;
 	    
-	private final int numberOfSpectators;
-	private final int numberOfHorses;
+//	private final int numberOfSpectators;
+//	private final int numberOfHorses;
 	private int numberOfRaces;
 	private BrokerState state;
 	private final IBroker_Control monitorControl;
@@ -22,9 +22,9 @@ public class Broker extends Thread {
 	private final IBroker_Stable monitorStable;
 	private final IBroker_Track monitorTrack;
 	
-	public Broker(int numberOfSpectators, int numberOfHorses, int numberOfRaces,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack) {
-		this.numberOfSpectators=numberOfSpectators;
-		this.numberOfHorses=numberOfHorses;
+	public Broker(int numberOfRaces,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack) {
+//		this.numberOfSpectators=numberOfSpectators;
+//		this.numberOfHorses=numberOfHorses;
 		this.monitorControl=mControl;
 		this.monitorBettingCenter=mBettingCenter;
 		this.monitorStable = monitorStable;

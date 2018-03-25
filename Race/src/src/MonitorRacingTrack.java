@@ -25,7 +25,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	private boolean horsesCanNotRace;
 	private HashMap<Integer,Integer> horsesFinalPos; 
 	private HashMap<Integer,Integer> horseRuns;
-	private int iter;
+	//private int iter;
 	Repository repo;
 	
 
@@ -43,7 +43,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		horsesCanNotMove = true;
 		horsesFinalPos = new HashMap<Integer,Integer>();
 		horseRuns = new HashMap<Integer,Integer>();
-		iter=0;
+	//	iter=0;
 		this.repo = repo;	
 	}
 	
@@ -116,7 +116,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			horse.moveofPosition(random.nextInt(performance)+10);
 			horse.incrementRuns();
 			System.out.println("Horse_"+ horse.getID()+" is on the position "+ horse.getPosition());
-			iter++; 
+		//	iter++; 
 			horsesCanNotMove=false;
 			horseWaitingMoving_condition.signal();
 			

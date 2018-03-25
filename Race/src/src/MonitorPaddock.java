@@ -14,7 +14,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private final int horsesPerRace;
 	private final int totalSpectators;
 	
-	private boolean spectatorHasToWait;
+//	private boolean spectatorHasToWait;
 	private boolean horsesCanNotGo;
 	private boolean spectatorsCheckingHorses;
 	private int horsesInPaddock;
@@ -29,7 +29,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		this.horsesPerRace=horsesPerRace;
 		this.horsesCanNotGo=true;
 		this.totalSpectators=totalSpectators;
-		spectatorHasToWait=true;
+	//	spectatorHasToWait=true;
 		spectatorsCheckingHorses=true;
 		spectatorsInPaddock=0;
 		horsesInPaddock=0;

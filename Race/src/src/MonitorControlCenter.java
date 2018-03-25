@@ -14,9 +14,9 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private final Condition broker_condidition;
 	
 	private int spectatorsWatchingRace;
-	private boolean waitinghaveIwon;
+//	private boolean waitinghaveIwon;
 	private boolean raceIsOn;
-	private boolean spectatorHasToWait;
+//	private boolean spectatorHasToWait;
 	private boolean eventNotEnd;
 	private int spectatorsRelaxing;
 	private int totalSpectators;
@@ -28,9 +28,9 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condidition = mutex.newCondition();
-		spectatorHasToWait=true;
+	//	spectatorHasToWait=true;
 		raceIsOn=true;
-		waitinghaveIwon=true;
+	//	waitinghaveIwon=true;
 		eventNotEnd=true;
 		this.repo=repo;
 		spectatorsWatchingRace=0;
