@@ -7,11 +7,12 @@ public class RunRace {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 200; //testar com numeros maiores.
-		int numberOfSpectators=20;
-		int numberOfRaces=20;
-		int horsesPerRace=10;
-		int raceLength=100;
+		int numberOfHorses = 20; //testar com numeros maiores.
+		int numberOfSpectators=4;
+		int numberOfRaces=5;
+		int horsesPerRace=4;
+		int raceLength=30;
+		int maxPerformance=10;
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace);
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);
@@ -35,7 +36,7 @@ public class RunRace {
 		
 		for (int i = 0; i < horses.length; i++) {
 			Random random = new Random();
-			int performace= random.nextInt(10)+1;
+			int performace= random.nextInt(maxPerformance)+1;
 			horses[i] = new Horse(i,performace,(IHorse_Track) mRacingTrack,(IHorse_Stable) mStable,(IHorse_Paddock) mPaddock);
 		}
 		
