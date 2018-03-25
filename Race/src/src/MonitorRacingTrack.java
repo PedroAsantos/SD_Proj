@@ -168,7 +168,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			}else {
 				while(horsesCanNotMove) {
 					try {
-						System.out.println(iter / horsesPerRace);
+						//System.out.println(iter / horsesPerRace);
 						//assim, nao pode acontecer o mesmo cavalo correr sem ser a vez dele?
 						horseWaitingMoving_condition.await();
 					/*	if(iter / horsesPerRace == horse.getRuns()) {
