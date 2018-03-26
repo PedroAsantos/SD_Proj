@@ -206,7 +206,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		try {
 			openHonorStand=false;
 			queueToReceivMoney.add(spectator);
-			System.out.println("added to queeu: "+spectator.getID());
+			//System.out.println("added to queeu: "+spectator.getID());
 			while(brokerIsOccupied) {
 				try {
 					receivMoneyList[spectator.getID()].await();
@@ -256,11 +256,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		try {
 
 			List<double[]> winners = new ArrayList<double[]>();
+		
 			for(int i=0;i<horseWinners.size();i++) {
 				System.out.println("HORSEWINNERS:"+horseWinners.get(i));
-			}
-			for(int i=0;i<horseWinners.size();i++) {
-				System.out.println("horseWinners:"+horseWinners.get(i));
 				if(spectatorBets.containsKey(horseWinners.get(i))) {
 					winners.addAll(spectatorBets.get(horseWinners.get(i)));
 				}
