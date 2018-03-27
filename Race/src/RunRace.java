@@ -14,6 +14,7 @@ public class RunRace {
 		int raceLength=30;
 		int maxPerformance=10;
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace);
+		repo.writeLog();
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);
 		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo,numberOfSpectators);
@@ -27,17 +28,17 @@ public class RunRace {
 		Horse[] horses = new Horse[numberOfHorses];
 		Spectator[] spectators = new Spectator[numberOfSpectators]; 
 		
-		Broker broker = new Broker(numberOfRaces,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack);
+		Broker broker = new Broker(numberOfRaces,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack, repo);
 		int money;
 		for (int i = 0; i < spectators.length; i++) {
 			money=100;
-			spectators[i] = new Spectator(i,money,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter, (ISpectator_Paddock) mPaddock);
+			spectators[i] = new Spectator(i,money,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter, (ISpectator_Paddock) mPaddock, repo);
 		}
 		
 		for (int i = 0; i < horses.length; i++) {
 			Random random = new Random();
 			int performace= random.nextInt(maxPerformance)+1;
-			horses[i] = new Horse(i,performace,(IHorse_Track) mRacingTrack,(IHorse_Stable) mStable,(IHorse_Paddock) mPaddock);
+			horses[i] = new Horse(i,performace,(IHorse_Track) mRacingTrack,(IHorse_Stable) mStable,(IHorse_Paddock) mPaddock, repo);
 		}
 		
 		 /* start of the simulation */
