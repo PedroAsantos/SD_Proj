@@ -144,12 +144,16 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 				for(int i = 0 ;i<horsesRunning.size();i++) {
 					totalP+=horsePerformance.get(horsesRunning.get(i));
 				}
+				
 				double prob;
 				for(int i=0;i<horsesRunning.size();i++) {
-					prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
+					if(horsesRunning.size()<100) {
+						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
+					}else {
+						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*horsesRunning.size()*2;	
+					}
 					horseProbabilities.put(horsesRunning.get(i), prob);
 					repo.sethorseProbabilities(horseProbabilities);
-
 				} 	
 			//}
 
@@ -261,7 +265,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			List<double[]> winners = new ArrayList<double[]>();
 		
 			for(int i=0;i<horseWinners.size();i++) {
-				System.out.println("HORSEWINNERS:"+horseWinners.get(i));
+				System.out.println("HORSE WINNERS:"+horseWinners.get(i));
 				if(spectatorBets.containsKey(horseWinners.get(i))) {
 					winners.addAll(spectatorBets.get(horseWinners.get(i)));
 				}
