@@ -265,6 +265,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		}
 		for(int i = 0;i<horsesArrivalOrder.size();i++) {
 			System.out.println("horsesarrival:"+horsesArrivalOrder.get(i));
+			repo.sethorserank(horsesArrivalOrder.get(i),i+1);
 		}
 		List<Integer> horseWinners = new ArrayList<Integer>();
 		horseWinners.add(horsesArrivalOrder.get(0));

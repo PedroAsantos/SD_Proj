@@ -8,7 +8,7 @@ import Enum.*;
 public class Repository {
 
 	private int[] horsesFinalPos;
-	//private	HashMap<Integer,List<double[]>> spectatorBets;
+	private	HashMap<Integer,List<double[]>> spectatorBets;
 	private List<Integer> horsesRunnning;
 	private List<Integer> bestofTheBests;
 	//private HashMap<Integer,Integer> horsePerformance;
@@ -33,9 +33,9 @@ public class Repository {
 	//Len# - horse/jockey pair maximum moving length per iteration step in present race (# - 0 .. 3) - Hash Map para isto
 	private	HashMap<Integer,Integer> horsePerformance;
 	//Dist - race track distance in present race - MonitorRacingTrack
-	private final int raceLength = 20;
+	private int raceLength;
 	//BS# - spectator/better bet selection in present race (# - 0 .. 3) - MonitorBettingCenter
-	private	HashMap<Integer,List<double[]>> spectatorBets;
+	private	HashMap<Integer,Integer> specbets;
 	//BA# - spectator/better bet amount in present race (# - 0 .. 3)
 	private	HashMap<Integer,Double> specbetamount;
 	//Od# - horse/jockey pair winning probability in present race (# - 0 .. 3)
@@ -45,9 +45,9 @@ public class Repository {
 	//Ps# - horse/jockey pair track position in present race (# - 0 .. 3) - Hash Map para isto ????????????
 	private	HashMap<Integer,Integer> horseposition;
 	//SD# - horse/jockey pair standing at the end of present race (# - 0 .. 3)
-	// !!!!!!!!!!
+	private HashMap<Integer,Integer> horserank;
 	
-	public Repository(int totalHorses, int numberOfSpectators,int numberOfRaces, int horsesPerRace){
+	public Repository(int totalHorses, int numberOfSpectators,int numberOfRaces, int horsesPerRace, int raceLength){
 		this.horsesFinalPos = new int[totalHorses];
 		this.spectatorBets = new HashMap<Integer,List<double[]>>(numberOfSpectators);
 		this.bestofTheBests = new ArrayList<Integer>(totalHorses);
@@ -65,6 +65,9 @@ public class Repository {
 		this.horseProbabilities = new HashMap<Integer,Double>();
 		this.horseruns = new HashMap<Integer,Integer>();
 		this.horseposition = new HashMap<Integer,Integer>();
+		this.specbets = new HashMap<Integer,Integer>();
+		this.horserank = new HashMap<Integer,Integer>();
+		this.raceLength=raceLength;
 	}
 
 	public void writeLog(){
@@ -125,7 +128,7 @@ public class Repository {
 				}
 
 			}
-			
+			//VER ISTO
 			int rn=numberOfRaces;
 			
 
@@ -145,20 +148,18 @@ public class Repository {
 			
 
 			}
+			
 			int dist=raceLength;
 			
-
-			//TA MAL
 			String[] bsAll = new String[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
-				if(spectatorBets.get(i)!=null){
-					bsAll[i]=""+spectatorBets.get(i);
+				if(specbets.get(i)!=null){
+					bsAll[i]=""+specbets.get(i);
 					//System.out.println(bsAll[i]);
 				}else{
 					bsAll[i]="-";
 				}
-			
-			
+								
 			}
 			double[] baAll = new double[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
@@ -203,10 +204,14 @@ public class Repository {
 
 			}
 			//NAO TA BEM!!!!!!!!!!!!
-			int[] sdAll = new int[horsesPerRace];
+			String[] sdAll = new String[horsesPerRace];
+			
 			for (int i = 0;i<horsesPerRace; i++ ) {
-				sdAll[i]=horsesFinalPos[i];
-
+				if(horserank.get(i)!=null){
+					sdAll[i]=""+horserank.get(i);
+				}else{
+					sdAll[i]="-";
+				}
 			}
 			//System.out.println(bestofTheBests);
 
@@ -394,7 +399,22 @@ public class Repository {
 		//toLog();
 	}
 
+	public HashMap<Integer,Integer> getspecbets(){
+		return this.specbets;
+	}
 
+	public void setspecbets(int spec_id,int horse_id){
+		this.specbets.put(spec_id,horse_id);
+		////toLog();
+	}
 
+	public HashMap<Integer,Integer> gethorserank(){
+		return this.horserank;
+	}
+
+	public void sethorserank(int horse_id, int rank){
+		this.horserank.put(horse_id,rank);
+		////toLog();
+	}
 
 }

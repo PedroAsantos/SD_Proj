@@ -13,7 +13,7 @@ public class RunRace {
 		int horsesPerRace=4;
 		int raceLength=30;
 		int maxPerformance=10;
-		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace);
+		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
 		repo.writeLog();
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);

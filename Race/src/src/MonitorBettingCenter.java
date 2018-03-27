@@ -82,9 +82,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 						listTemp = spectatorBets.get(horseId);
 						listTemp.add(temp);
 						spectatorBets.put(horseId,listTemp);
+						repo.setspecbets((int)bet[0],horseId);
 					}else {	
 						listTemp.add(temp);
 						spectatorBets.put(horseId,listTemp);
+						repo.setspecbets((int)bet[0],horseId);
 					}
 					repo.setspectatorBets(spectatorBets);
 					//System.out.println("numberofbets: " + numberOfBets);
