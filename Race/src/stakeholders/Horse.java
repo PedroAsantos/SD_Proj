@@ -1,5 +1,6 @@
 package stakeholders;
 import src.*;
+import java.util.*;
 import Enum.HorseState;
 public class Horse extends Thread {
 	private final int id;
@@ -10,8 +11,9 @@ public class Horse extends Thread {
 	private final IHorse_Track monitorTrack;
 	private final IHorse_Stable monitorStable;
 	private final IHorse_Paddock monitorPaddock;
+	Repository repo;
 
-	public Horse(int id,int performance,IHorse_Track monitorTrack,IHorse_Stable monitorStable,IHorse_Paddock monitorPaddock) {
+	public Horse(int id,int performance,IHorse_Track monitorTrack,IHorse_Stable monitorStable,IHorse_Paddock monitorPaddock, Repository repo) {
 		this.id=id;
 		this.performance=performance;
 		this.position=0;
@@ -20,6 +22,9 @@ public class Horse extends Thread {
 		this.monitorPaddock=monitorPaddock;
 		runs=0;
 		this.state=HorseState.AT_THE_STABLE;
+		this.repo=repo;
+		repo.setHorseStat(id,state);
+		repo.sethorseruns(id,runs);
 		//define state?
 	}
 	
@@ -30,6 +35,8 @@ public class Horse extends Thread {
 	
 	public void moveofPosition(int movingPos ) {
 		position+=movingPos;
+		repo.sethorseruns(id,runs);
+
 	}
 	public int getRuns() {
 		return runs;
@@ -56,23 +63,33 @@ public class Horse extends Thread {
 				case AT_THE_STABLE:
 					monitorStable.proceedToStable(this);
 					state=HorseState.AT_THE_PADDOCK;
+					repo.setHorseStat(id,state);
+					repo.toLog();
 					break;
 				case AT_THE_PADDOCK:
 					monitorPaddock.proceedToPaddock(this);
 					state=HorseState.AT_THE_START_LINE;
+					repo.setHorseStat(id,state);
+					repo.toLog();
 					break;
 				case AT_THE_START_LINE:
 					monitorTrack.proceedToStartLine(this);
 					state=HorseState.RUNNING;
+					repo.setHorseStat(id,state);
+					repo.toLog();
 					break;
 				case RUNNING:
 					monitorTrack.makeAMove(this);
 					if(monitorTrack.hasFinishLineBeenCrossed(this)) {
 						state=HorseState.AT_THE_FINISH_LINE;
 					}
+					repo.setHorseStat(id,state);
+					repo.toLog();
 					break;
 				case AT_THE_FINISH_LINE:
 					state=HorseState.AT_THE_STABLE;
+					repo.setHorseStat(id,state);
+					repo.toLog();
 					//System.out.println("WINNER"+id);
 					break;
 				default:

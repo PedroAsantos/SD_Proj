@@ -116,6 +116,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			horse.moveofPosition(random.nextInt(performance)+10);
 			horse.incrementRuns();
 			System.out.println("Horse_"+ horse.getID()+" is on the position "+ horse.getPosition());
+			repo.sethorseposition(horse.getID(),horse.getPosition());
 		//	iter++; 
 			horsesCanNotMove=false;
 			horseWaitingMoving_condition.signal();
@@ -213,7 +214,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				}
 			}
 			repo.raceDone();
-			//repor o valor para a próxima corrida;
+			//repor o valor para a proxima corrida;
 			horsesRacing=horsesPerRace;
 			
 		} finally {

@@ -86,7 +86,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 						listTemp.add(temp);
 						spectatorBets.put(horseId,listTemp);
 					}
-					
+					repo.setspectatorBets(spectatorBets);
 					//System.out.println("numberofbets: " + numberOfBets);
 					numberOfBets++;
 					spectatorBetAproving=false;
@@ -148,6 +148,8 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 				for(int i=0;i<horsesRunning.size();i++) {
 					prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
 					horseProbabilities.put(horsesRunning.get(i), prob);
+					repo.sethorseProbabilities(horseProbabilities);
+
 				} 	
 			//}
 
@@ -173,6 +175,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			
 			this.bet[1]= random.nextDouble()*spectator.getMoney(); //money
 			System.out.println("Spectator_"+spectator.getID()+" choose horse " + horseId+" the money " + bet[1]);
+			repo.setspecbetamount(spectator.getID(),bet[1]);
 			broker_condition.signal();
 		
 			while(spectatorBetAproving) {
@@ -278,6 +281,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 							//how to knoe the horse that spectator bet
 							System.out.println("Spectator_"+spectatorReceivingMoney.getID()+ " is receiving "+spectatorReceivingMoney.getMoney());
 							spectatorReceivingMoney.addMoney(winners.get(i)[1]*1/horseProbabilities.get(horseWinners.get(0)));
+							repo.setspecMoney(spectatorReceivingMoney.getID(),spectatorReceivingMoney.getMoney());
 							betsPayed++;
 							break;
 						}
