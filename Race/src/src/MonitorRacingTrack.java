@@ -1,14 +1,10 @@
 package src;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -25,15 +21,18 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	private final int horsesPerRace;
 	
 	private final int raceLength;
-	private boolean horsesCanNotMove;
 	private int horsesRacing;
 	private int horses_at_start_line;
 	private boolean horsesCanNotRace;
 	private HashMap<Integer,Integer> horsesFinalPos; 
 	private HashMap<Integer,Integer> horseRuns;
 	private HashMap<Integer,List<Integer>> invertedHorseRuns;
+	private HashMap<Integer,Boolean> horseCanRun;
+	private Queue<Integer> waitList;
 	private List<Integer> horsesArrivalOrder;
-	//private int iter;
+	private List<Integer> horsesInRace;
+	private int wait;
+	private volatile int cycle;
 	Repository repo;
 	
 
@@ -48,12 +47,14 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		horsesRacing=horsesPerRace;
 		this.raceLength=raceLength;
 		horsesCanNotRace = true;
-		horsesCanNotMove = true;
 		horsesFinalPos = new HashMap<Integer,Integer>();
 		horseRuns = new HashMap<Integer,Integer>();
 		horsesArrivalOrder = new ArrayList<Integer>();
 		invertedHorseRuns = new HashMap<Integer,List<Integer>>();
-	//	iter=0;
+		horseCanRun = new HashMap<Integer,Boolean>();
+		waitList = new LinkedList<Integer>();
+		wait=0;
+		cycle=0;
 		this.repo = repo;	
 	}
 	
@@ -63,7 +64,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			try {
 				
 				System.out.println("STARTING THE RACE");
-				
+				horsesInRace=new ArrayList<Integer>(repo.getHorsesRunning());
+				horseCanRun.put(horsesInRace.get(0),false);
 				while(horses_at_start_line<horsesPerRace) {
 					try {
 						broker_condition.await();
@@ -93,7 +95,9 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			if(horses_at_start_line == horsesPerRace) {
 				broker_condition.signal();
 			}
+			horseCanRun.put(horse.getID(), true);
 			
+		
 			try {
 				 while(horsesCanNotRace) {
 					 horse_condition.await();
@@ -120,36 +124,39 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
+
+			wait++;
+			if(wait==horsesRacing) {
+				wait--;
+				horseCanRun.put(horse.getID(),true);
+				horseCanRun.put(horsesInRace.get(cycle),false);
+				horseWaitingMoving_condition.signalAll();
+				cycle++;
+				if(cycle==horsesInRace.size()) {
+					cycle=0;
+				}
+			//	System.out.println("1cycle: "+cycle+" call: "+horsesInRace.get(cycle));
+			}
+						
+			
+			if(horseCanRun.get(horse.getID())) {
+				waitList.add(horse.getID());
+			}
+			while(horseCanRun.get(horse.getID())) {
+				try {
+					horseWaitingMoving_condition.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			
 			int performance = horse.getPerformance();
 		    Random random = new Random();
 			horse.moveofPosition(random.nextInt(performance)+10);
 			horse.incrementRuns();
-			System.out.println("Horse_"+ horse.getID()+" is on the position "+ horse.getPosition());
+			System.out.println("Horse_"+ horse.getID()+" is on the position "+ horse.getPosition()+" at run "+horse.getRuns());
 			repo.sethorseposition(horse.getID(),horse.getPosition());
-		//	iter++; 
-			horsesCanNotMove=false;
-			horseWaitingMoving_condition.signal();
-			
 		
-		//	movedHorses++;
-		/*	if(movedHorses==horsesPerRace) {
-				horsesAreMoving=false;
-				horseWaitingMoving_condition.signalAll();
-			}
-			while(horsesAreMoving) {
-				try {
-					horseWaitingMoving_condition.await();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			//movedHorses--;
-			if(movedHorses==0) {
-				horsesAreMoving=true;
-			}*/
 			
 		} finally {
 			mutex.unlock();
@@ -162,12 +169,31 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		boolean hasCross=false;
 		mutex.lock();
 		try {
-			
 			if(horse.getPosition() > raceLength) {
 				System.out.println("Horse_"+horse.getID()+" cross the line in position:"+horse.getPosition()+" at run "+horse.getRuns());
 				horsesArrivalOrder.add(horse.getID());
 				horsesFinalPos.put(horse.getID(),horse.getPosition());
-				
+				int indexOfRemovedHorse=horsesInRace.indexOf(horse.getID());
+				horsesInRace.remove(indexOfRemovedHorse);
+				if(horsesInRace.size()!=0) {
+					/*for(int i=0;i<horsesInRace.size();i++) {
+						System.out.println("horseInRace0:"+horsesInRace.get(i));
+					}*/
+					wait--;
+					horseCanRun.put(horse.getID(),true);
+					if(indexOfRemovedHorse<cycle) {
+						cycle=cycle-1;
+					}
+					horseCanRun.put(horsesInRace.get(cycle%horsesInRace.size()),false);
+					horseWaitingMoving_condition.signalAll();
+					cycle++;	
+					if(cycle>=horsesInRace.size()) {
+						cycle=0;
+					}
+				//	System.out.println("cycle: "+cycle+" call: "+horsesInRace.get(cycle));
+
+				}
+								
 		        List<Integer> valuesList = new ArrayList<Integer>(horseRuns.values());
 		        //verificar se existe algum cavalo na mesma run.
 		        if(valuesList.contains(horse.getRuns())) {
@@ -199,38 +225,18 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		        	invertedHorseRuns.put(horse.getRuns(),horsesInTheSameRun);	
 		        }
 		       
-		        
-		      
-		
+		        	
 				horse.resetHorse();
 				horsesRacing--;
 				if(horsesRacing==0) {
+					cycle=0;
+					wait=0;
+					horseCanRun.clear();
 					brokerReportResults_condition.signal();
 					//reset horsesRacing?
 				}
 				hasCross=true;
-			}else {
-				while(horsesCanNotMove) {
-					try {
-						//System.out.println(iter / horsesPerRace);
-						//assim, nao pode acontecer o mesmo cavalo correr sem ser a vez dele?
-						horseWaitingMoving_condition.await();
-					/*	if(iter / horsesPerRace == horse.getRuns()) {
-							horseWaitingMoving_condition.await();
-						}*/
-						//-> 
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
-				}
-				horsesCanNotMove=true;
-				//System.out.println("Horse_"+horse.getID()+" is started to move! ");
-					
-					
 			}
-		
 			
 		
 				
@@ -281,94 +287,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		horseRuns.clear();
 		horsesFinalPos.clear();
 		return horseWinners;
-		
-	/*	List<Integer> horsesRunning = repo.getHorsesRunning();
-		
-		/*for(int i = 0;i<horsesArrivalOrder.size();i++) {
-			System.out.println("horsesarrival:"+horsesArrivalOrder.get(i));
-		}*/
-    /*    LinkedHashSet<Integer> lhshorsesRunning = new LinkedHashSet<Integer>();
-        
-        List<Integer> valuesList = new ArrayList<Integer>(horseRuns.values());
-        lhshorsesRunning.addAll(valuesList);
-		System.out.println("lhshorsesRunning:"+lhshorsesRunning.size()+"horseRuns:"+horseRuns.size());
-		
-		
-		if(lhshorsesRunning.size()!=horseRuns.size()) {
-			Map<Integer, ArrayList<Integer>> reverseMap = new HashMap<>();
-			for (Map.Entry<Integer,Integer> entry : horseRuns.entrySet()) {
-			    if (!reverseMap.containsKey(entry.getValue())) {
-			        reverseMap.put(entry.getValue(), new ArrayList<>());
-			    }
-			    ArrayList<Integer> keys = reverseMap.get(entry.getValue());
-			    keys.add(entry.getKey());
-			    reverseMap.put(entry.getValue(), keys);
-			}
-			System.out.println(reverseMap);
-			Set<Integer> setKeys = reverseMap.keySet();
-			Iterator<Integer> it = setKeys.iterator();
-			while(it.hasNext()) {
-				List<Integer> horsesThatGetInTheSameRun = reverseMap.get(it.next());
-				if(horsesThatGetInTheSameRun.size()>1) {
-					for(int i = 0;i<horsesThatGetInTheSameRun.size();i++) {
-						
-					}
-				}
-			}
-		}*/
-		
-	/*
-		List<Integer> horsesRunning = repo.getHorsesRunning();
-		int min = horseRuns.get(horsesRunning.get(0));
-		//1.element id horse
-		//2.number de runs
-		List<int[]> bestHorses = new ArrayList<int[]>(horsesPerRace);
-		List<Integer> bestofTheBests= new ArrayList<Integer>(horsesPerRace);
-		bestofTheBests.clear();
-		for(int i=0; i < horsesRunning.size();i++) {
-			int[] horseArray = new int[2];
-			if(horseRuns.get(horsesRunning.get(i))<min){
-				bestHorses.clear();
-				horseArray[0]=horsesRunning.get(i);
-				horseArray[1] = horseRuns.get(horsesRunning.get(i));
-				min = horseRuns.get(horsesRunning.get(i));
-				bestHorses.add(horseArray);
-				
-			}else if(horseRuns.get(horsesRunning.get(i))==min) {
-				horseArray[0]=horsesRunning.get(i);
-				horseArray[1] = horseRuns.get(horsesRunning.get(i));
-				min = horseRuns.get(horsesRunning.get(i));
-				bestHorses.add(horseArray);
-			}
-		}
-		horsesArrivalOrder.clear();
-		invertedHorseRuns.clear();
-		int biggestPos=0;
-		if(bestHorses.size()==1) {
-			horseRuns.clear();
-			horsesFinalPos.clear();
-			//System.out.println(bestHorses.get(0)[0]);
-			bestofTheBests.add(bestHorses.get(0)[0]);
-			return bestofTheBests;
-		}else {
-			biggestPos = horsesFinalPos.get(bestHorses.get(0)[0]);
-		
-			for(int i=0;i<bestHorses.size();i++) {
-				if(biggestPos < horsesFinalPos.get(bestHorses.get(i)[0])) {
-					bestofTheBests.clear();
-					bestofTheBests.add(bestHorses.get(i)[0]);
-					
-					biggestPos = horsesFinalPos.get(bestHorses.get(i)[0]);
-					
-				}else if(biggestPos ==  horsesFinalPos.get(bestHorses.get(i)[0])) {
-					bestofTheBests.add(bestHorses.get(i)[0]);
-				}
-			}
-			
-		}
-		horseRuns.clear();
-		horsesFinalPos.clear();
-		return bestofTheBests; */
 		
 	}
 
