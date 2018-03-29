@@ -3,6 +3,7 @@ import src.*;
 import java.util.*;
 import Enum.HorseState;
 public class Horse extends Thread {
+    private volatile boolean running = true;
 	private final int id;
 	private int performance;
 	private int position;
@@ -90,6 +91,9 @@ public class Horse extends Thread {
 					state=HorseState.AT_THE_STABLE;
 					repo.setHorseStat(id,state);
 					repo.toLog();
+					if(repo.getNumberOfRaces()==0) {
+						stopRunning();
+					}
 					//System.out.println("WINNER"+id);
 					break;
 				default:
@@ -102,5 +106,8 @@ public class Horse extends Thread {
 			}
 		}
 	}
+	  public void stopRunning(){
+	        running = false;
+	    }
 		
 }

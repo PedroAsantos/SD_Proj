@@ -16,7 +16,6 @@ public class Broker extends Thread {
        
 //  private final int numberOfSpectators;
 //  private final int numberOfHorses;
-    private int numberOfRaces;
     private BrokerState state;
     private final IBroker_Control monitorControl;
     private final IBroker_BettingCenter monitorBettingCenter;
@@ -24,7 +23,7 @@ public class Broker extends Thread {
     private final IBroker_Track monitorTrack;
     Repository repo;
    
-    public Broker(int numberOfRaces,IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack, Repository repo) {
+    public Broker(IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack, Repository repo) {
 //      this.numberOfSpectators=numberOfSpectators;
 //      this.numberOfHorses=numberOfHorses;
         this.monitorControl=mControl;
@@ -32,7 +31,6 @@ public class Broker extends Thread {
         this.monitorStable = monitorStable;
         this.monitorTrack = monitorTrack;
         this.state = BrokerState.OPENING_THE_EVENT;
-        this.numberOfRaces=numberOfRaces;
         this.repo=repo;
         //define state?
     }
@@ -70,13 +68,12 @@ public class Broker extends Thread {
                     //passar do track para o control que cavalos ganharam!
                     List<Integer> horseWinners;
                     horseWinners = monitorTrack.reportResults();   
-                    numberOfRaces--;
                     monitorControl.reportResults(horseWinners);
                     if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
                         monitorBettingCenter.honourTheBets();
                         state=BrokerState.SETTING_ACCOUNTS;
                     }
-                    if(numberOfRaces==0) {
+                    if(repo.getNumberOfRaces()==0) {
                         monitorControl.entertainTheGuests();
                         state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     }else {
@@ -88,7 +85,7 @@ public class Broker extends Thread {
                     break;
                 case SETTING_ACCOUNTS:
                     repo.setbrokerstate(state);
-                    if(numberOfRaces==0) {
+                    if(repo.getNumberOfRaces()==0) {
                         monitorControl.entertainTheGuests();
                         state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     }else {

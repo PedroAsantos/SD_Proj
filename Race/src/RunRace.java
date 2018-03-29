@@ -28,7 +28,7 @@ public class RunRace {
 		Horse[] horses = new Horse[numberOfHorses];
 		Spectator[] spectators = new Spectator[numberOfSpectators]; 
 		
-		Broker broker = new Broker(numberOfRaces,(IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack, repo);
+		Broker broker = new Broker((IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack, repo);
 		int money;
 		for (int i = 0; i < spectators.length; i++) {
 			money=100;
