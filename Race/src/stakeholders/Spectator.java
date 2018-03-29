@@ -109,6 +109,7 @@ public class Spectator extends Thread {
 	}
 	public void stopRunning(){
         running = false;
+        System.out.println("Spectator_"+id+" exit");
 	}
 
 }

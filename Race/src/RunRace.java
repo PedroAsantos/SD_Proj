@@ -9,7 +9,7 @@ public class RunRace {
 				
 		int numberOfHorses = 20; //testar com numeros maiores.
 		int numberOfSpectators=4;
-		int numberOfRaces=5;
+		int numberOfRaces=2;
 		int horsesPerRace=4;
 		int raceLength=30;
 		int maxPerformance=10;

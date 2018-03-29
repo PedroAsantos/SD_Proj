@@ -114,6 +114,7 @@ public class Broker extends Thread {
    
     public void stopRunning(){
         running = false;
+        System.out.println("Broker exit");
     }
  
 }

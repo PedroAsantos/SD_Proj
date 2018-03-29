@@ -57,7 +57,7 @@ public class Horse extends Thread {
 	@Override
 	public void run() {
 		
-		while(true) {
+		while(running) {
 			//monitor.divide();	
 			switch (state) {
 				case AT_THE_STABLE:
@@ -108,6 +108,7 @@ public class Horse extends Thread {
 	}
 	  public void stopRunning(){
 	        running = false;
+	        System.out.println("Horse"+id+" exit");
 	    }
 		
 }
