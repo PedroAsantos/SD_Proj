@@ -114,8 +114,12 @@ public class Repository {
 			
 			String[] specStAll = new String[numberOfSpectators+1];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
-			
-				specStAll[i]=""+specStat.get(i);
+				if (specStat.get(i)!=null) {
+					specStAll[i]=""+specStat.get(i);	
+				}else{
+					specStAll[i]="-";
+				}
+				
 			
 			}
 			
@@ -134,7 +138,12 @@ public class Repository {
 
 			String[] horseStAll = new String[horsesPerRace];
 			for (int i = 0;i<horsesPerRace; i++ ) {
-				horseStAll[i]=""+horseStat.get(i);
+				if (horseStat.get(i)!=null) {
+					horseStAll[i]=""+horseStat.get(i);	
+				}
+				else{
+					horseStAll[i]="";
+				}
 			
 			
 			}
@@ -205,36 +214,30 @@ public class Repository {
 			}
 			//NAO TA BEM!!!!!!!!!!!!
 			String[] sdAll = new String[horsesPerRace];
-			int toPut;
-			//System.out.println(horsesRunnning.size());
-			for (int i = 0;i<horsesRunnning.size(); i++ ) {
-				/*System.out.println("i= "+i);
-				System.out.println("!!"+horserank.get(i));
-				System.out.println("++"+horsesRunnning.get(i));
-				for ( int key : horserank.keySet() ) {
- 				   System.out.println("__"+key);
-				}*/
-				
-					//System.out.println("ENTRY");
+			if (horsesRunnning.size()>0) {
+				for (int i = 0;i<horsesRunnning.size(); i++ ) {
 					
-				
-				if(horserank.get(horsesRunnning.get(i))==null){
-					sdAll[i]="-";
-					//sdAll[i]=""+horserank.get(i);
-				}
-				else{
-					if(horserank.containsKey(horsesRunnning.get(i))) {
-						toPut = horserank.get(horsesRunnning.get(i)).intValue();
-						//System.out.println(toPut);
-						/*for(int c = 0;c<toPut;c++) {
-							//System.out.println("FF"+horserank.get(horsesRunnning.get(i)));
-						}*/
-						sdAll[i]=""+horserank.get(horsesRunnning.get(i));
-						//System.out.println("!!"+sdAll[i]);
+					if(horserank.get(horsesRunnning.get(i))==null){
+						sdAll[i]="-";
+						//sdAll[i]=""+horserank.get(i);
 					}
+					else{
+						if(horserank.containsKey(horsesRunnning.get(i))) {
+							sdAll[i]=""+horserank.get(horsesRunnning.get(i));
+						}
+					}
+					if (sdAll[i]==null) {
+						System.out.println(sdAll[i]+"!!");
+					}
+					//System.out.println("++"+sdAll[i]+"i"+i);
+				}	
+			}else{
+				for (int i = 0;i<horsesPerRace; i++ ) {
+					sdAll[i]="-";
+					
 				}
-				System.out.println("++"+sdAll[i]+"i"+i);
 			}
+			
 			//System.out.println(bestofTheBests);
 
 			l = "  " + stat+ "  " + 
@@ -401,7 +404,7 @@ public class Repository {
 
 	public void sethorseruns(int horse_id, int runs){
 		this.horseruns.put(horse_id,runs);
-		////toLog();
+		toLog();
 	}
 
 	public HashMap<Integer,Integer> gethorseposition(){
@@ -410,7 +413,7 @@ public class Repository {
 
 	public void sethorseposition(int horse_id, int position){
 		this.horseposition.put(horse_id,position);
-		//toLog();
+		toLog();
 	}
 
 	public HashMap<Integer,Double> getspecbetamount(){
@@ -419,7 +422,7 @@ public class Repository {
 
 	public void setspecbetamount(int spectator_id, double amount){
 		this.specbetamount.put(spectator_id,amount);
-		//toLog();
+		toLog();
 	}
 
 	public HashMap<Integer,Double> getspecMoney(){
@@ -428,7 +431,7 @@ public class Repository {
 
 	public void setspecMoney(int spectator_id, double money){
 		this.specMoney.put(spectator_id,money);
-		//toLog();
+		toLog();
 	}
 
 	public HashMap<Integer,Double> gethorseProbabilities(){
@@ -437,7 +440,7 @@ public class Repository {
 
 	public void sethorseProbabilities(HashMap<Integer,Double> horseProbabilities){
 		this.horseProbabilities = horseProbabilities;
-		//toLog();
+		toLog();
 	}
 
 	public BrokerState getbrokerstate(){
@@ -455,7 +458,7 @@ public class Repository {
 
 	public void setspecbets(int spec_id,int horse_id){
 		this.specbets.put(spec_id,horse_id);
-		////toLog();
+		toLog();
 	}
 
 	public HashMap<Integer,Integer> gethorserank(){
@@ -469,7 +472,6 @@ public class Repository {
 
 	public void clearhorserank(){
 		this.horserank.clear();
-		////toLog();
 	}
 
 }

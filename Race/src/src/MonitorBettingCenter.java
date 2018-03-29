@@ -307,6 +307,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			openHonorStand=true;
 			spectatorBets.clear();
 			horseProbabilities.clear();
+			repo.clearhorserank();
 		} finally {
 			mutex.unlock();
 		}

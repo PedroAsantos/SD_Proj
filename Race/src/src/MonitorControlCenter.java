@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.sun.corba.se.pept.broker.Broker;
+//import com.sun.corba.se.pept.broker.Broker;
 
 public class MonitorControlCenter implements ISpectator_Control, IBroker_Control{
 	private final ReentrantLock mutex;
@@ -133,7 +133,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		try {
 			winners = new ArrayList<Integer>(result);
 			raceIsOn=false;
-			repo.clearhorsesRunning();
+			//repo.clearhorsesRunning();
 			System.out.println("Reporting Result to Spectators");
 			spectator_condition.signalAll();
 		} finally {
