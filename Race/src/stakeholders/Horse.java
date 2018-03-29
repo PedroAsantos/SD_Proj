@@ -24,7 +24,6 @@ public class Horse extends Thread {
 		this.state=HorseState.AT_THE_STABLE;
 		this.repo=repo;
 		repo.setHorseStat(id,state);
-		repo.sethorseruns(id,runs);
 		//define state?
 	}
 	
@@ -62,6 +61,7 @@ public class Horse extends Thread {
 			switch (state) {
 				case AT_THE_STABLE:
 					monitorStable.proceedToStable(this);
+					repo.sethorseruns(id,runs);
 					state=HorseState.AT_THE_PADDOCK;
 					repo.setHorseStat(id,state);
 					repo.toLog();

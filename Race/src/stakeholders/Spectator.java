@@ -22,8 +22,6 @@ public class Spectator extends Thread {
 		this.monitorPaddock=monitorPaddock;
 		this.state= SpectatorState.WAITING_FOR_A_RACE_TO_START;
 		this.repo = repo;
-		repo.setspecMoney(id,money);
-		System.out.println("AA"+money);
 		repo.setSpecStat(id,state);
 	}
 	
@@ -47,6 +45,7 @@ public class Spectator extends Thread {
 				case WAITING_FOR_A_RACE_TO_START:
 					monitorPaddock.waitForNextRace(id);
 					monitorPaddock.goCheckHorses(id);
+					repo.setspecMoney(id,money);
 					
 					state=SpectatorState.APPRAISING_THE_HORSES;
 					repo.setSpecStat(id,state);
