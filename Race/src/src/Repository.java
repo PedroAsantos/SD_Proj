@@ -205,13 +205,35 @@ public class Repository {
 			}
 			//NAO TA BEM!!!!!!!!!!!!
 			String[] sdAll = new String[horsesPerRace];
-			
-			for (int i = 0;i<horsesPerRace; i++ ) {
-				if(horserank.get(i)!=null){
-					sdAll[i]=""+horserank.get(i);
-				}else{
+			int toPut;
+			//System.out.println(horsesRunnning.size());
+			for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				/*System.out.println("i= "+i);
+				System.out.println("!!"+horserank.get(i));
+				System.out.println("++"+horsesRunnning.get(i));
+				for ( int key : horserank.keySet() ) {
+ 				   System.out.println("__"+key);
+				}*/
+				
+					//System.out.println("ENTRY");
+					
+				
+				if(horserank.get(horsesRunnning.get(i))==null){
 					sdAll[i]="-";
+					//sdAll[i]=""+horserank.get(i);
 				}
+				else{
+					if(horserank.containsKey(horsesRunnning.get(i))) {
+						toPut = horserank.get(horsesRunnning.get(i)).intValue();
+						//System.out.println(toPut);
+						/*for(int c = 0;c<toPut;c++) {
+							//System.out.println("FF"+horserank.get(horsesRunnning.get(i)));
+						}*/
+						sdAll[i]=""+horserank.get(horsesRunnning.get(i));
+						//System.out.println("!!"+sdAll[i]);
+					}
+				}
+				System.out.println("++"+sdAll[i]+"i"+i);
 			}
 			//System.out.println(bestofTheBests);
 
@@ -232,8 +254,35 @@ public class Repository {
                 String.format("%02d", lenAll[2]) + "  " + 
                 horseStAll[3] + "  " + 
                 String.format("%02d", lenAll[3]);
-
-            l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0] 
+			
+			/*if (horserank.size()==4) {
+				l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0] 
+                + "  " + String.format("%.2f", baAll[0]) + "  " + 
+                bsAll[1] + "  " + 
+                String.format("%.2f", baAll[1]) + "  " + 
+                bsAll[2] + "  " + 
+                String.format("%.2f", baAll[2]) + "  " + 
+                bsAll[3] + "  " + 
+                String.format("%.2f", baAll[3]) + "  " + 
+                String.format("%.2f", odAll[0]) + " " + 
+                String.format("%02d", nAll[0]) + "  " + 
+                String.format("%02d", psAll[0]) + "  " +
+                sdAll[horsesRunnning.get(0)] + " " + 
+                String.format("%.2f", odAll[1]) + " " + 
+                String.format("%02d", nAll[1]) + "  " + 
+                String.format("%02d", psAll[1]) + "  " +
+                sdAll[horsesRunnning.get(1)] + " " + 
+                String.format("%.2f", odAll[2]) + " " + 
+                String.format("%02d", nAll[2]) + "  " + 
+                String.format("%02d", psAll[2]) + "  " +
+                sdAll[horsesRunnning.get(2)] + " " + 
+                String.format("%.2f", odAll[3]) + " " + 
+                String.format("%02d", nAll[3]) + "  " + 
+                String.format("%02d", psAll[3]) + "  " +
+                sdAll[horsesRunnning.get(3)];	
+			}
+            else{*/
+            	l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0] 
                 + "  " + String.format("%.2f", baAll[0]) + "  " + 
                 bsAll[1] + "  " + 
                 String.format("%.2f", baAll[1]) + "  " + 
@@ -257,6 +306,7 @@ public class Repository {
                 String.format("%02d", nAll[3]) + "  " + 
                 String.format("%02d", psAll[3]) + "  " +
                 sdAll[3];
+            //}
             
             writer.println(l);
             writer.println(l1);
@@ -414,6 +464,11 @@ public class Repository {
 
 	public void sethorserank(int horse_id, int rank){
 		this.horserank.put(horse_id,rank);
+		toLog();
+	}
+
+	public void clearhorserank(){
+		this.horserank.clear();
 		////toLog();
 	}
 

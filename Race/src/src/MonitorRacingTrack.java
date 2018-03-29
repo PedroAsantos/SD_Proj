@@ -271,6 +271,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		}
 		for(int i = 0;i<horsesArrivalOrder.size();i++) {
 			System.out.println("horsesarrival:"+horsesArrivalOrder.get(i));
+			//System.out.println(horsesArrivalOrder.get(i)+" "+(i+1));
 			repo.sethorserank(horsesArrivalOrder.get(i),i+1);
 		}
 		List<Integer> horseWinners = new ArrayList<Integer>();
@@ -286,6 +287,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		invertedHorseRuns.clear();
 		horseRuns.clear();
 		horsesFinalPos.clear();
+		//repo.clearhorserank();
 		return horseWinners;
 		
 	}
