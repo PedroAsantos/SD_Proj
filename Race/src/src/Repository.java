@@ -470,8 +470,9 @@ public class Repository {
 		toLog();
 	}
 
-	public void clearhorserank(){
+	public void clearhorserank() {
 		this.horserank.clear();
+		
 	}
 
 }

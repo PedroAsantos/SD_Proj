@@ -33,6 +33,9 @@ public class Spectator extends Thread {
 	public double getMoney() {
 		return money;
 	}
+	public void payBet(double moneyBet) {
+		money=money-moneyBet;
+	}
 	public int getID() {
 		return id;
 	}

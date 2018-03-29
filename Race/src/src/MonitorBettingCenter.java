@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.sun.javafx.collections.MappingChange.Map;
 
 import stakeholders.Spectator;
 
@@ -178,8 +177,8 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			int n = random.nextInt(pickHorse.size());
 			this.horseId=pickHorse.get(n); 
 			this.bet[0]=spectator.getID(); //spectator_id
-			
 			this.bet[1]= random.nextDouble()*spectator.getMoney(); //money
+			spectator.payBet(this.bet[1]);
 			System.out.println("Spectator_"+spectator.getID()+" choose horse " + horseId+" the money " + bet[1]);
 			repo.setspecbetamount(spectator.getID(),bet[1]);
 			broker_condition.signal();
