@@ -133,13 +133,13 @@ public class Repository {
 
 			}
 			//VER ISTO
-			int rn=numberOfRaces;
+	//		int rn=numberOfRaces;
 			
 
 			String[] horseStAll = new String[horsesPerRace];
-			for (int i = 0;i<horsesPerRace; i++ ) {
-				if (horseStat.get(i)!=null) {
-					horseStAll[i]=""+horseStat.get(i);	
+			for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				if (horseStat.get(horsesRunnning.get(i))!=null) {
+					horseStAll[i]=""+horseStat.get(horsesRunnning.get(i));	
 				}
 				else{
 					horseStAll[i]="";
@@ -148,9 +148,9 @@ public class Repository {
 			
 			}
 			int[] lenAll = new int[horsesPerRace];
-			for (int i = 0;i<horsesPerRace; i++ ) {
-				if(horsePerformance.get(i)!=null){
-					lenAll[i]=horsePerformance.get(i);
+			for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				if(horsePerformance.get(horsesRunnning.get(i))!=null){
+					lenAll[i]=horsePerformance.get(horsesRunnning.get(i));
 				}else{
 					lenAll[i]=0;
 				}
@@ -182,9 +182,9 @@ public class Repository {
 
 			}
 			double[] odAll = new double[horsesPerRace];
-			for (int i = 0;i<horsesPerRace; i++ ) {
-				if (horseProbabilities.get(i)!=null) {
-					odAll[i]=horseProbabilities.get(i);	
+			for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				if (horseProbabilities.get(horsesRunnning.get(i))!=null) {
+					odAll[i]=horseProbabilities.get(horsesRunnning.get(i));	
 
 				}else{
 					odAll[i]=0.0;
@@ -194,9 +194,9 @@ public class Repository {
 
 			
 			int[] nAll = new int[horsesPerRace];
-			for (int i = 0;i<horsesPerRace; i++ ) {
-				if (horseruns.get(i)!=null) {
-					nAll[i]=horseruns.get(i);	
+			for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				if (horseruns.get(horsesRunnning.get(i))!=null) {
+					nAll[i]=horseruns.get(horsesRunnning.get(i));	
 				}else{
 					nAll[i]=0;
 				}
@@ -204,9 +204,9 @@ public class Repository {
 			}
 
 			int[] psAll = new int[horsesPerRace];
-			for (int i = 0;i<horsesPerRace; i++ ) {
-				if(horseposition.get(i)!=null){
-					psAll[i]=horseposition.get(i);
+			for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				if(horseposition.get(horsesRunnning.get(i))!=null){
+					psAll[i]=horseposition.get(horsesRunnning.get(i));
 				}else{
 					psAll[i]=0;
 				}

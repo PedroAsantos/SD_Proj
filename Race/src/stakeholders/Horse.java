@@ -1,6 +1,5 @@
 package stakeholders;
 import src.*;
-import java.util.*;
 import Enum.HorseState;
 public class Horse extends Thread {
     private volatile boolean running = true;

@@ -7,9 +7,9 @@ public class RunRace {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 20; //testar com numeros maiores.
+		int numberOfHorses = 400; //testar com numeros maiores.
 		int numberOfSpectators=4;
-		int numberOfRaces=2;
+		int numberOfRaces=100;
 		int horsesPerRace=4;
 		int raceLength=30;
 		int maxPerformance=10;
@@ -31,7 +31,7 @@ public class RunRace {
 		Broker broker = new Broker((IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack, repo);
 		int money;
 		for (int i = 0; i < spectators.length; i++) {
-			money=100;
+			money=1000;
 			spectators[i] = new Spectator(i,money,(ISpectator_BettingCenter) mBettingCenter,(ISpectator_Control) mControlCenter, (ISpectator_Paddock) mPaddock, repo);
 		}
 		

@@ -34,6 +34,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private int horseId;
 	private boolean openHonorStand;
 	private boolean brokerIsOccupied;
+	List<Integer> pickHorse;
 	private HashMap<Integer,Integer> horsePerformance;
 	private HashMap<Integer,Double> horseProbabilities;
 	Repository repo;
@@ -61,6 +62,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		this.repo=repo;
 		horsePerformance = repo.gethorsePerformance();
 		horseProbabilities = new HashMap<Integer,Double>();
+		pickHorse= new ArrayList<Integer>();
 	}
 	@Override
 	public void acceptTheBets() {
@@ -101,7 +103,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			}
 			numberOfBets=0;
 			spectatorsQueueBol=false;
-			
+			pickHorse.clear();
 			//so para testes
 			/*
 			listTemp = spectatorBets.get(horseId);
@@ -140,7 +142,8 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			System.out.println("Spectator_"+spectator.getID()+" is betting!");
 			horsePerformance=repo.gethorsePerformance();
 			List<Integer> horsesRunning = repo.getHorsesRunning();
-		//	if(horseProbabilities.size()==0) {
+			
+			if(horseProbabilities.size()==0) {
 				int totalP=0;
 				for(int i = 0 ;i<horsesRunning.size();i++) {
 					totalP+=horsePerformance.get(horsesRunning.get(i));
@@ -156,9 +159,8 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					horseProbabilities.put(horsesRunning.get(i), prob);
 					repo.sethorseProbabilities(horseProbabilities);
 				} 	
-			//}
+			
 
-				List<Integer> pickHorse= new ArrayList<Integer>();
 				int toPut;
 //				System.out.println("SIze horses RUnning"+horsesRunning.size());
 //   			System.out.println("SIze horses PROBS"+horseProbabilities.size());
@@ -171,8 +173,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 						}
 					}
 				}
-			
-				
+			}
 			Random random = new Random();
 			int n = random.nextInt(pickHorse.size());
 			this.horseId=pickHorse.get(n); 
@@ -323,6 +324,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					thereAreWinner=true;
 				}
 			}
+			if(!thereAreWinner) {
+				spectatorBets.clear();
+				horseProbabilities.clear();
+				repo.clearhorserank();
+			}
+			
 		}finally {
 			mutex.unlock();
 		}
