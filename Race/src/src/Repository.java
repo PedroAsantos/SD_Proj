@@ -112,7 +112,7 @@ public class Repository {
 				stat="-";
 			}
 			
-			String[] specStAll = new String[numberOfSpectators+1];
+			String[] specStAll = new String[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
 				if (specStat.get(i)!=null) {
 					specStAll[i]=""+specStat.get(i);	
@@ -133,10 +133,10 @@ public class Repository {
 
 			}
 			//VER ISTO
-	//		int rn=numberOfRaces;
+		//	int rn=numberOfRaces;
 			
-
 			String[] horseStAll = new String[horsesPerRace];
+			if(horsesRunnning.size()>0) {
 			for (int i = 0;i<horsesRunnning.size(); i++ ) {
 				if (horseStat.get(horsesRunnning.get(i))!=null) {
 					horseStAll[i]=""+horseStat.get(horsesRunnning.get(i));	
@@ -144,9 +144,13 @@ public class Repository {
 				else{
 					horseStAll[i]="";
 				}
-			
-			
 			}
+			}else {
+				for (int i = 0; i < horseStAll.length; i++) {
+					horseStAll[i]="";
+				}
+			}
+			
 			int[] lenAll = new int[horsesPerRace];
 			for (int i = 0;i<horsesRunnning.size(); i++ ) {
 				if(horsePerformance.get(horsesRunnning.get(i))!=null){
