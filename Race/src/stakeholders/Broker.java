@@ -72,6 +72,7 @@ public class Broker extends Thread {
                              state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                          }else {
                              repo.clearhorsesRunning();
+                             repo.raceDone();
                              monitorStable.summonHorsesToPaddock();
                              state=BrokerState.ANNOUNCING_NEXT_RACE;
                          }
@@ -86,6 +87,7 @@ public class Broker extends Thread {
                         state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     }else {
                         repo.clearhorsesRunning();
+                        repo.raceDone();
                         monitorStable.summonHorsesToPaddock();
                         state=BrokerState.ANNOUNCING_NEXT_RACE;
                     }
