@@ -277,7 +277,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		invertedHorseRuns.clear();
 		horseRuns.clear();
 		horsesFinalPos.clear();
-		repo.clearhorserank();
+		//repo.clearhorserank();
 		return horseWinners;
 		
 	}
