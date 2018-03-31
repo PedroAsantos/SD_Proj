@@ -220,15 +220,17 @@ public class Repository {
 			//NAO TA BEM!!!!!!!!!!!!
 			String[] sdAll = new String[horsesPerRace];
 			if (horsesRunnning.size()>0) {
-				for (int i = 0;i<horsesRunnning.size(); i++ ) {
+				for (int i = 0;i<horsesPerRace; i++ ) {
 					
 					if(i<horsesRunnning.size() && horserank.get(horsesRunnning.get(i))==null){
 						sdAll[i]="-";
 						//sdAll[i]=""+horserank.get(i);
 					}
 					else{
-						if(horserank.containsKey(horsesRunnning.get(i))) {
+						if(i<horsesRunnning.size() && horserank.containsKey(horsesRunnning.get(i))) {
 							sdAll[i]=""+horserank.get(horsesRunnning.get(i));
+						}else {
+							sdAll[i]="-";
 						}
 					}
 					//System.out.println("++"+sdAll[i]+"i"+i);
