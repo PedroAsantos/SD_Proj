@@ -255,7 +255,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				}
 			}
 			horsesRacing=horsesPerRace;
-			repo.raceDone();
 		} finally {
 			mutex.unlock();
 		}

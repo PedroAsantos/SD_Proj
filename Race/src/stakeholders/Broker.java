@@ -75,6 +75,7 @@ public class Broker extends Thread {
                         monitorStable.summonHorsesToPaddock();
                         state=BrokerState.ANNOUNCING_NEXT_RACE;
                     }
+        			repo.raceDone();
                     repo.toLog();
                     break;
                 case SETTING_ACCOUNTS:
