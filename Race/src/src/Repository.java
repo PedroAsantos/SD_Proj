@@ -120,7 +120,7 @@ public class Repository {
 				}else{
 					specStAll[i]="-";
 				}
-				
+	
 			
 			}
 			
@@ -138,30 +138,31 @@ public class Repository {
 			
 			String[] horseStAll = new String[horsesPerRace];
 			if(horsesRunnning.size()>0) {
-			for (int i = 0;i<horsesRunnning.size(); i++ ) {
-				if (horseStat.get(horsesRunnning.get(i))!=null) {
+			for (int i = 0;i<horsesPerRace; i++ ) {
+				if (i<horsesRunnning.size() && horseStat.get(horsesRunnning.get(i))!=null) {
 					horseStAll[i]=""+horseStat.get(horsesRunnning.get(i));	
 				}
 				else{
-					horseStAll[i]="";
+					horseStAll[i]="AT_THE_STABLE";
 				}
 			}
 			}else {
 				for (int i = 0; i < horseStAll.length; i++) {
-					horseStAll[i]="";
+					horseStAll[i]="AT_THE_STABLE";
 				}
 			}
 			
+			
 			int[] lenAll = new int[horsesPerRace];
-			for (int i = 0;i<horsesRunnning.size(); i++ ) {
-				if(horsePerformance.get(horsesRunnning.get(i))!=null){
+			for (int i = 0;i<horsesPerRace; i++ ) {
+				if(i<horsesRunnning.size() && horsePerformance.get(horsesRunnning.get(i))!=null){
 					lenAll[i]=horsePerformance.get(horsesRunnning.get(i));
 				}else{
 					lenAll[i]=0;
 				}
-			
-
 			}
+			
+		
 			
 			int dist=raceLength;
 			
@@ -187,8 +188,8 @@ public class Repository {
 
 			}
 			double[] odAll = new double[horsesPerRace];
-			for (int i = 0;i<horsesRunnning.size(); i++ ) {
-				if (horseProbabilities.get(horsesRunnning.get(i))!=null) {
+			for (int i = 0;i<horsesPerRace; i++ ) {
+				if (i<horsesRunnning.size() && horseProbabilities.get(horsesRunnning.get(i))!=null) {
 					odAll[i]=horseProbabilities.get(horsesRunnning.get(i));	
 
 				}else{
@@ -199,8 +200,8 @@ public class Repository {
 
 			
 			int[] nAll = new int[horsesPerRace];
-			for (int i = 0;i<horsesRunnning.size(); i++ ) {
-				if (horseruns.get(horsesRunnning.get(i))!=null) {
+			for (int i = 0;i<horsesPerRace; i++ ) {
+				if (i<horsesRunnning.size() && horseruns.get(horsesRunnning.get(i))!=null) {
 					nAll[i]=horseruns.get(horsesRunnning.get(i));	
 				}else{
 					nAll[i]=0;
@@ -209,20 +210,19 @@ public class Repository {
 			}
 
 			int[] psAll = new int[horsesPerRace];
-			for (int i = 0;i<horsesRunnning.size(); i++ ) {
-				if(horseposition.get(horsesRunnning.get(i))!=null){
+			for (int i = 0;i<horsesPerRace; i++ ) {
+				if(i<horsesRunnning.size() && horseposition.get(horsesRunnning.get(i))!=null){
 					psAll[i]=horseposition.get(horsesRunnning.get(i));
 				}else{
 					psAll[i]=0;
 				}
-
 			}
 			//NAO TA BEM!!!!!!!!!!!!
 			String[] sdAll = new String[horsesPerRace];
 			if (horsesRunnning.size()>0) {
 				for (int i = 0;i<horsesRunnning.size(); i++ ) {
 					
-					if(horserank.get(horsesRunnning.get(i))==null){
+					if(i<horsesRunnning.size() && horserank.get(horsesRunnning.get(i))==null){
 						sdAll[i]="-";
 						//sdAll[i]=""+horserank.get(i);
 					}
@@ -230,9 +230,6 @@ public class Repository {
 						if(horserank.containsKey(horsesRunnning.get(i))) {
 							sdAll[i]=""+horserank.get(horsesRunnning.get(i));
 						}
-					}
-					if (sdAll[i]==null) {
-						System.out.println(sdAll[i]+"!!");
 					}
 					//System.out.println("++"+sdAll[i]+"i"+i);
 				}	
