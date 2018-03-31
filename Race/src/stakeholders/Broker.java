@@ -74,6 +74,7 @@ public class Broker extends Thread {
                     }
                     if(repo.getNumberOfRaces()==0) {
                         monitorControl.entertainTheGuests();
+                        monitorStable.summonHorsesToEnd();
                         state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     }else {
                         repo.clearhorsesRunning();
@@ -86,6 +87,7 @@ public class Broker extends Thread {
                     repo.setbrokerstate(state);
                     if(repo.getNumberOfRaces()==0) {
                         monitorControl.entertainTheGuests();
+                        monitorStable.summonHorsesToEnd();
                         state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     }else {
                         repo.clearhorsesRunning();

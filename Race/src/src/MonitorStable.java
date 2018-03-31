@@ -11,6 +11,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	private final Condition horse_condition;
 	private final Condition broker_condition;
 	
+	private boolean goingToPaddock;
 	private int horsesAtStable;
 	private int horsesPerRace;
 	private int totalHorses;
@@ -29,21 +30,28 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 		this.repo = repo;
 		this.horsesPerRace=repo.getHorsesPerRace();
 		this.horsesPaddock=0;
+		this.goingToPaddock=true;
 		horsePerformance = repo.gethorsePerformance();
 		
 	}
 	
 	@Override
-	public void proceedToStable(Horse horse) {
+	public boolean proceedToStable(Horse horse) {
 		mutex.lock();
 		try {
 			horsesAtStable++;
 			horsePerformance.put(horse.getID(),horse.getPerformance());
 			System.out.print("Horse_"+horse.getID()+" now on stable!\n");
-			
-			if(horsesAtStable == totalHorses) {
-				broker_condition.signal();
+			if(goingToPaddock) {
+				if(horsesAtStable == totalHorses) {
+					broker_condition.signal();
+				}
+			}else {
+				if(horsesAtStable == totalHorses-horsesPerRace) {
+					broker_condition.signal();
+				}
 			}
+			
 			while(horseCanNotGo) {
 				try {
 					horse_condition.await();
@@ -54,27 +62,50 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 			}
 			
 			horsesAtStable--;
-			horsesPaddock++;
-			repo.addHorsesToRun(horse.getID());
-			if(horsesPaddock==horsesPerRace) {
-				horseCanNotGo=true;
-				horsesPaddock=0;
+			if(goingToPaddock) {
+				horsesPaddock++;
+				repo.addHorsesToRun(horse.getID());
+				if(horsesPaddock==horsesPerRace) {
+					horseCanNotGo=true;
+					horsesPaddock=0;
+				}
 			}
-			
 		} finally {
 			// TODO: handle finally clause
 			mutex.unlock();
 		}
+		return goingToPaddock;
 				
 	}
 	
+	@Override
+	public void summonHorsesToEnd() {
+		mutex.lock();
+		try {
+			goingToPaddock=false;
+			while(horsesAtStable < totalHorses-horsesPerRace) {
+				try {
+					broker_condition.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			horseCanNotGo=false;
+			horse_condition.signalAll();
+			
+			System.out.println("ALL HORSES ARE GOING TO END OF EVENT");
+		} finally {
+			// TODO: handle finally clause
+			mutex.unlock();
+		}
+	}
 	
 	@Override
 	public void summonHorsesToPaddock() {
 		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
-			
+			goingToPaddock=true;
 			while(horsesAtStable < totalHorses) {
 				try {
 					broker_condition.await();

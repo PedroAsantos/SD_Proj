@@ -60,11 +60,15 @@ public class Horse extends Thread {
 			//monitor.divide();	
 			switch (state) {
 				case AT_THE_STABLE:
-					monitorStable.proceedToStable(this);
-					repo.sethorseruns(id,runs);
-					state=HorseState.AT_THE_PADDOCK;
-					repo.setHorseStat(id,state);
-					repo.toLog();
+					if(monitorStable.proceedToStable(this)) {
+						repo.sethorseruns(id,runs);
+						state=HorseState.AT_THE_PADDOCK;
+						repo.setHorseStat(id,state);
+						repo.toLog();
+					}else {
+						stopRunning();
+					}
+				
 					break;
 				case AT_THE_PADDOCK:
 					monitorPaddock.proceedToPaddock(this);
