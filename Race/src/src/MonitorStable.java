@@ -42,16 +42,10 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 			horsesAtStable++;
 			horsePerformance.put(horse.getID(),horse.getPerformance());
 			System.out.print("Horse_"+horse.getID()+" now on stable!\n");
-			if(goingToPaddock) {
-				if(horsesAtStable == totalHorses) {
-					broker_condition.signal();
-				}
-			}else {
-				if(horsesAtStable == totalHorses-horsesPerRace) {
-					broker_condition.signal();
-				}
-			}
 			
+			if(horsesAtStable == totalHorses) {
+				broker_condition.signal();
+			}
 			while(horseCanNotGo) {
 				try {
 					horse_condition.await();
@@ -81,7 +75,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 		mutex.lock();
 		try {
 			goingToPaddock=false;
-			while(horsesAtStable < totalHorses-horsesPerRace) {
+			while(horsesAtStable < totalHorses) {
 				try {
 					broker_condition.await();
 				} catch (InterruptedException e) {

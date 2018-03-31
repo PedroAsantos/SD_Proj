@@ -66,7 +66,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				System.out.println("STARTING THE RACE");
 				horsesInRace=new ArrayList<Integer>(repo.getHorsesRunning());
 				//to be updated the races that left after this.
-				repo.raceDone();
+			//	repo.raceDone();
 				horseCanRun.put(horsesInRace.get(0),false);
 				while(horses_at_start_line<horsesPerRace) {
 					try {
@@ -255,7 +255,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				}
 			}
 			horsesRacing=horsesPerRace;
-			
+			repo.raceDone();
 		} finally {
 			mutex.unlock();
 		}

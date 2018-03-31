@@ -93,9 +93,6 @@ public class Horse extends Thread {
 					state=HorseState.AT_THE_STABLE;
 					repo.setHorseStat(id,state);
 					repo.toLog();
-					if(repo.getNumberOfRaces()==0) {
-						stopRunning();
-					}
 					break;
 				default:
 					break;
