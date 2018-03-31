@@ -61,26 +61,26 @@ public class Broker extends Thread {
                     //passar do track para o control que cavalos ganharam!
                     List<Integer> horseWinners;
                     horseWinners = monitorTrack.reportResults();   
-                    monitorControl.reportResults(horseWinners);
+                    monitorControl.reportResults(horseWinners);    
                     if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
                         monitorBettingCenter.honourTheBets();
                         state=BrokerState.SETTING_ACCOUNTS;
-                    }
-                    if(repo.getNumberOfRaces()==0) {
-                        monitorControl.entertainTheGuests();
-                        monitorStable.summonHorsesToEnd();
-                        state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     }else {
-                        repo.clearhorsesRunning();
-                        monitorStable.summonHorsesToPaddock();
-                        state=BrokerState.ANNOUNCING_NEXT_RACE;
+                    	 if(repo.getNumberOfRacesMissing()==0) {
+                             monitorControl.entertainTheGuests();
+                             monitorStable.summonHorsesToEnd();
+                             state=BrokerState.PLAYING_HOST_AT_THE_BAR;
+                         }else {
+                             repo.clearhorsesRunning();
+                             monitorStable.summonHorsesToPaddock();
+                             state=BrokerState.ANNOUNCING_NEXT_RACE;
+                         }
                     }
-        			repo.raceDone();
                     repo.toLog();
                     break;
                 case SETTING_ACCOUNTS:
                     repo.setbrokerstate(state);
-                    if(repo.getNumberOfRaces()==0) {
+                    if(repo.getNumberOfRacesMissing()==0) {
                         monitorControl.entertainTheGuests();
                         monitorStable.summonHorsesToEnd();
                         state=BrokerState.PLAYING_HOST_AT_THE_BAR;

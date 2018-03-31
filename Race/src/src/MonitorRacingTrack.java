@@ -67,6 +67,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				horsesInRace=new ArrayList<Integer>(repo.getHorsesRunning());
 				//to be updated the races that left after this.
 			//	repo.raceDone();
+		        repo.raceStarted();
+
 				horseCanRun.put(horsesInRace.get(0),false);
 				while(horses_at_start_line<horsesPerRace) {
 					try {
@@ -219,7 +221,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		        	invertedHorseRuns.put(horse.getRuns(),horsesInTheSameRun);	
 		        }
 		       
-		        	
 				horse.resetHorse();
 				horsesRacing--;
 				if(horsesRacing==0) {

@@ -18,7 +18,7 @@ public class Repository {
 	private int totalHorses;
 	private String l;
 	private String l1;
-	
+	private int numberOfRacesMissing;
 	
 	//Stat - broker state - Broker Class
 	private BrokerState brokerstate;
@@ -53,6 +53,7 @@ public class Repository {
 		this.bestofTheBests = new ArrayList<Integer>(totalHorses);
 		horsePerformance = new HashMap<Integer,Integer>();
 		this.numberOfRaces=numberOfRaces;
+		this.numberOfRacesMissing=numberOfRaces;
 		this.totalHorses=totalHorses;
 		this.horsesPerRace=horsesPerRace;
 		this.numberOfSpectators=numberOfSpectators;
@@ -352,6 +353,12 @@ public class Repository {
 	}
 	public int getNumberOfRaces() {
 		return numberOfRaces;
+	}
+	public int getNumberOfRacesMissing() {
+		return numberOfRacesMissing;
+	}
+	public void raceStarted() {
+		numberOfRacesMissing--;
 	}
 	public void raceDone() {
 		numberOfRaces--;

@@ -110,7 +110,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		int numberOfRaces=0;
 		mutex.lock();
 		try {
-			numberOfRaces = repo.getNumberOfRaces();
+			numberOfRaces = repo.getNumberOfRacesMissing();
 		} finally {
 			mutex.unlock();
 		}
