@@ -19,15 +19,15 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	private HashMap<Integer,Integer> horsePerformance;
 	Repository repo;
 	
-	public MonitorStable(int totalHorses, int horsesPerRace,Repository repo) {
+	public MonitorStable(Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
 		horsesAtStable=0;
 		horseCanNotGo=true;
-		this.totalHorses=totalHorses;
+		this.totalHorses=repo.getTotalHorses();
 		this.repo = repo;
-		this.horsesPerRace=horsesPerRace;
+		this.horsesPerRace=repo.getHorsesPerRace();
 		this.horsesPaddock=0;
 		horsePerformance = repo.gethorsePerformance();
 		

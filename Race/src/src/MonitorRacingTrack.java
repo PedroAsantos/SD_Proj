@@ -36,13 +36,13 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	Repository repo;
 	
 
-	public MonitorRacingTrack(int horsesPerRace, int raceLength,Repository repo) {
+	public MonitorRacingTrack(int raceLength,Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		horseWaitingMoving_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
 		brokerReportResults_condition = mutex.newCondition();
-		this.horsesPerRace=horsesPerRace;
+		this.horsesPerRace=repo.getHorsesPerRace();
 		horses_at_start_line=0;
 		horsesRacing=horsesPerRace;
 		this.raceLength=raceLength;

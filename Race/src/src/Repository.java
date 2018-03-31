@@ -15,11 +15,11 @@ public class Repository {
 	private int numberOfSpectators;
 	//private int numberOfRaces;
 	private int horsesPerRace;
-
+	private int totalHorses;
 	private String l;
 	private String l1;
 	
-
+	
 	//Stat - broker state - Broker Class
 	private BrokerState brokerstate;
 	//St# - spectator/better state (# - 0 .. 3) - Spectator Class
@@ -53,6 +53,7 @@ public class Repository {
 		this.bestofTheBests = new ArrayList<Integer>(totalHorses);
 		horsePerformance = new HashMap<Integer,Integer>();
 		this.numberOfRaces=numberOfRaces;
+		this.totalHorses=totalHorses;
 		this.horsesPerRace=horsesPerRace;
 		this.numberOfSpectators=numberOfSpectators;
 		this.horsesRunnning = new ArrayList<Integer>(horsesPerRace);
@@ -478,5 +479,10 @@ public class Repository {
 		this.horserank.clear();
 		
 	}
-
+	public int getHorsesPerRace() {
+		return this.horsesPerRace;
+	}
+	public int getTotalHorses() {
+		return this.totalHorses;
+	}
 }

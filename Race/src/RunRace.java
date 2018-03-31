@@ -16,11 +16,11 @@ public class RunRace {
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
 		repo.writeLog();
 
-		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(numberOfSpectators, repo);
-		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo,numberOfSpectators);
-		MonitorPaddock mPaddock = new MonitorPaddock(horsesPerRace,numberOfSpectators, repo);
-		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(horsesPerRace, raceLength, repo);
-		MonitorStable mStable = new MonitorStable(numberOfHorses,horsesPerRace, repo);
+		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
+		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
+		MonitorPaddock mPaddock = new MonitorPaddock(repo);
+		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(raceLength, repo);
+		MonitorStable mStable = new MonitorStable(repo);
 		
 		
 	     /* problem initialization */
@@ -80,6 +80,7 @@ public class RunRace {
 				 System.out.println("Horse thread " + i + " has ended.\n");
 			}
 		}
+
 		
 	}
 

@@ -40,12 +40,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	Repository repo;
 
 
-	public MonitorBettingCenter(int numberOfSpectators, Repository repo) {
+	public MonitorBettingCenter(Repository repo) {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
 		spectatorWaiting_condition = mutex.newCondition();
-		this.numberOfSpectators = numberOfSpectators;
+		this.numberOfSpectators = repo.getNumberOfSpectators();
 		numberOfBets=0;
 		spectatorBetAproving=true;
 		spectatorsQueueBol=false;

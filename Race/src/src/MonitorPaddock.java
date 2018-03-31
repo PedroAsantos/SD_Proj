@@ -20,14 +20,14 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private int spectatorsInPaddock;
 	Repository repo;
 	
-	public MonitorPaddock(int horsesPerRace, int totalSpectators, Repository repo) {
+	public MonitorPaddock(Repository repo) {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		spectatorWaiting_condition = mutex.newCondition();
 		spectatorCheckHorses_condition = mutex.newCondition();
-		this.horsesPerRace=horsesPerRace;
+		this.horsesPerRace=repo.getHorsesPerRace();
 		this.horsesCanNotGo=true;
-		this.totalSpectators=totalSpectators;
+		this.totalSpectators=repo.getNumberOfSpectators();
 	//	spectatorHasToWait=true;
 		spectatorsCheckingHorses=true;
 		spectatorsInPaddock=0;

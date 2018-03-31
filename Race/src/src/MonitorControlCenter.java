@@ -24,7 +24,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private HashMap<Integer,List<double[]>> bets;
 	Repository repo;
 
-	public MonitorControlCenter(Repository repo,int totalSpectators) {
+	public MonitorControlCenter(Repository repo) {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condidition = mutex.newCondition();
@@ -34,7 +34,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		eventNotEnd=true;
 		this.repo=repo;
 		spectatorsWatchingRace=0;
-		this.totalSpectators=totalSpectators;
+		this.totalSpectators=repo.getNumberOfSpectators();
 		spectatorsRelaxing=0;
 	}
 	
