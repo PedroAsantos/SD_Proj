@@ -9,12 +9,10 @@ import src.*;
 import java.util.List;
  
 import Enum.BrokerState;
-//import jdk.management.resource.internal.TotalResourceContext;
+
 public class Broker extends Thread {
     private volatile boolean running = true;
        
-//  private final int numberOfSpectators;
-//  private final int numberOfHorses;
     private BrokerState state;
     private final IBroker_Control monitorControl;
     private final IBroker_BettingCenter monitorBettingCenter;
@@ -23,15 +21,12 @@ public class Broker extends Thread {
     Repository repo;
    
     public Broker(IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack, Repository repo) {
-//      this.numberOfSpectators=numberOfSpectators;
-//      this.numberOfHorses=numberOfHorses;
         this.monitorControl=mControl;
         this.monitorBettingCenter=mBettingCenter;
         this.monitorStable = monitorStable;
         this.monitorTrack = monitorTrack;
         this.state = BrokerState.OPENING_THE_EVENT;
         this.repo=repo;
-        //define state?
     }
    
    
@@ -41,7 +36,6 @@ public class Broker extends Thread {
            
  
         while(running) {
-            //monitor.divide();
             switch (state) {
                 case OPENING_THE_EVENT:
                     repo.setbrokerstate(state);

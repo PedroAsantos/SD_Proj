@@ -57,7 +57,6 @@ public class Horse extends Thread {
 	public void run() {
 		
 		while(running) {
-			//monitor.divide();	
 			switch (state) {
 				case AT_THE_STABLE:
 					if(monitorStable.proceedToStable(this)) {
@@ -97,7 +96,6 @@ public class Horse extends Thread {
 					if(repo.getNumberOfRaces()==0) {
 						stopRunning();
 					}
-					//System.out.println("WINNER"+id);
 					break;
 				default:
 					break;

@@ -43,7 +43,6 @@ public class Spectator extends Thread {
 	public void run() {
 			
 		while(running) {
-			//monitor.divide();	
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
 					monitorPaddock.waitForNextRace(id);

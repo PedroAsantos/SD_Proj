@@ -56,7 +56,6 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 				try {
 					horse_condition.await();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -71,7 +70,6 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 				}
 			}
 		} finally {
-			// TODO: handle finally clause
 			mutex.unlock();
 		}
 		return goingToPaddock;
@@ -95,14 +93,12 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 			
 			System.out.println("ALL HORSES ARE GOING TO END OF EVENT");
 		} finally {
-			// TODO: handle finally clause
 			mutex.unlock();
 		}
 	}
 	
 	@Override
 	public void summonHorsesToPaddock() {
-		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
 			goingToPaddock=true;

@@ -72,7 +72,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 					try {
 						broker_condition.await();
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -88,7 +87,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	
 	@Override
 	public void proceedToStartLine(Horse horse) {
-		//use only id???
 	
 		mutex.lock();
 		try {
@@ -123,7 +121,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	
 	@Override
 	public void makeAMove(Horse horse) {
-		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
 
@@ -137,7 +134,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				if(cycle==horsesInRace.size()) {
 					cycle=0;
 				}
-			//	System.out.println("1cycle: "+cycle+" call: "+horsesInRace.get(cycle));
 			}
 						
 			
@@ -178,9 +174,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				int indexOfRemovedHorse=horsesInRace.indexOf(horse.getID());
 				horsesInRace.remove(indexOfRemovedHorse);
 				if(horsesInRace.size()!=0) {
-					/*for(int i=0;i<horsesInRace.size();i++) {
-						System.out.println("horseInRace0:"+horsesInRace.get(i));
-					}*/
 					wait--;
 					horseCanRun.put(horse.getID(),true);
 					if(indexOfRemovedHorse<cycle) {
@@ -192,7 +185,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 					if(cycle>=horsesInRace.size()) {
 						cycle=0;
 					}
-				//	System.out.println("cycle: "+cycle+" call: "+horsesInRace.get(cycle));
 
 				}
 								
@@ -251,8 +243,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 
 	@Override
 	public List<Integer> reportResults() {
-		// TODO Auto-generated method stub
-	
 		mutex.lock();
 		try {
 			while(horsesRacing>0) {
@@ -264,8 +254,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 					e.printStackTrace();
 				}
 			}
-		//	repo.raceDone();
-			//repor o valor para a proxima corrida;
 			horsesRacing=horsesPerRace;
 			
 		} finally {
@@ -289,7 +277,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		invertedHorseRuns.clear();
 		horseRuns.clear();
 		horsesFinalPos.clear();
-		//repo.clearhorserank();
+		repo.clearhorserank();
 		return horseWinners;
 		
 	}

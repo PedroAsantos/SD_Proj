@@ -14,9 +14,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private final Condition broker_condidition;
 	
 	private int spectatorsWatchingRace;
-//	private boolean waitinghaveIwon;
 	private boolean raceIsOn;
-//	private boolean spectatorHasToWait;
 	private boolean eventNotEnd;
 	private int spectatorsRelaxing;
 	private int totalSpectators;
@@ -28,9 +26,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condidition = mutex.newCondition();
-	//	spectatorHasToWait=true;
 		raceIsOn=true;
-	//	waitinghaveIwon=true;
 		eventNotEnd=true;
 		this.repo=repo;
 		spectatorsWatchingRace=0;
@@ -51,7 +47,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 				try {
 					spectator_condition.await();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -69,7 +64,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 
 	@Override
 	public boolean haveIwon(int spectator_id) {
-		// TODO Auto-generated method stub
 		boolean iWon=false;
 		mutex.lock();
 		try {
@@ -133,11 +127,9 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		try {
 			winners = new ArrayList<Integer>(result);
 			raceIsOn=false;
-			//repo.clearhorsesRunning();
 			System.out.println("Reporting Result to Spectators");
 			spectator_condition.signalAll();
 		} finally {
-			// TODO: handle finally clause
 			mutex.unlock();
 		}
 		
@@ -147,7 +139,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	
 	@Override
 	public void relaxABit(int spectator_id) {
-		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
 			spectatorsRelaxing++;
@@ -159,7 +150,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 				try {
 					spectator_condition.await();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -175,7 +165,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	
 	@Override
 	public void entertainTheGuests() {
-		// TODO Auto-generated method stub
 		mutex.lock();
 		try {
 			System.out.println("BROKER ENTERTAIN THE GUESTS");
@@ -183,7 +172,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 				try {
 					broker_condidition.await();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
