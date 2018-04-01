@@ -1,14 +1,13 @@
 package stakeholders;
  
-import src.IBroker_BettingCenter;
-import src.IBroker_Control;
-import src.IBroker_Stable;
-import src.IBroker_Track;
-import src.*;
- 
 import java.util.List;
  
 import Enum.BrokerState;
+import Interfaces.IBroker_BettingCenter;
+import Interfaces.IBroker_Control;
+import Interfaces.IBroker_Stable;
+import Interfaces.IBroker_Track;
+import sharingRegions.*;
 
 public class Broker extends Thread {
     private volatile boolean running = true;

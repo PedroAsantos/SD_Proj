@@ -1,6 +1,9 @@
 package stakeholders;
-import src.*;
 import Enum.HorseState;
+import Interfaces.IHorse_Paddock;
+import Interfaces.IHorse_Stable;
+import Interfaces.IHorse_Track;
+import sharingRegions.*;
 public class Horse extends Thread {
     private volatile boolean running = true;
 	private final int id;

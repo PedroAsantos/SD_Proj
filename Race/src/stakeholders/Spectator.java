@@ -1,7 +1,10 @@
 package stakeholders;
 
-import src.*;
 import Enum.SpectatorState;
+import Interfaces.ISpectator_BettingCenter;
+import Interfaces.ISpectator_Control;
+import Interfaces.ISpectator_Paddock;
+import sharingRegions.*;
 
 public class Spectator extends Thread {
 	private volatile boolean running = true;

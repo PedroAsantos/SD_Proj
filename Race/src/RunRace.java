@@ -1,15 +1,25 @@
 import java.util.Random;
 
-import src.*;
+import Interfaces.IBroker_BettingCenter;
+import Interfaces.IBroker_Control;
+import Interfaces.IBroker_Stable;
+import Interfaces.IBroker_Track;
+import Interfaces.IHorse_Paddock;
+import Interfaces.IHorse_Stable;
+import Interfaces.IHorse_Track;
+import Interfaces.ISpectator_BettingCenter;
+import Interfaces.ISpectator_Control;
+import Interfaces.ISpectator_Paddock;
+import sharingRegions.*;
 import stakeholders.*;
 
 public class RunRace {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 200; //testar com numeros maiores.
+		int numberOfHorses = 20; //testar com numeros maiores.
 		int numberOfSpectators=4;
-		int numberOfRaces=50;
+		int numberOfRaces=5;
 		int horsesPerRace=4;
 		int raceLength=30;
 		int maxPerformance=10;
