@@ -1,7 +1,6 @@
 package sharingRegions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
@@ -22,7 +21,6 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private int spectatorsRelaxing;
 	private int totalSpectators;
 	private List<Integer> winners;
-	private HashMap<Integer,List<double[]>> bets;
 	Repository repo;
 
 	public MonitorControlCenter(Repository repo) {
@@ -66,7 +64,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	}
 
 	@Override
-	public boolean haveIwon(int spectator_id) {
+	public boolean haveIwon(int spectator_id, int horsePicked) {
 		boolean iWon=false;
 		mutex.lock();
 		try {
@@ -80,23 +78,12 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 					e.printStackTrace();
 				}
 			}*/
-			bets = repo.getspectatorBets();
 			
 			
-		
-			List<double[]> betsOnHorse;
-			double[] bet;
-			
+	
 			for(int i = 0;i<winners.size();i++) {
-				if(bets.containsKey(winners.get(i))) {
-					betsOnHorse=bets.get(winners.get(i));
-					for(int c=0;c<betsOnHorse.size();c++) {
-						bet=betsOnHorse.get(c);
-						if((int)bet[0]==spectator_id) {
-							iWon=true;
-							break;
-						}
-					}
+				if(winners.get(i)==horsePicked) {
+					iWon=true;
 				}
 				
 			}
@@ -125,10 +112,13 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	}
 	
 	@Override
-	public void reportResults(List<Integer> result) {
+	public void reportResults(int[] horseAWinners) {
 		mutex.lock();
 		try {
-			winners = new ArrayList<Integer>(result);
+			winners = new ArrayList<Integer>();
+			for(int i=0;i<horseAWinners.length;i++) {
+				winners.add(horseAWinners[i]);
+			}
 			raceIsOn=false;
 			System.out.println("Reporting Result to Spectators");
 			spectator_condition.signalAll();

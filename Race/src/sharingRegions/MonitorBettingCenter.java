@@ -5,13 +5,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import Interfaces.IBroker_BettingCenter;
 import Interfaces.ISpectator_BettingCenter;
-import stakeholders.Spectator;
+
 
 public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_BettingCenter {
 	private final ReentrantLock mutex;
@@ -27,13 +26,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private HashMap<Integer,List<double[]>> spectatorBets;
 	private Condition[] receivMoneyList;
 	private List<Integer> horseWinners;
-	private Queue<Spectator> queueToReceivMoney;
+	private Queue<Integer> queueToReceivMoney;
 	private double[] bet = new double[2];
 	private int horseId;
+	private double moneyReceived;
 	private boolean brokerIsOccupied;
-	List<Integer> pickHorse;
-	private HashMap<Integer,Integer> horsePerformance;
-	private HashMap<Integer,Double> horseProbabilities;
 	Repository repo;
 
 
@@ -53,11 +50,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		for(int i=0;i<numberOfSpectators;i++) {
 			receivMoneyList[i]=mutex.newCondition();
 		}
-		queueToReceivMoney = new LinkedList<Spectator>();
+		queueToReceivMoney = new LinkedList<Integer>();
+		moneyReceived=0;
 		this.repo=repo;
-		horsePerformance = repo.gethorsePerformance();
-		horseProbabilities = new HashMap<Integer,Double>();
-		pickHorse= new ArrayList<Integer>();
 	}
 	@Override
 	public void acceptTheBets() {
@@ -84,21 +79,19 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 						spectatorBets.put(horseId,listTemp);
 						repo.setspecbets((int)bet[0],horseId);
 					}
-					repo.setspectatorBets(spectatorBets);
+					//repo.setspectatorBets(spectatorBets);
 					numberOfBets++;
 					spectatorBetAproving=false;
 					spectator_condition.signal();
 
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 			numberOfBets=0;
 			spectatorsQueueBol=false;
-			pickHorse.clear();
 		
-			repo.setspectatorBets(spectatorBets);
+			//repo.setspectatorBets(spectatorBets);
 			System.out.println("BROKER WAKE UP");
 			
 			
@@ -110,7 +103,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	}
 
 	@Override
-	public void placeABet(Spectator spectator) {
+	public void placeABet(int spectatorId, double money,int horsePicked) {
 		mutex.lock();
 		try {
 		
@@ -123,47 +116,14 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 				}
 			}
 			spectatorsQueueBol=true;
-			System.out.println("Spectator_"+spectator.getID()+" is betting!");
-			horsePerformance=repo.gethorsePerformance();
-			List<Integer> horsesRunning = repo.getHorsesRunning();
+			System.out.println("Spectator_"+spectatorId+" is betting!");
 			
-			if(horseProbabilities.size()==0) {
-				int totalP=0;
-				for(int i = 0 ;i<horsesRunning.size();i++) {
-					totalP+=horsePerformance.get(horsesRunning.get(i));
-				}
-				
-				double prob;
-				for(int i=0;i<horsesRunning.size();i++) {
-					if(horsesRunning.size()<100) {
-						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
-					}else {
-						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*horsesRunning.size()*2;	
-					}
-					horseProbabilities.put(horsesRunning.get(i), prob);
-					repo.sethorseProbabilities(horseProbabilities);
-				} 	
-			
-
-				int toPut;
-
-				for(int i=0;i<horsesRunning.size();i++) {
-					if(horseProbabilities.containsKey(horsesRunning.get(i))) {
-						toPut = horseProbabilities.get(horsesRunning.get(i)).intValue();
-						for(int c = 0;c<toPut;c++) {
-							pickHorse.add(horsesRunning.get(i));
-						}
-					}
-				}
-			}
-			Random random = new Random();
-			int n = random.nextInt(pickHorse.size());
-			this.horseId=pickHorse.get(n); 
-			this.bet[0]=spectator.getID(); //spectator_id
-			this.bet[1]= random.nextDouble()*spectator.getMoney(); //money
-			spectator.payBet(this.bet[1]);
-			System.out.println("Spectator_"+spectator.getID()+" choose horse " + horseId+" the money " + bet[1]);
-			repo.setspecbetamount(spectator.getID(),bet[1]);
+			this.horseId=horsePicked; 
+			this.bet[0]=spectatorId; //spectator_id
+			this.bet[1]=money; //money
+			//spectator.payBet(this.bet[1]);
+			System.out.println("Spectator_"+spectatorId+" choose horse " + horseId+ " the money " + bet[1]);
+			repo.setspecbetamount(spectatorId,bet[1]);
 			broker_condition.signal();
 		
 			while(spectatorBetAproving) {
@@ -186,17 +146,18 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		
 	}
 	@Override
-	public void goCollectTheGains(Spectator spectator) {
+	public double goCollectTheGains(int spectatorId) {
 		// TODO Auto-generated method stub
 		//jogar com o facto de a ordem de chegada e igual a de  saida FIFO. E dar assim a saida deles.registando a entrada
+		
 		mutex.lock();
 		try {
 			//openHonorStand=false;
-			queueToReceivMoney.add(spectator);
-		
-			while(brokerIsOccupied) {
+			queueToReceivMoney.add(spectatorId);
+			System.out.println("Spectator_"+spectatorId+" waiting to collect the gains!");
+			while(brokerIsOccupied||queueToReceivMoney.peek()!=spectatorId) {
 				try {
-					receivMoneyList[spectator.getID()].await();
+					receivMoneyList[spectatorId].await();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -204,30 +165,32 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 
 			brokerIsOccupied=true;
 			broker_condition.signal();
-			System.out.println("Spectator_"+spectator.getID()+" waiting to collect the gains!");
+			System.out.println("Spectator_"+spectatorId+" turn to collect the gains!");
+
 			while(receivingDividends) {
 				try {
-					receivMoneyList[spectator.getID()].await();
+					receivMoneyList[spectatorId].await();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			brokerIsOccupied=false;
 			//PAY ATTENTO TO THIS
 		
 			//System.out.println("queu size"+queueToReceivMoney.size()+"->"+queueToReceivMoney.peek().getID());
+			brokerIsOccupied=false;
+			receivingDividends=true;
 			if(!queueToReceivMoney.isEmpty()) {
-				receivingDividends=true;
-				receivMoneyList[queueToReceivMoney.peek().getID()].signal();
-			}else {
-				receivingDividends=true;
+				receivMoneyList[queueToReceivMoney.peek()].signal();
 			}
+				
+			
 			///----------------------
-			System.out.println("Spectator_"+spectator.getID()+" received the money!");
+			System.out.println("Spectator_"+spectatorId+" received the money!");
 			//repo.getNumberOfRaces();
 		} finally {
 			mutex.unlock();
 		}
+		return moneyReceived;
 	}
 	@Override
 	public void honourTheBets() {
@@ -245,18 +208,21 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			for (int i = 0; i < winners.size(); i++) {
 				System.out.println("Winners:"+winners.get(i)[0]);
 			}
-			Spectator spectatorReceivingMoney;
+			int spectatorReceivingMoney;
 			int betsPayed=0;
+			
 			while(betsPayed<winners.size()/*|| openHonorStand*/) {
 				try {
 					broker_condition.await();
 					spectatorReceivingMoney=queueToReceivMoney.remove();
 					for(int i=0;i<winners.size();i++) {
-						if(winners.get(i)[0]==spectatorReceivingMoney.getID()) {
+						if(winners.get(i)[0]==spectatorReceivingMoney) {
 							//how to know the horse that spectator bet
-							System.out.println("Spectator_"+spectatorReceivingMoney.getID()+ " is receiving "+spectatorReceivingMoney.getMoney());
-							spectatorReceivingMoney.addMoney(winners.get(i)[1]*1/horseProbabilities.get(horseWinners.get(0)));
-							repo.setspecMoney(spectatorReceivingMoney.getID(),spectatorReceivingMoney.getMoney());
+							moneyReceived=winners.get(i)[1]*2;
+							System.out.println("Spectator_"+spectatorReceivingMoney+ " is receiving "+moneyReceived);
+							//spectatorReceivingMoney.addMoney(winners.get(i)[1]*1/horseProbabilities.get(horseWinners.get(0)));
+							//ver isto.
+							//repo.setspecMoney(spectatorReceivingMoney,spectatorReceivingMoney);
 							betsPayed++;
 							break;
 						}
@@ -264,7 +230,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					}
 					
 					receivingDividends=false;
-					receivMoneyList[spectatorReceivingMoney.getID()].signal();
+					receivMoneyList[spectatorReceivingMoney].signal();
 					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -274,7 +240,6 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			
 			//openHonorStand=true;
 			spectatorBets.clear();
-			horseProbabilities.clear();
 			repo.clearhorserank();
 		} finally {
 			mutex.unlock();
@@ -282,11 +247,14 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		
 	}
 	@Override
-	public boolean areThereAnyWinners(List<Integer> horseWinners) {
+	public boolean areThereAnyWinners(int[] horseAWinners) {
 		boolean thereAreWinner=false;
 		mutex.lock();
 		try {
-			this.horseWinners = new ArrayList<>(horseWinners);
+			this.horseWinners = new ArrayList<>();
+			for(int i = 0;i<horseAWinners.length;i++) {
+				horseWinners.add(horseAWinners[i]);
+			}
 			for(int i = 0;i < horseWinners.size();i++) {
 				if(spectatorBets.containsKey(horseWinners.get(i))) {
 					thereAreWinner=true;
@@ -294,7 +262,6 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			}
 			if(!thereAreWinner) {
 				spectatorBets.clear();
-				horseProbabilities.clear();
 				repo.clearhorserank();
 			}
 			
@@ -302,7 +269,6 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			mutex.unlock();
 		}
 		return thereAreWinner;
-		
 	}
 
 

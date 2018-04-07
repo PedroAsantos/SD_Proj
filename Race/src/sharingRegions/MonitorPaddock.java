@@ -1,11 +1,15 @@
 package sharingRegions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import Interfaces.IHorse_Paddock;
 import Interfaces.ISpectator_Paddock;
-import stakeholders.Horse;
+
 
 public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private final ReentrantLock mutex;
@@ -19,6 +23,10 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private boolean spectatorsCheckingHorses;
 	private int horsesInPaddock;
 	private int spectatorsInPaddock;
+	List<Integer> horsesRunning;
+	private HashMap<Integer,Integer> horsePerformance;
+	private List<Integer> pickHorse;
+	private HashMap<Integer,Double> horseProbabilities;
 	Repository repo;
 	
 	public MonitorPaddock(Repository repo) {
@@ -32,20 +40,27 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		spectatorsCheckingHorses=true;
 		spectatorsInPaddock=0;
 		horsesInPaddock=0;
+		horsesRunning = new ArrayList<Integer>();
+		horsePerformance = new HashMap<Integer,Integer>();
+		pickHorse= new ArrayList<Integer>();
+		horseProbabilities = new HashMap<Integer,Double>();
 		this.repo = repo;
 	}
 	
 
 	
 	@Override
-	public void proceedToPaddock(Horse horse) {
+	public void proceedToPaddock(int horseId,int performance) {
 		
 		mutex.lock();
 		try {
 			
 			horsesInPaddock++;
-			System.out.println("Horse_"+horse.getID()+" is going to paddock!");
-			repo.sethorseruns(horse.getID(),horse.getRuns());					
+			System.out.println("Horse_"+horseId+" is going to paddock!");
+			//is this necessry?
+			horsesRunning.add(horseId);
+			horsePerformance.put(horseId, performance);
+			repo.sethorseruns(horseId,0);					
 			if(horsesInPaddock==horsesPerRace) {
 				spectatorWaiting_condition.signalAll();
 			}
@@ -93,7 +108,8 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 
 
 	@Override
-	public void goCheckHorses(int spectator_id) {
+	public int goCheckHorses(int spectator_id) {
+		int horsePicked; 
 		mutex.lock();
 		try {
 			System.out.println("Spectator_"+spectator_id+" is checking the horses!");
@@ -114,9 +130,48 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 					e.printStackTrace();
 				}
 			}
+			
+			if(horseProbabilities.size()==0) {
+				int totalP=0;
+				for(int i = 0 ;i<horsesRunning.size();i++) {
+					totalP+=horsePerformance.get(horsesRunning.get(i));
+				}
+				
+				double prob;
+				for(int i=0;i<horsesRunning.size();i++) {
+					if(horsesRunning.size()<100) {
+						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
+					}else {
+						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*horsesRunning.size()*2;	
+					}
+					horseProbabilities.put(horsesRunning.get(i), prob);
+				//	repo.sethorseProbabilities(horseProbabilities);
+				} 	
+			
+
+				int toPut;
+
+				for(int i=0;i<horsesRunning.size();i++) {
+					if(horseProbabilities.containsKey(horsesRunning.get(i))) {
+						toPut = horseProbabilities.get(horsesRunning.get(i)).intValue();
+						for(int c = 0;c<toPut;c++) {
+							pickHorse.add(horsesRunning.get(i));
+						}
+					}
+				}
+			}
+			Random random = new Random();
+			int n = random.nextInt(pickHorse.size());
+			horsePicked=pickHorse.get(n); 
+			
+			
 			spectatorsInPaddock--;
 			if(spectatorsInPaddock==0) {
 				spectatorsCheckingHorses=true;
+				horsesRunning.clear();
+				horsePerformance.clear();
+				horseProbabilities.clear();
+				pickHorse.clear();
 			}
 			
 				
@@ -124,7 +179,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		} finally {
 			mutex.unlock();
 		}
-		
+		return horsePicked;
 	}
 	
 }

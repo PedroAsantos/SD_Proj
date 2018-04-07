@@ -8,9 +8,7 @@ import Enum.*;
 public class Repository {
 
 	private int[] horsesFinalPos;
-	private	HashMap<Integer,List<double[]>> spectatorBets;
 	private List<Integer> horsesRunnning;
-	private List<Integer> bestofTheBests;
 	//private HashMap<Integer,Integer> horsePerformance;
 	private int numberOfSpectators;
 	//private int numberOfRaces;
@@ -46,11 +44,9 @@ public class Repository {
 	private	HashMap<Integer,Integer> horseposition;
 	//SD# - horse/jockey pair standing at the end of present race (# - 0 .. 3)
 	private HashMap<Integer,Integer> horserank;
-	
+	//winnerHoreses
 	public Repository(int totalHorses, int numberOfSpectators,int numberOfRaces, int horsesPerRace, int raceLength){
 		this.horsesFinalPos = new int[totalHorses];
-		this.spectatorBets = new HashMap<Integer,List<double[]>>(numberOfSpectators);
-		this.bestofTheBests = new ArrayList<Integer>(totalHorses);
 		horsePerformance = new HashMap<Integer,Integer>();
 		this.numberOfRaces=numberOfRaces;
 		this.numberOfRacesMissing=numberOfRaces;
@@ -62,7 +58,6 @@ public class Repository {
 		this.specStat = new HashMap<Integer,SpectatorState>();
 		this.specMoney = new HashMap<Integer,Double>();
 		this.horseStat = new HashMap<Integer,HorseState>();
-		this.spectatorBets = new HashMap<Integer,List<double[]>>();
 		this.specbetamount = new HashMap<Integer,Double>();
 		this.horseProbabilities = new HashMap<Integer,Double>();
 		this.horseruns = new HashMap<Integer,Integer>();
@@ -336,9 +331,6 @@ public class Repository {
 		return true;
 		
 	}
-	public List<Integer> getHorsesRunning(){
-		return horsesRunnning;
-	}
 	public void clearhorsesRunning() {
 		horsesRunnning.clear();
 	}
@@ -363,46 +355,14 @@ public class Repository {
 	public void raceDone() {
 		numberOfRaces--;
 	}
-	public HashMap<Integer,List<double[]>> getspectatorBets(){
-		return this.spectatorBets;
-	}
-
-	public void setspectatorBets(HashMap<Integer,List<double[]>> spectatorBets){
-		this.spectatorBets = spectatorBets;
-	}
 	
-	public HashMap<Integer,List<int[]>> getspectatorBets(HashMap<Integer,List<int[]>> spectatorBets){
-		return spectatorBets;
-	}
-
-	public List<Integer> getbestofTheBests(){
-		return this.bestofTheBests;
-	}
-
-	public void setbestofTheBests(List<Integer> bestofTheBests){
-		this.bestofTheBests = bestofTheBests;
-	}
-
-	public HashMap<Integer,Integer> gethorsePerformance(){
-		return this.horsePerformance;
-	}
-
-	public void sethorsePerformance(HashMap<Integer,Integer> horsePerformance){
-		this.horsePerformance = horsePerformance;
-	}
-
-
-	public HashMap<Integer,SpectatorState> getSpecStat(){
-		return this.specStat;
-	}
+	/*public void setspectatorBets(HashMap<Integer,List<double[]>> spectatorBets){
+		this.spectatorBets = spectatorBets;
+	}*/
 
 	public void setSpecStat(int spectator_id, SpectatorState state){
 		this.specStat.put(spectator_id,state);
 		//toLog();
-	}
-
-	public HashMap<Integer,HorseState> getHorseStat(){
-		return this.horseStat;
 	}
 
 	public void setHorseStat(int horse_id, HorseState state){
@@ -410,17 +370,9 @@ public class Repository {
 		//toLog();
 	}
 
-	public HashMap<Integer,Integer> gethorseruns(){
-		return this.horseruns;
-	}
-
 	public void sethorseruns(int horse_id, int runs){
 		this.horseruns.put(horse_id,runs);
 		toLog();
-	}
-
-	public HashMap<Integer,Integer> gethorseposition(){
-		return this.horseposition;
 	}
 
 	public void sethorseposition(int horse_id, int position){
@@ -428,30 +380,13 @@ public class Repository {
 		toLog();
 	}
 
-	public HashMap<Integer,Double> getspecbetamount(){
-		return this.specbetamount;
-	}
-
 	public void setspecbetamount(int spectator_id, double amount){
 		this.specbetamount.put(spectator_id,amount);
 		toLog();
 	}
 
-	public HashMap<Integer,Double> getspecMoney(){
-		return this.specMoney;
-	}
-
 	public void setspecMoney(int spectator_id, double money){
 		this.specMoney.put(spectator_id,money);
-		toLog();
-	}
-
-	public HashMap<Integer,Double> gethorseProbabilities(){
-		return this.horseProbabilities;
-	}
-
-	public void sethorseProbabilities(HashMap<Integer,Double> horseProbabilities){
-		this.horseProbabilities = horseProbabilities;
 		toLog();
 	}
 
@@ -464,18 +399,11 @@ public class Repository {
 		//toLog();
 	}
 
-	public HashMap<Integer,Integer> getspecbets(){
-		return this.specbets;
-	}
-
 	public void setspecbets(int spec_id,int horse_id){
 		this.specbets.put(spec_id,horse_id);
 		toLog();
 	}
 
-	public HashMap<Integer,Integer> gethorserank(){
-		return this.horserank;
-	}
 
 	public void sethorserank(int horse_id, int rank){
 		this.horserank.put(horse_id,rank);

@@ -1,5 +1,7 @@
 package stakeholders;
 
+import java.util.Random;
+
 import Enum.SpectatorState;
 import Interfaces.ISpectator_BettingCenter;
 import Interfaces.ISpectator_Control;
@@ -14,6 +16,7 @@ public class Spectator extends Thread {
 	private final ISpectator_Control monitorControl;
 	private final ISpectator_Paddock monitorPaddock;
 	private double money;
+	private int horsePicked;
 	private SpectatorState state;
 	Repository repo;
 
@@ -49,7 +52,7 @@ public class Spectator extends Thread {
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
 					monitorPaddock.waitForNextRace(id);
-					monitorPaddock.goCheckHorses(id);
+					horsePicked=monitorPaddock.goCheckHorses(id);
 					repo.setspecMoney(id,money);
 					
 					state=SpectatorState.APPRAISING_THE_HORSES;
@@ -57,7 +60,11 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case APPRAISING_THE_HORSES:
-					monitorBettingCenter.placeABet(this);
+					double bet;
+					Random random = new Random();
+					bet = random.nextDouble()*money;
+					money=money-bet;
+					monitorBettingCenter.placeABet(id, bet,horsePicked);
 					state=SpectatorState.PLACING_A_BET;
 					repo.setSpecStat(id,state);
 					repo.toLog();
@@ -69,7 +76,7 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case WATCHING_THE_RACE:
-					if(monitorControl.haveIwon(id)) {
+					if(monitorControl.haveIwon(id,horsePicked)) {
 						state=SpectatorState.COLLECTING_THE_GAINS;
 					}else {
 						if(monitorControl.noMoreRaces()) {
@@ -83,13 +90,16 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case COLLECTING_THE_GAINS:
-					monitorBettingCenter.goCollectTheGains(this);
+					double moneyReceived=0;
+					moneyReceived=monitorBettingCenter.goCollectTheGains(id);
+					money=money+moneyReceived;
+					repo.setspecMoney(id,money);
 					if(monitorControl.noMoreRaces()) {
 						monitorControl.relaxABit(id);
 						state=SpectatorState.CELEBRATING;
 					}else {
 						state=SpectatorState.WAITING_FOR_A_RACE_TO_START;
-					}					
+					}			
 					repo.setSpecStat(id,state);
 					repo.toLog();
 					break;
@@ -102,11 +112,11 @@ public class Spectator extends Thread {
 				default:
 					break;
 			}
-			try {
+		/*	try {
 				Thread.sleep(500);
 			} catch(Exception e) {
 				
-			}
+			}*/
 		}
 	}
 	public void stopRunning(){

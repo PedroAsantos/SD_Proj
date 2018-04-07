@@ -1,8 +1,6 @@
 package Interfaces;
 
-import stakeholders.Spectator;
-
 public interface ISpectator_BettingCenter {
-	public void placeABet(Spectator spectator);
-	public void goCollectTheGains(Spectator spectator);
+	public void placeABet(int spectatorId,double money,int horsePicked);
+	public double goCollectTheGains(int spectatorId);
 }

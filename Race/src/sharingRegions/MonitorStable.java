@@ -1,12 +1,12 @@
 package sharingRegions;
 
-import java.util.HashMap;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import Interfaces.IBroker_Stable;
 import Interfaces.IHorse_Stable;
-import stakeholders.Horse;
+
 
 public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	private final ReentrantLock mutex;
@@ -19,7 +19,6 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	private int totalHorses;
 	private int horsesPaddock;
 	private boolean horseCanNotGo;
-	private HashMap<Integer,Integer> horsePerformance;
 	Repository repo;
 	
 	public MonitorStable(Repository repo) {
@@ -33,17 +32,15 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 		this.horsesPerRace=repo.getHorsesPerRace();
 		this.horsesPaddock=0;
 		this.goingToPaddock=true;
-		horsePerformance = repo.gethorsePerformance();
 		
 	}
 	
 	@Override
-	public boolean proceedToStable(Horse horse) {
+	public boolean proceedToStable(int horseId) {
 		mutex.lock();
 		try {
 			horsesAtStable++;
-			horsePerformance.put(horse.getID(),horse.getPerformance());
-			System.out.print("Horse_"+horse.getID()+" now on stable!\n");
+			System.out.print("Horse_"+horseId+" now on stable!\n");
 			
 			if(horsesAtStable == totalHorses) {
 				broker_condition.signal();
@@ -59,7 +56,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 			horsesAtStable--;
 			if(goingToPaddock) {
 				horsesPaddock++;
-				repo.addHorsesToRun(horse.getID());
+				repo.addHorsesToRun(horseId);
 				if(horsesPaddock==horsesPerRace) {
 					horseCanNotGo=true;
 					horsesPaddock=0;

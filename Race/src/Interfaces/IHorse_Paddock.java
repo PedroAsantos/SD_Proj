@@ -1,7 +1,5 @@
 package Interfaces;
 
-import stakeholders.Horse;
-
 public interface IHorse_Paddock {
-    public void proceedToPaddock(Horse horse);
+    public void proceedToPaddock(int horseId,int performance);
 }

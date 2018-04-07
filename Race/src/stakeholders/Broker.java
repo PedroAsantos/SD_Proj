@@ -1,7 +1,5 @@
 package stakeholders;
  
-import java.util.List;
- 
 import Enum.BrokerState;
 import Interfaces.IBroker_BettingCenter;
 import Interfaces.IBroker_Control;
@@ -58,10 +56,10 @@ public class Broker extends Thread {
                 case SUPERVISING_THE_RACE:
                     repo.setbrokerstate(state);
                     //passar do track para o control que cavalos ganharam!
-                    List<Integer> horseWinners;
-                    horseWinners = monitorTrack.reportResults();   
-                    monitorControl.reportResults(horseWinners);    
-                    if(monitorBettingCenter.areThereAnyWinners(horseWinners)) {
+                    int[] horseAWinners;
+                    horseAWinners = monitorTrack.reportResults();   
+                    monitorControl.reportResults(horseAWinners);    
+                    if(monitorBettingCenter.areThereAnyWinners(horseAWinners)) {
                         monitorBettingCenter.honourTheBets();
                         state=BrokerState.SETTING_ACCOUNTS;
                     }else {
@@ -101,11 +99,11 @@ public class Broker extends Thread {
                 default:
                     break;
             }
-            try {
+          /*  try {
                 Thread.sleep(500);
             } catch(Exception e) {
                
-            }
+            }*/
 
         }
     }
