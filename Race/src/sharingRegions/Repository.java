@@ -383,7 +383,14 @@ public class Repository {
 		
 		//toLog();
 	}
-
+	public void setHorseProbabilitie(int horse_id,double probabilitie) {
+		mutex.lock();
+		try {
+			this.horseProbabilities.put(horse_id, probabilitie);
+		} finally {
+			mutex.unlock();
+		}
+	}
 	public void setHorseStat(int horse_id, HorseState state){
 		mutex.lock();
 		try {

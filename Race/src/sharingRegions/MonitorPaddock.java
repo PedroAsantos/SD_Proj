@@ -145,6 +145,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*horsesRunning.size()*2;	
 					}
 					horseProbabilities.put(horsesRunning.get(i), prob);
+					repo.setHorseProbabilitie(horsesRunning.get(i), prob);
 				//	repo.sethorseProbabilities(horseProbabilities);
 				} 	
 			
