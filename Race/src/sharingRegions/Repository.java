@@ -1,13 +1,15 @@
 package sharingRegions;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
 import Enum.*;
 
 public class Repository {
+	private final ReentrantLock mutex;
 
-	private int[] horsesFinalPos;
+	//private int[] horsesFinalPos;
 	private List<Integer> horsesRunnning;
 	//private HashMap<Integer,Integer> horsePerformance;
 	private int numberOfSpectators;
@@ -46,7 +48,8 @@ public class Repository {
 	private HashMap<Integer,Integer> horserank;
 	//winnerHoreses
 	public Repository(int totalHorses, int numberOfSpectators,int numberOfRaces, int horsesPerRace, int raceLength){
-		this.horsesFinalPos = new int[totalHorses];
+		mutex = new ReentrantLock(true);
+	//	this.horsesFinalPos = new int[totalHorses];
 		horsePerformance = new HashMap<Integer,Integer>();
 		this.numberOfRaces=numberOfRaces;
 		this.numberOfRacesMissing=numberOfRaces;
@@ -326,25 +329,33 @@ public class Repository {
 
 
 	public boolean addHorsesToRun(int horseId) {
-		if(horsesRunnning.size()==horsesPerRace) {
-			return false;
+		boolean boo=true;
+		mutex.lock();
+		try {
+			if(horsesRunnning.size()==horsesPerRace) {
+				boo=false;
+			}
+			horsesRunnning.add(horseId);
+		} finally {
+			mutex.unlock();
 		}
-		horsesRunnning.add(horseId);
-		return true;
+		return boo;
 		
 	}
 	public void clearhorsesRunning() {
 		horsesRunnning.clear();
 	}
-	public int[] gethorsesFinalPos(){
+	/*public int[] gethorsesFinalPos(){
 		return this.horsesFinalPos;
-	}
+	}*/
 	public int getNumberOfSpectators() {
 		return numberOfSpectators;
 	}
+	/*
 	public void sethorsesFinalPos(int[] horsesFinalPos){
 		this.horsesFinalPos = horsesFinalPos;
-	}
+	}*/
+	
 	public int getNumberOfRaces() {
 		return numberOfRaces;
 	}
@@ -363,32 +374,65 @@ public class Repository {
 	}*/
 
 	public void setSpecStat(int spectator_id, SpectatorState state){
-		this.specStat.put(spectator_id,state);
+		mutex.lock();
+		try {
+			this.specStat.put(spectator_id,state);
+		} finally {
+			mutex.unlock();
+		}
+		
 		//toLog();
 	}
 
 	public void setHorseStat(int horse_id, HorseState state){
-		this.horseStat.put(horse_id,state);
+		mutex.lock();
+		try {
+			this.horseStat.put(horse_id,state);
+		} finally {
+			mutex.unlock();
+		}
+		
 		//toLog();
 	}
 
 	public void sethorseruns(int horse_id, int runs){
-		this.horseruns.put(horse_id,runs);
+		mutex.lock();
+		try {
+			this.horseruns.put(horse_id,runs);
+		} finally {
+			mutex.unlock();
+		}
+		
 		toLog();
 	}
 
 	public void sethorseposition(int horse_id, int position){
-		this.horseposition.put(horse_id,position);
+		mutex.lock();
+		try {
+			this.horseposition.put(horse_id,position);	
+		} finally {
+			mutex.unlock();
+		}
 		toLog();
 	}
 
 	public void setspecbetamount(int spectator_id, double amount){
-		this.specbetamount.put(spectator_id,amount);
+		mutex.lock();
+		try {
+			this.specbetamount.put(spectator_id,amount);	
+		} finally {
+			mutex.unlock();
+		}
 		toLog();
 	}
 
 	public void setspecMoney(int spectator_id, double money){
-		this.specMoney.put(spectator_id,money);
+		mutex.lock();
+		try {
+			this.specMoney.put(spectator_id,money);	
+		} finally {
+			mutex.unlock();
+		}
 		toLog();
 	}
 
@@ -402,13 +446,23 @@ public class Repository {
 	}
 
 	public void setspecbets(int spec_id,int horse_id){
-		this.specbets.put(spec_id,horse_id);
+		mutex.lock();
+		try {
+			this.specbets.put(spec_id,horse_id);	
+		} finally {
+			mutex.unlock();
+		}
 		toLog();
 	}
 
 
 	public void sethorserank(int horse_id, int rank){
-		this.horserank.put(horse_id,rank);
+		mutex.lock();
+		try {
+			this.horserank.put(horse_id,rank);
+		} finally {
+			mutex.unlock();
+		}
 		toLog();
 	}
 
