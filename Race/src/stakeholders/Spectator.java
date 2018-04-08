@@ -64,7 +64,9 @@ public class Spectator extends Thread {
 					Random random = new Random();
 					bet = random.nextDouble()*money;
 					money=money-bet;
+					//novo
 					monitorBettingCenter.placeABet(id, bet,horsePicked);
+					repo.setspecMoney(id,money);
 					state=SpectatorState.PLACING_A_BET;
 					repo.setSpecStat(id,state);
 					repo.toLog();

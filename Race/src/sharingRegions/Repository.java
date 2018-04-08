@@ -124,11 +124,13 @@ public class Repository {
 			for (int i = 0;i<numberOfSpectators; i++ ) {
 				if(specMoney.get(i)!=null){
 					specAmAll[i]=specMoney.get(i);
+					//System.out.println("money_"+i+" "+specMoney.get(i));
 				}else{
 					specAmAll[i]=0.0;
 				}
 
 			}
+			
 			//VER ISTO
 		//	int rn=numberOfRaces;
 			
