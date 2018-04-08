@@ -162,9 +162,7 @@ public class Repository {
 					lenAll[i]=0;
 				}
 			}
-			
-		
-			
+
 			int dist=raceLength;
 			
 			String[] bsAll = new String[numberOfSpectators];
@@ -412,7 +410,15 @@ public class Repository {
 		
 		toLog();
 	}
-
+	public void setHorsePerformance(int horse_id, int performance) {
+		mutex.lock();
+		try {
+			this.horsePerformance.put(horse_id,performance);
+		} finally {
+			mutex.unlock();
+		}
+		//toLog();
+	}
 	public void sethorseposition(int horse_id, int position){
 		mutex.lock();
 		try {

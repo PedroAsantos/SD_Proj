@@ -57,9 +57,11 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 			
 			horsesInPaddock++;
 			System.out.println("Horse_"+horseId+" is going to paddock!");
-			//is this necessry?
+			
 			horsesRunning.add(horseId);
 			horsePerformance.put(horseId, performance);
+
+			repo.setHorsePerformance(horseId, performance);
 			repo.sethorseruns(horseId,0);					
 			if(horsesInPaddock==horsesPerRace) {
 				spectatorWaiting_condition.signalAll();

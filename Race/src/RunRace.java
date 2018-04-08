@@ -97,9 +97,9 @@ public class RunRace {
 }
 //proxy vai implementar as interfaces do monitor
 //cada mensagem cria um socket
-//servidor vamos ter alguém vai estar a escuta de mensagem
-//no servidor vamos ter o monitor em cada processo. temos uma entidade à escuta.
-//no servidor chega um thread e é criado um thread e este é que chama o monitor
-//os threads ficam sempre à espera de resposta
-//o enunciado pede -> os cavalos estão todos no mesmo processo e na mesma máquina.
+//servidor vamos ter alguem vai estar a escuta de mensagem
+//no servidor vamos ter o monitor em cada processo. temos uma entidade aa escuta.
+//no servidor chega um thread e ee criado um thread e este ee que chama o monitor
+//os threads ficam sempre aa espera de resposta
+//o enunciado pede -> os cavalos estao todos no mesmo processo e na mesma maquina.
 //
