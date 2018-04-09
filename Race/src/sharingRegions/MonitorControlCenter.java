@@ -42,7 +42,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		
 		mutex.lock();
 		try {
-			spectatorsWatchingRace++;
+			
 			System.out.println("Spectator_"+spectator_id+" is watching the race!");
 			while(raceIsOn) {
 				try {
@@ -51,10 +51,12 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 					e.printStackTrace();
 				}
 			}
+			spectatorsWatchingRace++;
 			System.out.println("Spectator_"+spectator_id+" exiting of the race");
-			spectatorsWatchingRace--;
-			if(spectatorsWatchingRace==0) {
+		//	spectatorsWatchingRace--;
+			if(spectatorsWatchingRace==totalSpectators) {
 				raceIsOn=true;
+				spectatorsWatchingRace=0;
 			}
 	
 		}finally {
