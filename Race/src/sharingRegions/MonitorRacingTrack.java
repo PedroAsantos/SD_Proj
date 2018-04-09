@@ -170,7 +170,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		    horsePosition.put(horseId, newPos);
 			repo.sethorseposition(horseId,newPos);
 			horseRuns.put(horseId,horseRuns.get(horseId)+1);
-			repo.sethorseruns(horseId,horseRuns.get(horseId)+1);
+			repo.sethorseruns(horseId,horseRuns.get(horseId));
 			System.out.println("Horse_"+ horseId+" is on the position "+ newPos +" at run "+horseRuns.get(horseId));
 		
 			
