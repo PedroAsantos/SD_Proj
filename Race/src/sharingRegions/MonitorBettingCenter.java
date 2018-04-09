@@ -31,6 +31,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private int horseId;
 	private double moneyReceived;
 	private boolean brokerIsOccupied;
+	private int spectReceiving;
 	Repository repo;
 
 
@@ -52,6 +53,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		}
 		queueToReceivMoney = new LinkedList<Integer>();
 		moneyReceived=0;
+		spectReceiving=0;
 		this.repo=repo;
 	}
 	@Override
@@ -162,7 +164,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					e.printStackTrace();
 				}
 			}
-
+			spectReceiving++;
 			brokerIsOccupied=true;
 			broker_condition.signal();
 			System.out.println("Spectator_"+spectatorId+" turn to collect the gains!");
@@ -205,15 +207,17 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					winners.addAll(spectatorBets.get(horseWinners.get(i)));
 				}
 			}
-			for (int i = 0; i < winners.size(); i++) {
+		/*	for (int i = 0; i < winners.size(); i++) {
 				System.out.println("Winners:"+winners.get(i)[0]);
-			}
+			}*/
 			int spectatorReceivingMoney;
 			int betsPayed=0;
 			
 			while(betsPayed<winners.size()/*|| openHonorStand*/) {
 				try {
-					broker_condition.await();
+					while(spectReceiving==0) {
+						broker_condition.await();	
+					}
 					spectatorReceivingMoney=queueToReceivMoney.remove();
 					for(int i=0;i<winners.size();i++) {
 						if(winners.get(i)[0]==spectatorReceivingMoney) {
@@ -230,6 +234,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					}
 					
 					receivingDividends=false;
+					spectReceiving--;
 					receivMoneyList[spectatorReceivingMoney].signal();
 					
 				} catch (InterruptedException e) {
