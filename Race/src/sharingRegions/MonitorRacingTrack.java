@@ -79,7 +79,6 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			//	repo.raceDone();
 		        repo.raceStarted();
 
-				horseCanRun.put(horsesInRace.get(0),false);
 				while(horses_at_start_line<horsesPerRace) {
 					try {
 						broker_condition.await();
@@ -104,8 +103,12 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		try {
 			horses_at_start_line++;
 			System.out.println("Horse_"+horseId+" is going to startLine");
-			
-			horseCanRun.put(horseId, true);
+			if(horsesInRace.size()==0) {
+				horseCanRun.put(horseId,false);
+			}else {
+				horseCanRun.put(horseId, true);		
+			}
+	
 			horsePerformance.put(horseId, performance);
 			horsesInRace.add(horseId); 
 			horseRuns.put(horseId, 0);

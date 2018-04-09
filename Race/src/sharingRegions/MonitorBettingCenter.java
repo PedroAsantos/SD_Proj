@@ -32,6 +32,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private double moneyReceived;
 	private boolean brokerIsOccupied;
 	private int spectReceiving;
+	private boolean brokerCanNotAccept;
 	Repository repo;
 
 
@@ -54,6 +55,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		queueToReceivMoney = new LinkedList<Integer>();
 		moneyReceived=0;
 		spectReceiving=0;
+		brokerCanNotAccept=true;
 		this.repo=repo;
 	}
 	@Override
@@ -65,7 +67,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			
 			while(numberOfBets < numberOfSpectators) {
 				try {
-					broker_condition.await();
+					while(brokerCanNotAccept) {
+						broker_condition.await();	
+					}
 					//place bet
 					List <double[]> listTemp = new ArrayList<double[]>();
 					double[] temp = new double[2];
@@ -84,6 +88,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 					//repo.setspectatorBets(spectatorBets);
 					numberOfBets++;
 					spectatorBetAproving=false;
+					brokerCanNotAccept=true;
 					spectator_condition.signal();
 
 				} catch (InterruptedException e) {
@@ -126,6 +131,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			//spectator.payBet(this.bet[1]);
 			System.out.println("Spectator_"+spectatorId+" choose horse " + horseId+ " the money " + bet[1]);
 			repo.setspecbetamount(spectatorId,bet[1]);
+			brokerCanNotAccept=false;
 			broker_condition.signal();
 		
 			while(spectatorBetAproving) {
