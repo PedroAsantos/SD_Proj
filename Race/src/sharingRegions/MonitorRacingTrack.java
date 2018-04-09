@@ -67,7 +67,10 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		horsePosition = new HashMap<Integer,Integer>();
 		horsesInRace=new ArrayList<Integer>();
 	}
-	
+	/**
+	*	Waits until all horses are in starting line to start the race.
+	*
+	*/
 	@Override
 	public void startTheRace() {
 			mutex.lock();
@@ -96,6 +99,13 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			}
 	}
 	
+	/**
+	*	Send horses to start line and then when all horses to race are at start line 
+	*	the broker is woken up.
+	*
+	*	@param horseId Horse ID
+	*	@param performance Horse performance
+	*/
 	@Override
 	public void proceedToStartLine(int horseId,int performance) {
 	
@@ -131,13 +141,13 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		}finally {
 			mutex.unlock();
 		}
-	
-		
-		
-	
-		
+
 	}
-	
+	/**
+	*	Horse make a move with the value random up to his max performance
+	*
+	*	@param horseId Horse ID
+	*/
 	@Override
 	public void makeAMove(int horseId) {
 		mutex.lock();
@@ -182,7 +192,14 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		}
 		
 	}
-
+	/**
+	*	Check if a horse has crossed the finish line and then 
+	*	if all horses already finished the broker is woken up 
+	* 	else continue to run.
+	*
+	*	@param horseId Horse ID
+	*   @return boolean Returns true if the line has been crossed by the horse. 
+	*/
 	@Override
 	public boolean hasFinishLineBeenCrossed(int horseId) {
 		boolean hasCross=false;
@@ -260,6 +277,11 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		return hasCross;
 	}
 
+	/**
+	*	Report the results to spectators returning an array with rankings
+	*
+	*	@return int[] horseAWinners 
+	*/
 	@Override
 	public int[] reportResults() {
 		mutex.lock();

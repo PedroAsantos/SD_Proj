@@ -69,7 +69,7 @@ public class Repository {
 		this.horserank = new HashMap<Integer,Integer>();
 		this.raceLength=raceLength;
 	}
-
+	
 	public void writeLog(){
 		String header = "         AFTERNOON AT THE RACE TRACK - "
                 + "Description of the internal state of the problem\n";
@@ -97,7 +97,11 @@ public class Repository {
 	    }
 
 	}
-
+	/**
+	*	Function to write in the log files the update values.
+	*
+	
+	*/
 	public void toLog(){
 		
 		try{
@@ -216,7 +220,7 @@ public class Repository {
 					psAll[i]=0;
 				}
 			}
-			//NAO TA BEM!!!!!!!!!!!!
+		
 			String[] sdAll = new String[horsesPerRace];
 			if (horsesRunnning.size()>0) {
 				for (int i = 0;i<horsesPerRace; i++ ) {
@@ -325,7 +329,11 @@ public class Repository {
 		
 	}
 
-
+	/**
+	*	Function to add the horses that are running or they will run in the next race.
+	*   @param horseId Horse ID 
+	*   @return boolean return false if the race is already full.
+	*/
 	public boolean addHorsesToRun(int horseId) {
 		boolean boo=true;
 		mutex.lock();
@@ -340,12 +348,20 @@ public class Repository {
 		return boo;
 		
 	}
+	/**
+	*	Function to remove all the horses that were running.
+	*
+	*/
 	public void clearhorsesRunning() {
 		horsesRunnning.clear();
 	}
 	/*public int[] gethorsesFinalPos(){
 		return this.horsesFinalPos;
 	}*/
+	/**
+	*	Function to know the number of spectors in the event.
+	*   @return int the number of spectators.
+	*/
 	public int getNumberOfSpectators() {
 		return numberOfSpectators;
 	}
@@ -353,16 +369,34 @@ public class Repository {
 	public void sethorsesFinalPos(int[] horsesFinalPos){
 		this.horsesFinalPos = horsesFinalPos;
 	}*/
-	
+	/**
+	*	Function to return the number of races.
+	*
+	* 	@return int the number of races.
+	*/
 	public int getNumberOfRaces() {
 		return numberOfRaces;
 	}
+	/**
+	*	Function to return the number of races that left.
+	*
+	* 	@return int the number of races missing.
+	*/
 	public int getNumberOfRacesMissing() {
 		return numberOfRacesMissing;
 	}
+	/**
+	*	Function to update the number of races that are missing.
+	*
+	* 	
+	*/
 	public void raceStarted() {
 		numberOfRacesMissing--;
 	}
+	/**
+	*	Function to update the number of races that were made.
+	*	
+	*/
 	public void raceDone() {
 		numberOfRaces--;
 	}
@@ -370,7 +404,12 @@ public class Repository {
 	/*public void setspectatorBets(HashMap<Integer,List<double[]>> spectatorBets){
 		this.spectatorBets = spectatorBets;
 	}*/
-
+	/**
+	*	Function to update the state of the spectator_id.
+	*
+	* 	@param spectator_id Spectator ID.
+	* 	@param state Spectator State
+	*/
 	public void setSpecStat(int spectator_id, SpectatorState state){
 		mutex.lock();
 		try {
@@ -381,6 +420,13 @@ public class Repository {
 		
 		//toLog();
 	}
+	
+	/**
+	*	Function to update the probabilitie of the given horse winning.
+	*
+	* 	@param horse_id Horse ID.
+	* 	@param probabilitie Horse winning probabilitie.
+	*/
 	public void setHorseProbabilitie(int horse_id,double probabilitie) {
 		mutex.lock();
 		try {
@@ -389,6 +435,12 @@ public class Repository {
 			mutex.unlock();
 		}
 	}
+	/**
+	*	Function to update the state of the horse.
+	*
+	* 	@param horse_id Horse ID.
+	* 	@param state Horse state.
+	*/
 	public void setHorseStat(int horse_id, HorseState state){
 		mutex.lock();
 		try {
@@ -399,7 +451,12 @@ public class Repository {
 		
 		//toLog();
 	}
-
+	/**
+	*	Function to update the number of runs of a horse.
+	*
+	* 	@param horse_id Horse ID.
+	* 	@param runs Runs of the horse.
+	*/
 	public void sethorseruns(int horse_id, int runs){
 		mutex.lock();
 		try {
@@ -419,6 +476,12 @@ public class Repository {
 		}
 		//toLog();
 	}
+	/**
+	*	Function to update the position of the horse.
+	*
+	* 	@param horse_id Horse ID.
+	* 	@param position Horse position.
+	*/
 	public void sethorseposition(int horse_id, int position){
 		mutex.lock();
 		try {
@@ -428,7 +491,12 @@ public class Repository {
 		}
 		toLog();
 	}
-
+	/**
+	*	Function to update the money that a spectator put on a bet.
+	*
+	* 	@param spectator_id Spectator ID.
+	* 	@param amount bet amount.
+	*/
 	public void setspecbetamount(int spectator_id, double amount){
 		mutex.lock();
 		try {
@@ -438,7 +506,12 @@ public class Repository {
 		}
 		toLog();
 	}
-
+	/**
+	*	Function to update the money that a spectator has.
+	*
+	* 	@param spectator_id Spectator ID.
+	* 	@param money Money of the specator.
+	*/
 	public void setspecMoney(int spectator_id, double money){
 		mutex.lock();
 		try {
@@ -449,15 +522,25 @@ public class Repository {
 		toLog();
 	}
 
-	public BrokerState getbrokerstate(){
+/*	public BrokerState getbrokerstate(){
 		return brokerstate;
-	}
-
+	}*/
+	/**
+	*	Function to update the broker state
+	*
+	* 	@param brokerstate state.
+	* 	
+	*/
 	public void setbrokerstate(BrokerState brokerstate){
 		this.brokerstate=brokerstate;
 		//toLog();
 	}
-
+	/**
+	*	Function to update the horse that a given spectator bet.
+	*
+	* 	@param spec_id Spectator ID.
+	* 	@param horse_id Horse picked.
+	*/
 	public void setspecbets(int spec_id,int horse_id){
 		mutex.lock();
 		try {
@@ -468,7 +551,12 @@ public class Repository {
 		toLog();
 	}
 
-
+	/**
+	*	Function to update the horse place on the end of the race.
+	*
+	* 	@param horse_id Spectator ID.
+	* 	@param rank Horse place.
+	*/
 	public void sethorserank(int horse_id, int rank){
 		mutex.lock();
 		try {
@@ -478,14 +566,25 @@ public class Repository {
 		}
 		toLog();
 	}
-
+	/**
+	*	Function to clear the horse place on the end of the race.
+	*
+	*/
 	public void clearhorserank() {
 		this.horserank.clear();
 		
 	}
+	/**
+	*	Function to return the number of horses per race.
+	*   @return int Horses in each race.
+	*/
 	public int getHorsesPerRace() {
 		return this.horsesPerRace;
 	}
+	/**
+	*	Function to return the number of total horses in the event.
+	*   @return int Horses in the event.
+	*/
 	public int getTotalHorses() {
 		return this.totalHorses;
 	}

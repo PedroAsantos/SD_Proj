@@ -58,6 +58,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		brokerCanNotAccept=true;
 		this.repo=repo;
 	}
+	/**
+	*	Function to broker accept the bets of spectators.
+	*
+	*	 
+	*/
 	@Override
 	public void acceptTheBets() {
 		
@@ -108,7 +113,13 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		
 		
 	}
-
+	/**
+	*	Function to spectator place a bet.
+	*
+	*	@param spectatorId Spectator ID 
+	*	@param money Money of the bet
+	*	@param horsePicked Horse chosen by the spectator.
+	*/
 	@Override
 	public void placeABet(int spectatorId, double money,int horsePicked) {
 		mutex.lock();
@@ -153,6 +164,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		}
 		
 	}
+	/**
+	*	Function to spectator collect the gains if he won the bet.
+	*
+	*	@param spectatorId Spectator ID
+	*	@return double the money that the spectator won. 
+	*/
 	@Override
 	public double goCollectTheGains(int spectatorId) {
 		// TODO Auto-generated method stub
@@ -200,6 +217,11 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		}
 		return moneyReceived;
 	}
+	/**
+	*	Function for the broker be able to pay the winning bets.
+	*
+	*
+	*/
 	@Override
 	public void honourTheBets() {
 		mutex.lock();
@@ -257,6 +279,12 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 		}
 		
 	}
+	/**
+	*	Function to broker verify if any spectator won the bet. 
+	*
+	*	@param horseAWinners Array with the horses that won the last race.
+	*   @return boolean returns true if at least one spectator won the bet.
+	*/
 	@Override
 	public boolean areThereAnyWinners(int[] horseAWinners) {
 		boolean thereAreWinner=false;

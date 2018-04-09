@@ -35,6 +35,13 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 		
 	}
 	
+	/**
+	*	Wait that all the horses arrives to stable to wake up the broker
+	* and then a returns an boolean that indicates if a horse is going to paddock
+	*
+	*	@param horseId Horse ID
+	*	@return boolean goingToPaddock 
+	*/
 	@Override
 	public boolean proceedToStable(int horseId) {
 		mutex.lock();
@@ -68,7 +75,11 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 		return goingToPaddock;
 				
 	}
-	
+	/**
+	*	When the event are ending the horses are going to the end of event
+	*
+	*	 
+	*/
 	@Override
 	public void summonHorsesToEnd() {
 		mutex.lock();
@@ -89,7 +100,11 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 			mutex.unlock();
 		}
 	}
-	
+	/**
+	*	All horses go to paddock
+	*
+	*	 
+	*/
 	@Override
 	public void summonHorsesToPaddock() {
 		mutex.lock();

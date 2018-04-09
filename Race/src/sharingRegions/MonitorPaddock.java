@@ -48,7 +48,12 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	}
 	
 
-	
+	/**
+	*	Function for horses to stay in the paddock. They are awake at the end of the spectators all have seen the horses.
+	*
+	*	@param horseId Horse ID 
+	*	@param performance Performance of the horse
+	*/
 	@Override
 	public void proceedToPaddock(int horseId,int performance) {
 		
@@ -89,6 +94,11 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		
 	
 	}
+	/**
+	*	Function for spectators to be able to wait for the horses to be in the paddock.
+	*
+	*	@param spectator_id Spectator ID 
+	*/
 	@Override
 	public void waitForNextRace(int spectator_id) {
 		mutex.lock();
@@ -107,8 +117,12 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 		}
 		
 	}
-
-
+	/**
+	*	Function for spectators to be able to see and choose the horse that they will bet. In this function the probabilities of each horse winning are calculated.
+	*
+	*	@param spectator_id Spectator ID 
+	*	@return int the id of the chosen horse.
+	*/
 	@Override
 	public int goCheckHorses(int spectator_id) {
 		int horsePicked; 

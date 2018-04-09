@@ -35,8 +35,11 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		spectatorsRelaxing=0;
 	}
 	
-	
-
+	/**
+	*	Function for spectators to be able to watch the race. In the end of the race they are waken up.
+	*
+	*	@param spectator_id Spectator ID 
+	*/
 	@Override
 	public void goWatchTheRace(int spectator_id) {
 		
@@ -64,7 +67,12 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		}
 		
 	}
-
+	/**
+	*	Function for spectators know if they won the bet. 
+	*
+	*	@param horsePicked horsePicked ID 
+	*	@return boolean Returns true if the spectator won the bet.
+	*/
 	@Override
 	public boolean haveIwon(int spectator_id, int horsePicked) {
 		boolean iWon=false;
@@ -97,6 +105,11 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		
 		return iWon;
 	}
+	/**
+	*	Function for spectators know if there are more races.
+	*
+	*	@return boolean Returns true if there are no more Races.
+	*/
 	@Override
 	public boolean noMoreRaces() {
 		int numberOfRaces=0;
@@ -112,7 +125,11 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 			return false;
 		}
 	}
-	
+	/**
+	*	Function for broker report the horses that won the last race.
+	*
+	*	@param horseAWinners Array with the horses that won the last race.
+	*/
 	@Override
 	public void reportResults(int[] horseAWinners) {
 		mutex.lock();
