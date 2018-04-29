@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 import Interfaces.IBroker_BettingCenter;
 import Interfaces.IBroker_Control;
 import Interfaces.IBroker_Stable;
@@ -12,6 +16,7 @@ import sharingRegions.*;
 
 
 public class RunMonitorStable {
+    static final int PORT = 9996;
 
 	public static void main(String[] args) {
 				
@@ -29,6 +34,27 @@ public class RunMonitorStable {
 		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
 		MonitorPaddock mPaddock = new MonitorPaddock(repo);
 		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(raceLength, repo);
+	
+		 ServerSocket serverSocket = null;
+	        
+		 Socket socket = null;
+
+	     try {
+	    	 serverSocket = new ServerSocket(PORT);
+	     } catch (IOException e) {
+	         e.printStackTrace();
+
+	     }
+	     while (true) {
+	    	 try {
+	    		 socket = serverSocket.accept();
+	    	 } catch (IOException e) {
+	             System.out.println("I/O error: " + e);
+	         }
+	            // new thread for a client
+	    	 new EchoThread(socket,mStable).start();
+	     }
+	
 	}
 		
 		

@@ -1,6 +1,11 @@
 package sharingRegions;
 
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -107,26 +112,46 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	*/
 	@Override
 	public void summonHorsesToPaddock() {
-		mutex.lock();
-		try {
-			goingToPaddock=true;
-			while(horsesAtStable < totalHorses) {
-				try {
-					broker_condition.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			horseCanNotGo=false;
-			horse_condition.signalAll();
-			
-			System.out.println("ALL HORSES ARE GOING TO PADDOCK");
-			
-		} finally {
-			mutex.unlock();
-		}
+		sendMessage("summonHorsesToPaddock\n");
 	}
 	
+	public void sendMessage(String functionName) {
+		String hostName = "localhost";
+		int portNumber = 9996;
 
+		try {
+		    Socket echoSocket = new Socket(hostName, portNumber);
+		    OutputStream output = echoSocket.getOutputStream(); 
+		    
+		    byte[] data = functionName.getBytes();
+		    output.write(data);
+		    
+		    PrintWriter writer = new PrintWriter(output, true);
+		
+		    BufferedReader in =
+		        new BufferedReader(
+		            new InputStreamReader(echoSocket.getInputStream()));
 
+            String line;
+ 
+            while ((line = in.readLine()) != null) {
+                System.out.println("asd"+line);
+            }
+		    /*
+		     * 
+		     *  while (true) {
+	            	line = in.readLine();
+	            	if(line.equals("OK!")) {
+	            		System.out.println("wqery");
+	            		break;
+	            	}
+	                System.out.println("asd"+line);
+            	}
+            
+		     * 
+		     */
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 }
