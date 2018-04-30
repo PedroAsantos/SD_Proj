@@ -107,6 +107,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	*/
 	@Override
 	public void summonHorsesToPaddock() {
+		System.out.println("summonHorsesToPaddock");
 		mutex.lock();
 		try {
 			goingToPaddock=true;
@@ -117,6 +118,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 					e.printStackTrace();
 				}
 			}
+
 			horseCanNotGo=false;
 			horse_condition.signalAll();
 			
