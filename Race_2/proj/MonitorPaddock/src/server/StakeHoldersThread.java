@@ -1,16 +1,16 @@
 package server;
 
 
-import sharingRegions.MonitorStable;
+import sharingRegions.MonitorPaddock;
 
 public class StakeHoldersThread extends Thread {
 	protected ServerCom com;
-	private MonitorStable mStable;
+	private MonitorPaddock mPaddock;
 	private StakeHoldersProtocol shp;
 
-	public StakeHoldersThread(ServerCom com, StakeHoldersProtocol shp, MonitorStable mStable) {
+	public StakeHoldersThread(ServerCom com, StakeHoldersProtocol shp, MonitorPaddock mPaddock) {
 		this.com = com;
-		this.mStable = mStable;
+		this.mPaddock = mPaddock;
 		this.shp = shp;
 	}
 
@@ -29,7 +29,7 @@ public class StakeHoldersThread extends Thread {
 			System.out.println("serverteste1");
 		 // teste de fim de comunicação
 			if(!inputLine.equals("Ok!")) {
-				returnFunction=shp.processInput(inputLine,mStable); // geração da mensagem seguinte
+				returnFunction=shp.processInput(inputLine,mPaddock); // geração da mensagem seguinte
 			}
 		
 			

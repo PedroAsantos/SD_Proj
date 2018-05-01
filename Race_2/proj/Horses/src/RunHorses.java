@@ -4,8 +4,6 @@ import java.util.Random;
 import Interfaces.IHorse_Paddock;
 import Interfaces.IHorse_Stable;
 import Interfaces.IHorse_Track;
-import sharingRegions.MonitorBettingCenter;
-import sharingRegions.MonitorControlCenter;
 import sharingRegions.MonitorPaddock;
 import sharingRegions.MonitorRacingTrack;
 import sharingRegions.MonitorStable;
@@ -15,20 +13,14 @@ import stakeholders.Horse;
 public class RunHorses {
 
 	public static void main(String[] args) {
-		
 		int numberOfHorses = 20; //testar com numeros maiores.
-		int numberOfSpectators=4;
-		int numberOfRaces=5;
-		int horsesPerRace=4;
-		int raceLength=30;
 		int maxPerformance=10;
-		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
+		
+		Repository repo = new Repository();
 
-		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
-		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
-		MonitorPaddock mPaddock = new MonitorPaddock(repo);
-		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(raceLength, repo);
-		MonitorStable mStable = new MonitorStable(repo);
+		MonitorPaddock mPaddock = new MonitorPaddock();
+		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack();
+		MonitorStable mStable = new MonitorStable();
 		
 		Horse[] horses = new Horse[numberOfHorses];
 		

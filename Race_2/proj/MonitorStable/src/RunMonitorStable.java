@@ -1,25 +1,10 @@
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-
-import Interfaces.IBroker_BettingCenter;
-import Interfaces.IBroker_Control;
-import Interfaces.IBroker_Stable;
-import Interfaces.IBroker_Track;
-import Interfaces.IHorse_Paddock;
-import Interfaces.IHorse_Stable;
-import Interfaces.IHorse_Track;
-import Interfaces.ISpectator_BettingCenter;
-import Interfaces.ISpectator_Control;
-import Interfaces.ISpectator_Paddock;
-import server.EchoThread;
 import server.ServerCom;
 import server.StakeHoldersProtocol;
 import server.StakeHoldersThread;
 import sharingRegions.*;
 
 public class RunMonitorStable {
-	static final int PORT = 9991;
+	static final int PORT = 9998;
 
 	public static void main(String[] args) {
 
@@ -33,10 +18,6 @@ public class RunMonitorStable {
 		repo.writeLog();
 
 		MonitorStable mStable = new MonitorStable(repo);
-		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
-		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
-		MonitorPaddock mPaddock = new MonitorPaddock(repo);
-		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(raceLength, repo);
 		/*
 		 * ServerSocket serverSocket = null;
 		 * 
@@ -50,7 +31,7 @@ public class RunMonitorStable {
 		 * EchoThread(socket,mStable).start(); }
 		 */
 		ServerCom scon, sconi; // canais de comunicação
-		int portNumb = 9991; // número do port em que o serviço é
+		int portNumb = 9998; // número do port em que o serviço é
 								// estabelecido
 		StakeHoldersProtocol shp; // serviço a ser fornecido
 

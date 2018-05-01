@@ -1,8 +1,7 @@
-import sharingRegions.MonitorBettingCenter;
-import sharingRegions.MonitorControlCenter;
+import server.ServerCom;
+import server.StakeHoldersProtocol;
+import server.StakeHoldersThread;
 import sharingRegions.MonitorPaddock;
-import sharingRegions.MonitorRacingTrack;
-import sharingRegions.MonitorStable;
 import sharingRegions.Repository;
 
 public class RunPaddock {
@@ -13,16 +12,33 @@ public class RunPaddock {
 		int numberOfRaces=5;
 		int horsesPerRace=4;
 		int raceLength=30;
-		int maxPerformance=10;
+	
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
 		repo.writeLog();
 
-		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
-		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
 		MonitorPaddock mPaddock = new MonitorPaddock(repo);
-		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(raceLength, repo);
-		MonitorStable mStable = new MonitorStable(repo);
+	
 		
 		
+		ServerCom scon, sconi; // canais de comunicação
+		int portNumb = 9988; // número do port em que o serviço é
+								// estabelecido
+		StakeHoldersProtocol shp; // serviço a ser fornecido
+
+		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associação
+		scon.start(); // com o endereço público
+		shp = StakeHoldersProtocol.getInstance(); // activar oo serviço
+		System.out.println("O serviço foi estabelecido!");
+		System.out.println("O servidor esta em escuta.");
+
+		/* processamento de pedidos */
+
+		StakeHoldersThread thread; // agente prestador de serviço
+
+		while (true) {
+			sconi = scon.accept(); // entrar em processo de escuta
+			thread = new StakeHoldersThread(sconi, shp, mPaddock); // lançar agente prestador de serviço
+			thread.start();
+		}
 	}
 }

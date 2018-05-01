@@ -185,9 +185,9 @@ public class ClientCom
    public Object readObject ()
    {
       Object fromServer = null;                            // objecto
-
       try
       { fromServer = in.readObject ();
+      System.out.println("readObjectFromServer"+fromServer);
       }
       catch (InvalidClassException e)
       { System.out.println (Thread.currentThread ().getName () +

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import sharingRegions.MonitorStable;
+import sharingRegions.MonitorPaddock;
 
 public class StakeHoldersProtocol {
 
@@ -22,7 +22,7 @@ public class StakeHoldersProtocol {
 		return instance;
 	}
 
-	public String processInput(String payload, MonitorStable mStable) {
+	public String processInput(String payload, MonitorPaddock mPaddock) {
 		System.out.println("processInput");
 		Method method = null;
 		String[] payloadCamps = payload.split(";");
@@ -47,40 +47,40 @@ public class StakeHoldersProtocol {
 		try {
 			/*
 			 * if(functionToCall.equals("proceedToStable")) {
-			 * System.out.println("method.invoke(mStable, null);");
-			 * mStable.proceedToStable(1); }else {
+			 * System.out.println("method.invoke(mPaddock, null);");
+			 * mPaddock.proceedToStable(1); }else {
 			 */
 			System.out.println("***********************"+payloadCamps.length);
 			switch (payloadCamps.length) {
 			case 1:
 				System.out.println("CASE1");
-				method = mStable.getClass().getDeclaredMethod(payloadCamps[0]);
-				returnFunction = method.invoke(mStable);
+				method = mPaddock.getClass().getDeclaredMethod(payloadCamps[0]);
+				returnFunction = method.invoke(mPaddock);
 				break;
 			case 2:
 				if(allArraysOfPayload.isEmpty()) {
 					System.out.println("CASE2A");
-					method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class);
-					returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]));	
+					method = mPaddock.getClass().getDeclaredMethod(payloadCamps[0],int.class);
+					returnFunction= method.invoke(mPaddock,Integer.parseInt(payloadCamps[1]));	
 				}else {
 					System.out.println("CASE2B");
-					method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class);
-					returnFunction= method.invoke(mStable,allArraysOfPayload.get(1));	
+					method = mPaddock.getClass().getDeclaredMethod(payloadCamps[0],int.class);
+					returnFunction= method.invoke(mPaddock,allArraysOfPayload.get(1));	
 				}
 				break;
 			case 3:
 				System.out.println("CASE3B");
-				method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class);
+				method = mPaddock.getClass().getDeclaredMethod(payloadCamps[0],int.class);
 				if(allArraysOfPayload.isEmpty()) {
-					returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]),Integer.parseInt(payloadCamps[2]));
+					returnFunction= method.invoke(mPaddock,Integer.parseInt(payloadCamps[1]),Integer.parseInt(payloadCamps[2]));
 				}else {
 					if(allArraysOfPayload.containsKey(1)&&	allArraysOfPayload.containsKey(2)) {
-						returnFunction= method.invoke(mStable,allArraysOfPayload.get(1),allArraysOfPayload.get(2));
+						returnFunction= method.invoke(mPaddock,allArraysOfPayload.get(1),allArraysOfPayload.get(2));
 					}else {
 						if(allArraysOfPayload.containsKey(1)) {
-							returnFunction= method.invoke(mStable,allArraysOfPayload.get(1),Integer.parseInt(payloadCamps[2]));
+							returnFunction= method.invoke(mPaddock,allArraysOfPayload.get(1),Integer.parseInt(payloadCamps[2]));
 						}else {
-							returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]),allArraysOfPayload.get(2));
+							returnFunction= method.invoke(mPaddock,Integer.parseInt(payloadCamps[1]),allArraysOfPayload.get(2));
 						}
 					}
 				}

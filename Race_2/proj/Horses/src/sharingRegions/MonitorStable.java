@@ -1,38 +1,14 @@
 package sharingRegions;
 
-
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-
-import Interfaces.IBroker_Stable;
 import Interfaces.IHorse_Stable;
 import communication.Stub;
 
 
-public class MonitorStable implements IHorse_Stable, IBroker_Stable {
-	private final ReentrantLock mutex;
-	private final Condition horse_condition;
-	private final Condition broker_condition;
+public class MonitorStable implements IHorse_Stable {
+
 	
-	private boolean goingToPaddock;
-	private int horsesAtStable;
-	private int horsesPerRace;
-	private int totalHorses;
-	private int horsesPaddock;
-	private boolean horseCanNotGo;
-	Repository repo;
+	public MonitorStable() {
 	
-	public MonitorStable(Repository repo) {
-		mutex = new ReentrantLock(true);
-		horse_condition = mutex.newCondition();
-		broker_condition = mutex.newCondition();
-		horsesAtStable=0;
-		horseCanNotGo=true;
-		this.totalHorses=repo.getTotalHorses();
-		this.repo = repo;
-		this.horsesPerRace=repo.getHorsesPerRace();
-		this.horsesPaddock=0;
-		this.goingToPaddock=true;
 		
 	}
 	
@@ -56,62 +32,11 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 		
 				
 	}
-	/**
-	*	When the event are ending the horses are going to the end of event
-	*
-	*	 
-	*/
-	@Override
-	public void summonHorsesToEnd() {
-		mutex.lock();
-		try {
-			goingToPaddock=false;
-			while(horsesAtStable < totalHorses) {
-				try {
-					broker_condition.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			horseCanNotGo=false;
-			horse_condition.signalAll();
-			
-			System.out.println("ALL HORSES ARE GOING TO END OF EVENT");
-		} finally {
-			mutex.unlock();
-		}
-	}
-	/**
-	*	All horses go to paddock
-	*
-	*	 
-	*/
-	@Override
-	public void summonHorsesToPaddock() {
-		mutex.lock();
-		try {
-			goingToPaddock=true;
-			while(horsesAtStable < totalHorses) {
-				try {
-					broker_condition.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			horseCanNotGo=false;
-			horse_condition.signalAll();
-			
-			System.out.println("ALL HORSES ARE GOING TO PADDOCK");
-			
-		} finally {
-			mutex.unlock();
-		}
-	}
 	
 	public String sendMessage(String payload) {
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9991; // número do port
+		int portNumb = 9998; // número do port
 
 		hostName = "localhost";
 

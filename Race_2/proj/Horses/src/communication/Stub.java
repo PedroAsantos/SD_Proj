@@ -55,11 +55,11 @@ public class Stub {
 		{
 			System.out.println("Servidor: " + fromServer); // imprimir mensagem no dispositivo de saída
 															// standard
-			if (fromServer.equals("Ok!")) {
+			if (fromServer.equals("Ok!")) 
 				break; // teste de continuação	
-			}else {
-				returnFunction=fromServer;
-			}		
+			
+			returnFunction=fromServer;
+					
 			// ler mensagem do utilizador
 			do {
 				fromUser = "Ok!";
@@ -74,3 +74,4 @@ public class Stub {
 		return returnFunction;
 	}
 }
+
