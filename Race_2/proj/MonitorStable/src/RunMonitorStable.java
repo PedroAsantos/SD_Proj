@@ -13,7 +13,6 @@ public class RunMonitorStable {
 		int numberOfRaces = 5;
 		int horsesPerRace = 4;
 		int raceLength = 30;
-		int maxPerformance = 10;
 		Repository repo = new Repository(numberOfHorses, numberOfSpectators, numberOfRaces, horsesPerRace, raceLength);
 		repo.writeLog();
 
@@ -31,15 +30,15 @@ public class RunMonitorStable {
 		 * EchoThread(socket,mStable).start(); }
 		 */
 		ServerCom scon, sconi; // canais de comunicação
-		int portNumb = 9998; // número do port em que o serviço é
+		int portNumb = 9999; // número do port em que o serviço é
 								// estabelecido
 		StakeHoldersProtocol shp; // serviço a ser fornecido
 
 		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associação
 		scon.start(); // com o endereço público
 		shp = StakeHoldersProtocol.getInstance(); // activar oo serviço
-		System.out.println("O serviço foi estabelecido!");
-		System.out.println("O servidor esta em escuta.");
+		System.out.println("MonitorStable was established!");
+		System.out.println("MonitorStable is listenning.");
 
 		/* processamento de pedidos */
 

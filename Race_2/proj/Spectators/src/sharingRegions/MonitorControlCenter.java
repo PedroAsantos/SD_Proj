@@ -1,38 +1,17 @@
 package sharingRegions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 
-import interfaces.IBroker_Control;
+import communication.Stub;
 import interfaces.ISpectator_Control;
 
 //import com.sun.corba.se.pept.broker.Broker;
 
-public class MonitorControlCenter implements ISpectator_Control, IBroker_Control{
-	private final ReentrantLock mutex;
-	private final Condition spectator_condition;
-	private final Condition broker_condidition;
-	
-	private int spectatorsWatchingRace;
-	private boolean raceIsOn;
-	private boolean eventNotEnd;
-	private int spectatorsRelaxing;
-	private int totalSpectators;
-	private List<Integer> winners;
+public class MonitorControlCenter implements ISpectator_Control{
+
 	Repository repo;
 
 	public MonitorControlCenter(Repository repo) {
-		mutex = new ReentrantLock(true);
-		spectator_condition = mutex.newCondition();
-		broker_condidition = mutex.newCondition();
-		raceIsOn=true;
-		eventNotEnd=true;
 		this.repo=repo;
-		spectatorsWatchingRace=0;
-		this.totalSpectators=repo.getNumberOfSpectators();
-		spectatorsRelaxing=0;
 	}
 	
 	/**
@@ -40,33 +19,7 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	*
 	*	@param spectator_id Spectator ID 
 	*/
-	@Override
-	public void goWatchTheRace(int spectator_id) {
-		
-		mutex.lock();
-		try {
-			
-			System.out.println("Spectator_"+spectator_id+" is watching the race!");
-			while(raceIsOn) {
-				try {
-					spectator_condition.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			spectatorsWatchingRace++;
-			System.out.println("Spectator_"+spectator_id+" exiting of the race");
-		//	spectatorsWatchingRace--;
-			if(spectatorsWatchingRace==totalSpectators) {
-				raceIsOn=true;
-				spectatorsWatchingRace=0;
-			}
 	
-		}finally {
-			mutex.unlock();
-		}
-		
-	}
 	/**
 	*	Function for spectators know if they won the bet. 
 	*
@@ -75,35 +28,11 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	*/
 	@Override
 	public boolean haveIwon(int spectator_id, int horsePicked) {
-		boolean iWon=false;
-		mutex.lock();
-		try {
-			
-		/*	while(waitinghaveIwon) {
-				try {
-					//usar outra condicao?
-					spectator_condition.await();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}*/
-			
-			
-	
-			for(int i = 0;i<winners.size();i++) {
-				if(winners.get(i)==horsePicked) {
-					iWon=true;
-				}
-				
-			}
-			
-			System.out.println("Spectator_"+spectator_id+" won: "+iWon);
-		} finally {
-			mutex.unlock();
+		if(sendMessage("haveIwon"+";"+spectator_id+";"+horsePicked).equals("true")) {
+			return true;
 		}
+		return false;
 		
-		return iWon;
 	}
 	/**
 	*	Function for spectators know if there are more races.
@@ -112,42 +41,13 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	*/
 	@Override
 	public boolean noMoreRaces() {
-		int numberOfRaces=0;
-		mutex.lock();
-		try {
-			numberOfRaces = repo.getNumberOfRacesMissing();
-		} finally {
-			mutex.unlock();
-		}
-		if(numberOfRaces<=0) {
+		if(sendMessage("noMoreRaces").equals("true")) {
 			return true;
-		}else {
-			return false;
 		}
-	}
-	/**
-	*	Function for broker report the horses that won the last race.
-	*
-	*	@param horseAWinners Array with the horses that won the last race.
-	*/
-	@Override
-	public void reportResults(int[] horseAWinners) {
-		mutex.lock();
-		try {
-			winners = new ArrayList<Integer>();
-			for(int i=0;i<horseAWinners.length;i++) {
-				winners.add(horseAWinners[i]);
-			}
-			raceIsOn=false;
-			System.out.println("Reporting Result to Spectators");
-			spectator_condition.signalAll();
-		} finally {
-			mutex.unlock();
-		}
-		
-		
+		return false;
 		
 	}
+	
 	/**
 	*	Function for spectators relax at the end of the race.
 	*
@@ -155,52 +55,28 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	*/
 	@Override
 	public void relaxABit(int spectator_id) {
-		mutex.lock();
-		try {
-			spectatorsRelaxing++;
-			if(spectatorsRelaxing==totalSpectators) {
-				broker_condidition.signal();
-			}
-			System.out.println("Spectator_"+spectator_id+" is relaxing!");
-			while(eventNotEnd){
-				try {
-					spectator_condition.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			spectatorsRelaxing--;
-			if(spectatorsRelaxing==0) {
-				eventNotEnd=true;
-			}
-			
-		}finally {
-			mutex.unlock();
-		}
+		sendMessage("relaxABit"+";"+spectator_id);
 	}
-	/**
-	*	Function for broker wait for spectators.
-	*
-	*	
-	*/
+
 	@Override
-	public void entertainTheGuests() {
-		mutex.lock();
-		try {
-			System.out.println("BROKER ENTERTAIN THE GUESTS");
-			while(spectatorsRelaxing<totalSpectators){
-				try {
-					broker_condidition.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			eventNotEnd=false;
-			spectator_condition.signalAll();
-			
-		}finally {
-			mutex.unlock();
-		}
+	public void goWatchTheRace(int spectator_id) {
+		sendMessage("goWatchTheRace"+";"+spectator_id);
+		
+	}
+	
+	public String sendMessage(String payload) {
+
+		String hostName; // nome da máquina onde está o servidor
+		int portNumb = 9959; // número do port
+
+		hostName = "localhost";
+
+		/* troca de mensagens com o servidor */
+
+		Stub stub; // stub de comunicação
+
+		stub = new Stub(hostName, portNumb);
+		return stub.exchange(payload);	
 	}
 
 }

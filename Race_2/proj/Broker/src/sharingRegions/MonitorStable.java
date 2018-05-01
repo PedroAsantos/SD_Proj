@@ -36,7 +36,7 @@ public class MonitorStable implements IBroker_Stable {
 	public String sendMessage(String payload) {
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9998; // número do port
+		int portNumb = 9999; // número do port
 
 		hostName = "localhost";
 

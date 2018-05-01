@@ -70,7 +70,7 @@ public class StakeHoldersProtocol {
 				break;
 			case 3:
 				System.out.println("CASE3B");
-				method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class);
+				method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class,int.class);
 				if(allArraysOfPayload.isEmpty()) {
 					returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]),Integer.parseInt(payloadCamps[2]));
 				}else {

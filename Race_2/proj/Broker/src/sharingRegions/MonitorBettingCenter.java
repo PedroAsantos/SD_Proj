@@ -45,7 +45,7 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	public String sendMessage(String payload) {
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9991; // número do port
+		int portNumb = 9989; // número do port
 
 		hostName = "localhost";
 

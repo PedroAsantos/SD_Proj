@@ -21,15 +21,16 @@ public class RunPaddock {
 		
 		
 		ServerCom scon, sconi; // canais de comunicação
-		int portNumb = 9988; // número do port em que o serviço é
+		int portNumb = 9969; // número do port em que o serviço é
 								// estabelecido
 		StakeHoldersProtocol shp; // serviço a ser fornecido
 
 		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associação
 		scon.start(); // com o endereço público
 		shp = StakeHoldersProtocol.getInstance(); // activar oo serviço
-		System.out.println("O serviço foi estabelecido!");
-		System.out.println("O servidor esta em escuta.");
+		System.out.println("MonitorPaddock was established!");
+		System.out.println("MonitorPaddock is listenning.");
+
 
 		/* processamento de pedidos */
 

@@ -21,14 +21,14 @@ public class MonitorPaddock implements IHorse_Paddock {
 	*/
 	@Override
 	public void proceedToPaddock(int horseId,int performance) {	
-		sendMessage("waitForNextRace"+";"+horseId+";"+performance);
+		sendMessage("proceedToPaddock"+";"+horseId+";"+performance);
 	}
 
 
 	public String sendMessage(String payload) {
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9988; // número do port
+		int portNumb = 9969; // número do port
 
 		hostName = "localhost";
 

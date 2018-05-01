@@ -45,8 +45,8 @@ public class Horse extends Thread {
 					break;
 				case AT_THE_PADDOCK:
 					monitorPaddock.proceedToPaddock(id,performance);
-					state=HorseState.AT_THE_FINISH_LINE;
-					//state=HorseState.AT_THE_START_LINE;
+					//state=HorseState.AT_THE_FINISH_LINE;
+					state=HorseState.AT_THE_START_LINE;
 					repo.setHorseStat(id,state);
 					repo.toLog();
 					break;
