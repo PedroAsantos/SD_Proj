@@ -33,13 +33,21 @@ public class StakeHoldersProtocol {
 		Map<Integer,int[]> allArraysOfPayload = new HashMap<Integer,int[]>();
 		
 		for(int argumentNumber=0;argumentNumber<payloadCamps.length;argumentNumber++) {
+			System.out.println("payloadCamps[argumentNumber]="+payloadCamps[argumentNumber]);
 			checkArray=payloadCamps[argumentNumber].split(",");
+
 			if(checkArray.length>1) {
 				//tem array, por isso converter para int
+				System.out.println("true is array");
 				oneArrayOfPayload = new int[checkArray.length];
 				for(int c=0;c<checkArray.length;c++) {
 					oneArrayOfPayload[c]=Integer.parseInt(checkArray[c]);
+					System.out.println("checkArray->"+checkArray[c]);
 				}
+				allArraysOfPayload.put(argumentNumber,oneArrayOfPayload);
+			}else if(payloadCamps[argumentNumber].length() - payloadCamps[argumentNumber].replace(",", "").length()==1) {
+				oneArrayOfPayload = new int[1];
+				oneArrayOfPayload[0]=Integer.parseInt(checkArray[0]);
 				allArraysOfPayload.put(argumentNumber,oneArrayOfPayload);
 			}
 		}
@@ -87,7 +95,24 @@ public class StakeHoldersProtocol {
 								
 				break;
 			case 4:
-
+				System.out.println("CASE4B");
+				//accepting only function int,double,int -> it is the unique necessary case
+				method = mBettingCenter.getClass().getDeclaredMethod(payloadCamps[0],int.class,double.class,int.class);
+				returnFunction= method.invoke(mBettingCenter,Integer.parseInt(payloadCamps[1]), Double.parseDouble(payloadCamps[2]),Integer.parseInt(payloadCamps[3]));
+			
+				/*if(allArraysOfPayload.isEmpty()) {
+					returnFunction= method.invoke(mBettingCenter,Integer.parseInt(payloadCamps[1]),Integer.parseInt(payloadCamps[2]),Integer.parseInt(payloadCamps[3]));
+				}else {
+					if(allArraysOfPayload.containsKey(1)&&	allArraysOfPayload.containsKey(2) && allArraysOfPayload.containsKey(3)) {
+						returnFunction= method.invoke(mBettingCenter,allArraysOfPayload.get(1),allArraysOfPayload.get(2),allArraysOfPayload.get(2));
+					}else {
+						if(allArraysOfPayload.containsKey(1)) {
+							returnFunction= method.invoke(mBettingCenter,allArraysOfPayload.get(1),Integer.parseInt(payloadCamps[2]));
+						}else {
+							returnFunction= method.invoke(mBettingCenter,Integer.parseInt(payloadCamps[1]),allArraysOfPayload.get(2));
+						}
+					}
+				}*/
 				break;
 
 			default:
@@ -114,14 +139,24 @@ public class StakeHoldersProtocol {
 		}
 		boolean tempBoolean;
 		int tempInt;
-		if(method.getReturnType().equals(Integer.TYPE)) {
+		int[] tempIntArray;
+		if (method.getReturnType().isArray()) {
+		        if(method.getReturnType().getComponentType().equals(Integer.TYPE)) {
+		        	tempIntArray=(int[]) returnFunction;
+		        	returnFunctionPayload="";
+		        	for(int i=0;i<tempIntArray.length;i++) {
+		        		returnFunctionPayload+=Integer.toString(tempIntArray[i]);
+		        		if(i<tempIntArray.length-1) {
+		        			returnFunctionPayload+=",";
+		    			}
+		        	}
+		        }
+		}else if(method.getReturnType().equals(Integer.TYPE)) {
 			tempInt=(int) returnFunction;  
 			returnFunctionPayload=  Integer.toString(tempInt);
 		}else if(method.getReturnType().equals(Boolean.TYPE)){
 			tempBoolean=(boolean) returnFunction;  
 			returnFunctionPayload= String.valueOf(tempBoolean);
-		}else if(method.getReturnType().equals(Boolean.TYPE)) {
-			//fazer para os arrrays
 		}
 		return returnFunctionPayload;
 	}

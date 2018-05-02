@@ -30,11 +30,13 @@ public class MonitorRacingTrack implements IBroker_Track{
 	@Override
 	public int[] reportResults() {
 		String[] returnFunction;
-		returnFunction=sendMessage("startTheRace").split(",");
+		returnFunction=sendMessage("reportResults").split(",");
+	
 		int[] result = new int[returnFunction.length];
 		for(int i=0;i<returnFunction.length;i++) {
 			result[i]=Integer.parseInt(returnFunction[i]);
 		}
+		
         return result;
 	}
 	public String sendMessage(String payload) {

@@ -22,7 +22,7 @@ public class RunBroker {
 		Repository repo = new Repository();
 		Broker broker = new Broker((IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack,repo);
 		
-
+	
 		broker.start();
 		
 		try {
@@ -30,7 +30,7 @@ public class RunBroker {
 		} catch (InterruptedException e) {
 			System.out.println("Broker thread has ended.\n");
 		}
-		
+	
 		
 	}	
 	

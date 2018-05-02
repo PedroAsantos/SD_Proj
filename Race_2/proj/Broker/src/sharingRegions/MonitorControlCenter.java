@@ -27,6 +27,9 @@ public class MonitorControlCenter implements IBroker_Control{
 				array+=",";
 			}
 		}
+		if(horseAWinners.length==1) {
+			array+=",";
+		}
 		sendMessage("reportResults"+";"+array);		
 	}
 

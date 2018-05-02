@@ -38,8 +38,8 @@ public class Broker extends Thread {
                     repo.setbrokerstate(state);
                     System.out.print("Opening the event \n");
                     monitorStable.summonHorsesToPaddock();
-                 //   state=BrokerState.ANNOUNCING_NEXT_RACE;
-                    state=BrokerState.PLAYING_HOST_AT_THE_BAR;
+                    state=BrokerState.ANNOUNCING_NEXT_RACE;
+                //  state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     repo.toLog();
                     break;
                 case ANNOUNCING_NEXT_RACE:

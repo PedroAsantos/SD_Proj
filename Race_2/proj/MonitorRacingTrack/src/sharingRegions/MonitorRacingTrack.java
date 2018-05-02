@@ -92,7 +92,8 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				horsesCanNotRace=false;
 				horse_condition.signalAll();
 								
-				
+				System.out.println("EXIT startTheRace() BROKER");
+	
 				
 			}finally {
 				mutex.unlock();
