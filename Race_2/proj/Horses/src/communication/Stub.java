@@ -40,7 +40,7 @@ public class Stub {
 		String fromServer, // linha de entrada
 				fromUser,
 				returnFunction=null; // linha de saída
-		System.out.println("teste1");
+		
 		while (!com.open()) // estabelecimento de ligação
 		{
 			try {
@@ -48,7 +48,7 @@ public class Stub {
 			} catch (InterruptedException e) {
 			}
 		}
-		System.out.println("teste2");
+		
 		
 		com.writeObject(payload);
 		while ((fromServer = (String) com.readObject()) != null) // teste de recepção de mensagem do servidor
@@ -65,10 +65,10 @@ public class Stub {
 				fromUser = "Ok!";
 			} while (fromUser == null);
 			System.out.println("Cliente: " + fromUser); // imprimir mensagem no dispositivo de saída
-			System.out.println("teste3"); // standard
+			
 			com.writeObject(fromUser); // enviá-la ao servidor
 		}
-		System.out.println("teste5");
+		
 
 		com.close(); // fecho da ligação
 		return returnFunction;

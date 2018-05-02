@@ -35,7 +35,17 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	*/
 	@Override
 	public boolean areThereAnyWinners(int[] horseAWinners) {
-		if(sendMessage("summonHorsesToPaddock").equals("true")) {
+		String array="";
+		for(int i=0;i<horseAWinners.length;i++) {
+			array+=Integer.toString(horseAWinners[i]);
+			if(i<horseAWinners.length-1) {
+				array+=",";
+			}
+		}
+		if(horseAWinners.length==1) {
+			array+=",";
+		}
+		if(sendMessage("areThereAnyWinners"+";"+array).equals("true")) {
 			return true;
 		}else {
 			return false;

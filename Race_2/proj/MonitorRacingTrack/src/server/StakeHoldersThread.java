@@ -22,7 +22,7 @@ public class StakeHoldersThread extends Thread {
 
 	//	outputLine = shp.processInput(null); // geração da primeira mensagem
 		//com.writeObject(outputLine); // seu envio ao cliente
-		System.out.println("serverteste0");
+	
 		
 		while ((inputLine = (String) com.readObject()) != null) // o cliente respondeu?
 		{
