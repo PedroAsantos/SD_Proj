@@ -15,7 +15,7 @@ public class RunSpectators {
 		int numberOfRaces=5;
 		int horsesPerRace=4;
 		int raceLength=30;
-		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
+		Repository repo = new Repository();
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
 		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);

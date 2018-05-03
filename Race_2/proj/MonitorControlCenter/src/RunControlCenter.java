@@ -14,8 +14,8 @@ public class RunControlCenter {
 		int numberOfRaces = 5;
 		int horsesPerRace = 4;
 		int raceLength = 30;
-		Repository repo = new Repository(numberOfHorses, numberOfSpectators, numberOfRaces, horsesPerRace, raceLength);
-		repo.writeLog();
+		Repository repo = new Repository();
+		
 
 		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
 		/*

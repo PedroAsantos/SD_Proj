@@ -13,8 +13,7 @@ public class RunPaddock {
 		int horsesPerRace=4;
 		int raceLength=30;
 	
-		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
-		repo.writeLog();
+		Repository repo = new Repository();
 
 		MonitorPaddock mPaddock = new MonitorPaddock(repo);
 	

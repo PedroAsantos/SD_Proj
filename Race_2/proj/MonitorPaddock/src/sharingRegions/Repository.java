@@ -4,70 +4,13 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
+import communication.Stub;
 import Enum.*;
 
 public class Repository {
-	private final ReentrantLock mutex;
-
-	//private int[] horsesFinalPos;
-	private List<Integer> horsesRunnning;
-	//private HashMap<Integer,Integer> horsePerformance;
-	private int numberOfSpectators;
-	//private int numberOfRaces;
-	private int horsesPerRace;
-	private int totalHorses;
-	private String l;
-	private String l1;
-	private int numberOfRacesMissing;
 	
-	//Stat - broker state - Broker Class
-	private BrokerState brokerstate;
-	//St# - spectator/better state (# - 0 .. 3) - Spectator Class
-	private	HashMap<Integer,SpectatorState> specStat;
-	//Am# - spectator/better amount of money she has presently (# - 0 .. 3) - 
-	private	HashMap<Integer,Double> specMoney;
-	//RN - race number - RunRace -----------------------Ta mal
-	private int numberOfRaces;
-	//St# - horse/jockey pair state in present race (# - 0 .. 3)
-	private	HashMap<Integer,HorseState> horseStat;
-	//Len# - horse/jockey pair maximum moving length per iteration step in present race (# - 0 .. 3) - Hash Map para isto
-	private	HashMap<Integer,Integer> horsePerformance;
-	//Dist - race track distance in present race - MonitorRacingTrack
-	private int raceLength;
-	//BS# - spectator/better bet selection in present race (# - 0 .. 3) - MonitorBettingCenter
-	private	HashMap<Integer,Integer> specbets;
-	//BA# - spectator/better bet amount in present race (# - 0 .. 3)
-	private	HashMap<Integer,Double> specbetamount;
-	//Od# - horse/jockey pair winning probability in present race (# - 0 .. 3)
-	private HashMap<Integer,Double> horseProbabilities;
-	//N# - horse/jockey pair iteration step number in present race (# - 0 .. 3) - Hash Map para isto
-	private	HashMap<Integer,Integer> horseruns;
-	//Ps# - horse/jockey pair track position in present race (# - 0 .. 3) - Hash Map para isto ????????????
-	private	HashMap<Integer,Integer> horseposition;
-	//SD# - horse/jockey pair standing at the end of present race (# - 0 .. 3)
-	private HashMap<Integer,Integer> horserank;
-	//winnerHoreses
-	public Repository(int totalHorses, int numberOfSpectators,int numberOfRaces, int horsesPerRace, int raceLength){
-		mutex = new ReentrantLock(true);
-	//	this.horsesFinalPos = new int[totalHorses];
-		horsePerformance = new HashMap<Integer,Integer>();
-		this.numberOfRaces=numberOfRaces;
-		this.numberOfRacesMissing=numberOfRaces;
-		this.totalHorses=totalHorses;
-		this.horsesPerRace=horsesPerRace;
-		this.numberOfSpectators=numberOfSpectators;
-		this.horsesRunnning = new ArrayList<Integer>(horsesPerRace);
-		this.brokerstate = BrokerState.OPENING_THE_EVENT;
-		this.specStat = new HashMap<Integer,SpectatorState>();
-		this.specMoney = new HashMap<Integer,Double>();
-		this.horseStat = new HashMap<Integer,HorseState>();
-		this.specbetamount = new HashMap<Integer,Double>();
-		this.horseProbabilities = new HashMap<Integer,Double>();
-		this.horseruns = new HashMap<Integer,Integer>();
-		this.horseposition = new HashMap<Integer,Integer>();
-		this.specbets = new HashMap<Integer,Integer>();
-		this.horserank = new HashMap<Integer,Integer>();
-		this.raceLength=raceLength;
+	public Repository(){
+	
 	}
 	
 	/**
@@ -75,7 +18,8 @@ public class Repository {
 	*   @return int the number of spectators.
 	*/
 	public int getNumberOfSpectators() {
-		return numberOfSpectators;
+		int returnFunction = Integer.parseInt(sendMessage("getNumberOfSpectators"));
+		return returnFunction;
 	}
 	
 	/**
@@ -85,13 +29,7 @@ public class Repository {
 	* 	@param probabilitie Horse winning probabilitie.
 	*/
 	public void setHorseProbabilitie(int horse_id,double probabilitie) {
-		mutex.lock();
-		try {
-			this.horseProbabilities.put(horse_id, probabilitie);
-		} finally {
-			mutex.unlock();
-		}
-		toLog();
+		sendMessage("setHorseProbabilitie"+";"+horse_id+";"+probabilitie);
 	}
 	/**
 	*	Function to update the number of runs of a horse.
@@ -100,23 +38,10 @@ public class Repository {
 	* 	@param runs Runs of the horse.
 	*/
 	public void sethorseruns(int horse_id, int runs){
-		mutex.lock();
-		try {
-			this.horseruns.put(horse_id,runs);
-		} finally {
-			mutex.unlock();
-		}
-		
-		toLog();
+		sendMessage("sethorseruns"+";"+horse_id+";"+runs);
 	}
 	public void setHorsePerformance(int horse_id, int performance) {
-		mutex.lock();
-		try {
-			this.horsePerformance.put(horse_id,performance);
-		} finally {
-			mutex.unlock();
-		}
-		toLog();
+		sendMessage("setHorsePerformance"+";"+horse_id+";"+performance);
 	}
 	
 	/**
@@ -124,7 +49,24 @@ public class Repository {
 	*   @return int Horses in each race.
 	*/
 	public int getHorsesPerRace() {
-		return this.horsesPerRace;
+		int returnFunction = Integer.parseInt(sendMessage("getHorsesPerRace"));
+		return returnFunction;
+	}
+
+
+	public String sendMessage(String payload) {
+
+		String hostName; // nome da máquina onde está o servidor
+		int portNumb = 9949; // número do port
+
+		hostName = "localhost";
+
+		/* troca de mensagens com o servidor */
+
+		Stub stub; // stub de comunicação
+
+		stub = new Stub(hostName, portNumb);
+		return stub.exchange(payload);	
 	}
 	
 }

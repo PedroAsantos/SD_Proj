@@ -13,7 +13,7 @@ public class RunMonitorBettingCenter {
 		int numberOfRaces=5;
 		int horsesPerRace=4;
 		int raceLength=30;
-		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
+		Repository repo = new Repository();
 		repo.writeLog();
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);

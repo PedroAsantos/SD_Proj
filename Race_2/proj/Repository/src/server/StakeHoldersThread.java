@@ -16,20 +16,16 @@ public class StakeHoldersThread extends Thread {
 
 	public void run() {
 		String inputLine, // linha de entrada
-				outputLine; // linha de saída
+				outputLine; // linha de saida
 		String returnFunction=null;
-		/* prestação propriamente dita do serviço */
+		/* prestacao propriamente dita do servico */
 
-	//	outputLine = shp.processInput(null); // geração da primeira mensagem
-		//com.writeObject(outputLine); // seu envio ao cliente
-		System.out.println("serverteste0");
-		
 		while ((inputLine = (String) com.readObject()) != null) // o cliente respondeu?
 		{
 			System.out.println("serverteste1");
-		 // teste de fim de comunicação
+		 // teste de fim de comunicacao
 			if(!inputLine.equals("Ok!")) {
-				returnFunction=shp.processInput(inputLine,repo); // geração da mensagem seguinte
+				returnFunction=shp.processInput(inputLine,repo); // geracao da mensagem seguinte
 			}
 		
 			

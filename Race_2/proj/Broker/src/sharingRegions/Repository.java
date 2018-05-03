@@ -1,6 +1,6 @@
 package sharingRegions;
 
-
+import communication.Stub;
 import Enum.*;
 
 public class Repository {
@@ -34,7 +34,7 @@ public class Repository {
 	* 	@return int the number of races missing.
 	*/
 	public int getNumberOfRacesMissing() {
-		int returnFunction = sendMessage("getNumberOfRacesMissing");
+		int returnFunction = Integer.parseInt(sendMessage("getNumberOfRacesMissing"));
 		return returnFunction;
 	}
 
