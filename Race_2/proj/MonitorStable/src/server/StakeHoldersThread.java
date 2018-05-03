@@ -20,7 +20,6 @@ public class StakeHoldersThread extends Thread {
 		String returnFunction=null;
 		/* prestacao propriamente dita do servico */
 
-
 		while ((inputLine = (String) com.readObject()) != null) // o cliente respondeu?
 		{
 			System.out.println("serverteste1");

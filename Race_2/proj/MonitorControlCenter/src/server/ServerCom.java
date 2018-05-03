@@ -4,9 +4,9 @@ import java.io.*;
 import java.net.*;
 
 /**
- *   Este tipo de dados implementa o canal de comunicação, lado do servidor, para uma comunicação baseada em passagem de
+ *   Este tipo de dados implementa o canal de comunicacao, lado do servidor, para uma comunicacao baseada em passagem de
  *   mensagens sobre sockets usando o protocolo TCP.
- *   A transferência de dados é baseada em objectos, um objecto de cada vez.
+ *   A transferencia de dados e baseada em objectos, um objecto de cada vez.
  */
 
 public class ServerCom
@@ -19,37 +19,37 @@ public class ServerCom
    private ServerSocket listeningSocket = null;
 
   /**
-   *  Socket de comunicação
+   *  Socket de comunicacao
    *    @serialField commSocket
    */
 
    private Socket commSocket = null;
 
   /**
-   *  Número do port de escuta do servidor
+   *  Numero do port de escuta do servidor
    *    @serialField serverPortNumb
    */
 
    private int serverPortNumb;
 
   /**
-   *  Stream de entrada do canal de comunicação
+   *  Stream de entrada do canal de comunicacao
    *    @serialField in
    */
 
    private ObjectInputStream in = null;
 
   /**
-   *  Stream de saída do canal de comunicação
+   *  Stream de saida do canal de comunicacao
    *    @serialField out
    */
 
    private ObjectOutputStream out = null;
 
   /**
-   *  Instanciação de um canal de comunicação (forma 1).
+   *  Instanciacao de um canal de comunicacao (forma 1).
    *
-   *    @param portNumb número do port de escuta do servidor
+   *    @param portNumb numero do port de escuta do servidor
    */
 
    public ServerCom (int portNumb)
@@ -58,9 +58,9 @@ public class ServerCom
    }
 
   /**
-   *  Instanciação de um canal de comunicação (forma 2).
+   *  Instanciacao de um canal de comunicacao (forma 2).
    *
-   *    @param portNumb número do port de escuta do servidor
+   *    @param portNumb numero do port de escuta do servidor
    *    @param lSocket socket de escuta
    */
 
@@ -71,9 +71,9 @@ public class ServerCom
    }
 
   /**
-   *  Estabelecimento do serviço.
-   *  Instanciação de um socket de escuta e sua associação ao endereço da máquina local
-   *  e ao port de escuta públicos.
+   *  Estabelecimento do servico.
+   *  Instanciacao de um socket de escuta e sua associacao ao endereco da maquina local
+   *  e ao port de escuta publicos.
    */
 
    public void start ()
@@ -81,16 +81,16 @@ public class ServerCom
       try
       { listeningSocket = new ServerSocket (serverPortNumb);
       }
-      catch (BindException e)                         // erro fatal --- port já em uso
+      catch (BindException e)                         // erro fatal --- port ja em uso
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível a associação do socket de escuta ao port: " +
+                                 " - nao foi possivel a associacao do socket de escuta ao port: " +
                                  serverPortNumb + "!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (IOException e)                           // erro fatal --- outras causas
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - ocorreu um erro indeterminado na associação do socket de escuta ao port: " +
+                                 " - ocorreu um erro indeterminado na associacao do socket de escuta ao port: " +
                                  serverPortNumb + "!");
         e.printStackTrace ();
         System.exit (1);
@@ -98,7 +98,7 @@ public class ServerCom
    }
 
   /**
-   *  Encerramento do serviço.
+   *  Encerramento do servico.
    *  Fecho do socket de escuta.
    */
 
@@ -109,7 +109,7 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o socket de escuta!");
+                                 " - nao foi possivel fechar o socket de escuta!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -117,16 +117,16 @@ public class ServerCom
 
   /**
    *  Processo de escuta.
-   *  Criação de um canal de comunicação para um pedido pendente.
-   *  Instanciação de um socket de comunicação e sua associação ao endereço do cliente.
-   *  Abertura dos streams de entrada e de saída do socket.
+   *  Criacao de um canal de comunicacao para um pedido pendente.
+   *  Instanciacao de um socket de comunicacao e sua associacao ao endereco do cliente.
+   *  Abertura dos streams de entrada e de saida do socket.
    *
-   *    @return canal de comunicação
+   *    @return canal de comunicacao
    */
 
    public ServerCom accept ()
    {
-      ServerCom scon;                                      // canal de comunicação
+      ServerCom scon;                                      // canal de comunicacao
 
       scon = new ServerCom(serverPortNumb, listeningSocket);
       try
@@ -140,7 +140,7 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível abrir um canal de comunicação para um pedido pendente!");
+                                 " - nao foi possivel abrir um canal de comunicacao para um pedido pendente!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -150,7 +150,7 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível abrir o canal de entrada do socket!");
+                                 " - nao foi possivel abrir o canal de entrada do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -160,7 +160,7 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível abrir o canal de saída do socket!");
+                                 " - nao foi possivel abrir o canal de saida do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -169,9 +169,9 @@ public class ServerCom
    }
 
   /**
-   *  Fecho do canal de comunicação.
-   *  Fecho dos streams de entrada e de saída do socket.
-   *  Fecho do socket de comunicação.
+   *  Fecho do canal de comunicacao.
+   *  Fecho dos streams de entrada e de saida do socket.
+   *  Fecho do socket de comunicacao.
    */
 
    public void close ()
@@ -181,7 +181,7 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o canal de entrada do socket!");
+                                 " - nao foi possivel fechar o canal de entrada do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -191,7 +191,7 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o canal de saída do socket!");
+                                 " - nao foi possivel fechar o canal de saida do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -201,14 +201,14 @@ public class ServerCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o socket de comunicação!");
+                                 " - nao foi possivel fechar o socket de comunicacao!");
         e.printStackTrace ();
         System.exit (1);
       }
    }
 
   /**
-   *  Leitura de um objecto do canal de comunicação.
+   *  Leitura de um objecto do canal de comunicacao.
    *
    *    @return objecto lido
    */
@@ -222,13 +222,13 @@ public class ServerCom
       }
       catch (InvalidClassException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o objecto lido não é passível de desserialização!");
+                                 " - o objecto lido nao e passivel de desserializacao!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - erro na leitura de um objecto do canal de entrada do socket de comunicação!");
+                                 " - erro na leitura de um objecto do canal de entrada do socket de comunicacao!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -243,7 +243,7 @@ public class ServerCom
    }
 
   /**
-   *  Escrita de um objecto no canal de comunicação.
+   *  Escrita de um objecto no canal de comunicacao.
    *
    *    @param toClient objecto a ser escrito
    */
@@ -256,19 +256,19 @@ public class ServerCom
       }
       catch (InvalidClassException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o objecto a ser escrito não é passível de serialização!");
+                                 " - o objecto a ser escrito nao e passivel de serializacao!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (NotSerializableException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o objecto a ser escrito pertence a um tipo de dados não serializável!");
+                                 " - o objecto a ser escrito pertence a um tipo de dados nao serializavel!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - erro na escrita de um objecto do canal de saída do socket de comunicação!");
+                                 " - erro na escrita de um objecto do canal de saida do socket de comunicacao!");
         e.printStackTrace ();
         System.exit (1);
       }

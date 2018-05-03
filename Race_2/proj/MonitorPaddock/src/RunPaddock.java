@@ -20,25 +20,25 @@ public class RunPaddock {
 	
 		
 		
-		ServerCom scon, sconi; // canais de comunicação
-		int portNumb = 9969; // número do port em que o serviço é
+		ServerCom scon, sconi; // canais de comunicacao
+		int portNumb = 9969; // numero do port em que o servico e
 								// estabelecido
-		StakeHoldersProtocol shp; // serviço a ser fornecido
+		StakeHoldersProtocol shp; // servico a ser fornecido
 
-		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associação
-		scon.start(); // com o endereço público
-		shp = StakeHoldersProtocol.getInstance(); // activar oo serviço
+		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associacao
+		scon.start(); // com o endereco publico
+		shp = StakeHoldersProtocol.getInstance(); // activar oo servico
 		System.out.println("MonitorPaddock was established!");
 		System.out.println("MonitorPaddock is listenning.");
 
 
 		/* processamento de pedidos */
 
-		StakeHoldersThread thread; // agente prestador de serviço
+		StakeHoldersThread thread; // agente prestador de servico
 
 		while (true) {
 			sconi = scon.accept(); // entrar em processo de escuta
-			thread = new StakeHoldersThread(sconi, shp, mPaddock); // lançar agente prestador de serviço
+			thread = new StakeHoldersThread(sconi, shp, mPaddock); // lancar agente prestador de servico
 			thread.start();
 		}
 	}

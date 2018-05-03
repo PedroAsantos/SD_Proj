@@ -56,14 +56,14 @@ public class MonitorRacingTrack implements IHorse_Track{
 
 	public String sendMessage(String payload) {
 
-		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9979; // número do port
+		String hostName; // nome da maquina onde esta o servidor
+		int portNumb = 9979; // numero do port
 
 		hostName = "localhost";
 
 		/* troca de mensagens com o servidor */
 
-		Stub stub; // stub de comunicação
+		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
 		return stub.exchange(payload);	

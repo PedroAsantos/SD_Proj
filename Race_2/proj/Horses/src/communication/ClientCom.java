@@ -5,49 +5,49 @@ import java.io.*;
 import java.net.*;
 
 /**
- *   Este tipo de dados implementa o canal de comunicação, lado do cliente, para uma comunicação baseada em passagem de
+ *   Este tipo de dados implementa o canal de comunicacao, lado do cliente, para uma comunicacao baseada em passagem de
  *   mensagens sobre sockets usando o protocolo TCP.
- *   A transferência de dados é baseada em objectos.
+ *   A transferencia de dados e baseada em objectos.
  */
 
 public class ClientCom
 {
   /**
-   *  Socket de comunicação
+   *  Socket de comunicacao
    *    @serialField commSocket
    */
 
    private Socket commSocket = null;
 
   /**
-   *  Nome do sistema computacional onde está localizado o servidor.
+   *  Nome do sistema computacional onde esta localizado o servidor.
    */
 
    private String serverHostName = null;
 
   /**
-   *  Número do port de escuta do servidor.
+   *  Numero do port de escuta do servidor.
    */
 
    private int serverPortNumb;
 
   /**
-   *  Stream de entrada do canal de comunicação.
+   *  Stream de entrada do canal de comunicacao.
    */
 
    private ObjectInputStream in = null;
 
   /**
-   *  Stream de saída do canal de comunicação.
+   *  Stream de saida do canal de comunicacao.
    */
 
    private ObjectOutputStream out = null;
 
   /**
-   *  Instanciação de um canal de comunicação.
+   *  Instanciacao de um canal de comunicacao.
    *
-   *    @param hostName nome do sistema computacional onde está localizado o servidor
-   *    @param portNumb número do port de escuta do servidor
+   *    @param hostName nome do sistema computacional onde esta localizado o servidor
+   *    @param portNumb numero do port de escuta do servidor
    */
 
    public ClientCom (String hostName, int portNumb)
@@ -57,12 +57,12 @@ public class ClientCom
    }
 
   /**
-   *  Abertura do canal de comunicação.
-   *  Instanciação de um socket de comunicação e sua associação ao endereço do servidor.
-   *  Abertura dos streams de entrada e de saída do socket.
+   *  Abertura do canal de comunicacao.
+   *  Instanciacao de um socket de comunicacao e sua associacao ao endereco do servidor.
+   *  Abertura dos streams de entrada e de saida do socket.
    *
-   *    @return true, se o canal de comunicação foi aberto; <br>
-   *            false, em caso contrário.
+   *    @return true, se o canal de comunicacao foi aberto; <br>
+   *            false, em caso contrario.
    */
 
    public boolean open ()
@@ -76,21 +76,21 @@ public class ClientCom
       }
       catch (UnknownHostException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o nome do sistema computacional onde reside o servidor é desconhecido: " +
+                                 " - o nome do sistema computacional onde reside o servidor e desconhecido: " +
                                  serverHostName + "!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (NoRouteToHostException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o nome do sistema computacional onde reside o servidor é inatingível: " +
+                                 " - o nome do sistema computacional onde reside o servidor e inatingivel: " +
                                  serverHostName + "!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (ConnectException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o servidor não responde em: " + serverHostName + "." + serverPortNumb + "!");
+                                 " - o servidor nao responde em: " + serverHostName + "." + serverPortNumb + "!");
         if (e.getMessage ().equals ("Connection refused"))
            success = false;
            else { System.out.println (e.getMessage () + "!");
@@ -100,13 +100,13 @@ public class ClientCom
       }
       catch (SocketTimeoutException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - ocorreu um time out no estabelecimento da ligação a: " +
+                                 " - ocorreu um time out no estabelecimento da ligacao a: " +
                                  serverHostName + "." + serverPortNumb + "!");
         success = false;
       }
       catch (IOException e)                           // erro fatal --- outras causas
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - ocorreu um erro indeterminado no estabelecimento da ligação a: " +
+                                 " - ocorreu um erro indeterminado no estabelecimento da ligacao a: " +
                                  serverHostName + "." + serverPortNumb + "!");
         e.printStackTrace ();
         System.exit (1);
@@ -119,7 +119,7 @@ public class ClientCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível abrir o canal de saída do socket!");
+                                 " - nao foi possivel abrir o canal de saida do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -129,7 +129,7 @@ public class ClientCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível abrir o canal de entrada do socket!");
+                                 " - nao foi possivel abrir o canal de entrada do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -138,9 +138,9 @@ public class ClientCom
    }
 
   /**
-   *  Fecho do canal de comunicação.
-   *  Fecho dos streams de entrada e de saída do socket.
-   *  Fecho do socket de comunicação.
+   *  Fecho do canal de comunicacao.
+   *  Fecho dos streams de entrada e de saida do socket.
+   *  Fecho do socket de comunicacao.
    */
 
    public void close ()
@@ -150,7 +150,7 @@ public class ClientCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o canal de entrada do socket!");
+                                 " - nao foi possivel fechar o canal de entrada do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -160,7 +160,7 @@ public class ClientCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o canal de saída do socket!");
+                                 " - nao foi possivel fechar o canal de saida do socket!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -170,14 +170,14 @@ public class ClientCom
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - não foi possível fechar o socket de comunicação!");
+                                 " - nao foi possivel fechar o socket de comunicacao!");
         e.printStackTrace ();
         System.exit (1);
       }
    }
 
   /**
-   *  Leitura de um objecto do canal de comunicação.
+   *  Leitura de um objecto do canal de comunicacao.
    *
    *    @return objecto lido
    */
@@ -185,19 +185,19 @@ public class ClientCom
    public Object readObject ()
    {
       Object fromServer = null;                            // objecto
+
       try
       { fromServer = in.readObject ();
-      System.out.println("readObjectFromServer"+fromServer);
       }
       catch (InvalidClassException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o objecto lido não é passível de desserialização!");
+                                 " - o objecto lido nao e passivel de desserializacao!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - erro na leitura de um objecto do canal de entrada do socket de comunicação!");
+                                 " - erro na leitura de um objecto do canal de entrada do socket de comunicacao!");
         e.printStackTrace ();
         System.exit (1);
       }
@@ -212,7 +212,7 @@ public class ClientCom
    }
 
   /**
-   *  Escrita de um objecto no canal de comunicação.
+   *  Escrita de um objecto no canal de comunicacao.
    *
    *    @param toServer objecto a ser escrito
    */
@@ -224,19 +224,19 @@ public class ClientCom
       }
       catch (InvalidClassException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o objecto a ser escrito não é passível de serialização!");
+                                 " - o objecto a ser escrito nao e passivel de serializacao!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (NotSerializableException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - o objecto a ser escrito pertence a um tipo de dados não serializável!");
+                                 " - o objecto a ser escrito pertence a um tipo de dados nao serializavel!");
         e.printStackTrace ();
         System.exit (1);
       }
       catch (IOException e)
       { System.out.println (Thread.currentThread ().getName () +
-                                 " - erro na escrita de um objecto do canal de saída do socket de comunicação!");
+                                 " - erro na escrita de um objecto do canal de saida do socket de comunicacao!");
         e.printStackTrace ();
         System.exit (1);
       }

@@ -1,29 +1,29 @@
 package communication;
 
 /**
- * Este tipo de dados define o stub de comunicação do problema Riddles Play.
+ * Este tipo de dados define o stub de comunicacao do problema Riddles Play.
  */
 
 public class Stub {
 	/**
-	 * Nome do sistema computacional onde está localizado o servidor.
+	 * Nome do sistema computacional onde esta localizado o servidor.
 	 */
 
 	private String serverHostName;
 
 	/**
-	 * Número do port de escuta do servidor.
+	 * Numero do port de escuta do servidor.
 	 */
 
 	private int serverPortNumb;
 
 	/**
-	 * Instanciação do stub.
+	 * Instanciacao do stub.
 	 *
 	 * @param hostName
-	 *            nome do sistema computacional onde está localizado o servidor
+	 *            nome do sistema computacional onde esta localizado o servidor
 	 * @param port
-	 *            número do port de escuta do servidor
+	 *            numero do port de escuta do servidor
 	 */
 
 	public Stub(String hostName, int port) {
@@ -39,9 +39,9 @@ public class Stub {
 		ClientCom com = new ClientCom(serverHostName, serverPortNumb);
 		String fromServer, // linha de entrada
 				fromUser,
-				returnFunction=null; // linha de saída
+				returnFunction=null; // linha de saida
 	
-		while (!com.open()) // estabelecimento de ligação
+		while (!com.open()) // estabelecimento de ligacao
 		{
 			try {
 				Thread.currentThread().sleep((long) (10));
@@ -51,12 +51,12 @@ public class Stub {
 		
 		
 		com.writeObject(payload);
-		while ((fromServer = (String) com.readObject()) != null) // teste de recepção de mensagem do servidor
+		while ((fromServer = (String) com.readObject()) != null) // teste de recepcao de mensagem do servidor
 		{
-			System.out.println("Servidor: " + fromServer); // imprimir mensagem no dispositivo de saída
+			System.out.println("Servidor: " + fromServer); // imprimir mensagem no dispositivo de saida
 															// standard
 			if (fromServer.equals("Ok!")) 
-				break; // teste de continuação	
+				break; // teste de continuacao	
 			
 			returnFunction=fromServer;
 					
@@ -64,13 +64,13 @@ public class Stub {
 			do {
 				fromUser = "Ok!";
 			} while (fromUser == null);
-			System.out.println("Cliente: " + fromUser); // imprimir mensagem no dispositivo de saída
+			System.out.println("Cliente: " + fromUser); // imprimir mensagem no dispositivo de saida
 			
-			com.writeObject(fromUser); // enviá-la ao servidor
+			com.writeObject(fromUser); // envia-la ao servidor
 		}
 		
 
-		com.close(); // fecho da ligação
+		com.close(); // fecho da ligacao
 		return returnFunction;
 	}
 }
