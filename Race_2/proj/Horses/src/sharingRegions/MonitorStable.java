@@ -1,6 +1,7 @@
 package sharingRegions;
 
 import Interfaces.IHorse_Stable;
+import communication.Message;
 import communication.Stub;
 
 
@@ -21,19 +22,11 @@ public class MonitorStable implements IHorse_Stable {
 	*/
 	@Override
 	public boolean proceedToStable(int horseId) {
-		String returnFunction;
-		returnFunction=sendMessage("proceedToStable"+";"+horseId);
-		
-		if(returnFunction.equals("true")) {
-			return true;
-		}else {
-			return false;
-		}
-		
+		return (boolean) sendMessage(new Message("proceedToStable",new Object[] {horseId})).getReturn();
 				
 	}
 	
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9999; // numero do port
@@ -45,7 +38,7 @@ public class MonitorStable implements IHorse_Stable {
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 
 }

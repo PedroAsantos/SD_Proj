@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
+import communication.Message;
 import communication.Stub;
 import Enum.*;
 
@@ -14,15 +15,14 @@ public class Repository {
 	}
 	
 	public void writeLog(){
-		sendMessage("writeLog");
+		sendMessage(new Message("writeLog"));
 	}
 	/**
 	*	Function to know the number of spectors in the event.
 	*   @return int the number of spectators.
 	*/
 	public int getNumberOfSpectators() {
-		int returnFunction = Integer.parseInt(sendMessage("getNumberOfSpectators"));
-		return returnFunction;
+		return (int) sendMessage(new Message("getNumberOfSpectators")).getReturn();
 	}
 	/**
 	*	Function to update the money that a spectator put on a bet.
@@ -31,7 +31,7 @@ public class Repository {
 	* 	@param amount bet amount.
 	*/
 	public void setspecbetamount(int spectator_id, double amount){
-		sendMessage("setspecbetamount"+";"+spectator_id+";"+amount);
+		sendMessage(new Message("setspecbetamount",new Object[] {spectator_id, amount}));
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class Repository {
 	* 	@param horse_id Horse picked.
 	*/
 	public void setspecbets(int spec_id,int horse_id){
-		sendMessage("setspecbets"+";"+spec_id+";"+horse_id);
+		sendMessage(new Message("setspecbets",new Object[] {spec_id, horse_id}));
 	}
 
 	/**
@@ -49,11 +49,11 @@ public class Repository {
 	*
 	*/
 	public void clearhorserank() {
-		sendMessage("clearhorserank");
+		sendMessage(new Message("clearhorserank"));
 		
 	}
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
 		int portNumb = 9949; // número do port
@@ -65,7 +65,7 @@ public class Repository {
 		Stub stub; // stub de comunicação
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 	
 }

@@ -35,9 +35,9 @@ public class Stub {
 	 * Troca de mensagens com os servidor KnockKnock.
 	 */
 
-	public String exchange(String payload) {
+	public Message exchange(Message message) {
 		ClientCom com = new ClientCom(serverHostName, serverPortNumb);
-		String fromServer, // linha de entrada
+		Message fromServer, // linha de entrada
 				fromUser,
 				returnFunction=null; // linha de saida
 	
@@ -50,23 +50,20 @@ public class Stub {
 		}
 		
 		
-		com.writeObject(payload);
-		while ((fromServer = (String) com.readObject()) != null) // teste de recepcao de mensagem do servidor
+		com.writeObject(message);
+		while ((fromServer = (Message) com.readObject()) != null) // teste de recepcao de mensagem do servidor
 		{
 			System.out.println("Servidor: " + fromServer); // imprimir mensagem no dispositivo de saida
 															// standard
-			if (fromServer.equals("Ok!")) 
+			if (fromServer.getEnd()) 
 				break; // teste de continuacao	
 			
 			returnFunction=fromServer;
 					
 			// ler mensagem do utilizador
-			do {
-				fromUser = "Ok!";
-			} while (fromUser == null);
-			System.out.println("Cliente: " + fromUser); // imprimir mensagem no dispositivo de saida
+	//		System.out.println("Cliente: " + fromUser); // imprimir mensagem no dispositivo de saida
 			
-			com.writeObject(fromUser); // envia-la ao servidor
+			com.writeObject(new Message(true)); // envia-la ao servidor
 		}
 		
 

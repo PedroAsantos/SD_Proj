@@ -1,6 +1,7 @@
 package sharingRegions;
 
 import Interfaces.IBroker_Track;
+import communication.Message;
 import communication.Stub;
 
 
@@ -18,7 +19,7 @@ public class MonitorRacingTrack implements IBroker_Track{
 	*/
 	@Override
 	public void startTheRace() {
-		sendMessage("startTheRace");
+		sendMessage(new Message("startTheRace"));
 	}
 	
 
@@ -29,17 +30,9 @@ public class MonitorRacingTrack implements IBroker_Track{
 	*/
 	@Override
 	public int[] reportResults() {
-		String[] returnFunction;
-		returnFunction=sendMessage("reportResults").split(",");
-	
-		int[] result = new int[returnFunction.length];
-		for(int i=0;i<returnFunction.length;i++) {
-			result[i]=Integer.parseInt(returnFunction[i]);
-		}
-		
-        return result;
+        return (int[]) sendMessage(new Message("summonHorsesToEnd")).getReturn();
 	}
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9979; // numero do port
@@ -51,7 +44,7 @@ public class MonitorRacingTrack implements IBroker_Track{
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 	
 

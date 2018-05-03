@@ -1,5 +1,6 @@
 package sharingRegions;
 
+import communication.Message;
 import communication.Stub;
 import Enum.*;
 
@@ -15,8 +16,7 @@ public class Repository {
 	*
 	*/
 	public void toLog(){
-		
-		sendMessage("toLog");
+		sendMessage(new Message("toLog"));
 	}
 
 
@@ -25,7 +25,7 @@ public class Repository {
 	*
 	*/
 	public void clearhorsesRunning() {
-		sendMessage("clearhorsesRunning");
+		sendMessage(new Message("clearhorsesRunning"));
 	}
 
 	/**
@@ -34,8 +34,7 @@ public class Repository {
 	* 	@return int the number of races missing.
 	*/
 	public int getNumberOfRacesMissing() {
-		int returnFunction = Integer.parseInt(sendMessage("getNumberOfRacesMissing"));
-		return returnFunction;
+		return (int) sendMessage(new Message("getNumberOfRacesMissing")).getReturn();
 	}
 
 	/**
@@ -43,7 +42,7 @@ public class Repository {
 	*	
 	*/
 	public void raceDone() {
-		sendMessage("raceDone");
+		sendMessage(new Message("raceDone"));
 	}
 	
 
@@ -54,12 +53,12 @@ public class Repository {
 	* 	
 	*/
 	public void setbrokerstate(BrokerState brokerstate){
-		sendMessage("setbrokerstate"+";"+brokerstate);
+		sendMessage(new Message("setbrokerstate", new Object[] {brokerstate}));
 	}
 
 
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
 		int portNumb = 9949; // número do port
@@ -71,6 +70,6 @@ public class Repository {
 		Stub stub; // stub de comunicação
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 }

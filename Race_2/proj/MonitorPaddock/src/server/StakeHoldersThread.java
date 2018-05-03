@@ -1,6 +1,7 @@
 package server;
 
 
+import communication.Message;
 import sharingRegions.MonitorPaddock;
 
 public class StakeHoldersThread extends Thread {
@@ -17,28 +18,30 @@ public class StakeHoldersThread extends Thread {
 	public void run() {
 		String inputLine, // linha de entrada
 				outputLine; // linha de saida
-		String returnFunction=null;
+		Message returnMessage=null;
 		/* prestacao propriamente dita do servico */
-
-		while ((inputLine = (String) com.readObject()) != null) // o cliente respondeu?
+		Message messageFromClient;
+	//	Message messageToClient=null;
+		while ((messageFromClient = (Message) com.readObject()) != null) // o cliente respondeu?
 		{
 			System.out.println("serverteste1");
 		 // teste de fim de comunicacao
-			if(!inputLine.equals("Ok!")) {
-				returnFunction=shp.processInput(inputLine,mPaddock); // geracao da mensagem seguinte
+			if(messageFromClient.getFunctionName()!=null) {
+				returnMessage=shp.processInput(messageFromClient,mPaddock); // geracao da mensagem seguinte
 			}
 		
 			
-			if(returnFunction!=null) {
-				outputLine=returnFunction;
-				returnFunction=null;
-				com.writeObject(outputLine);
+			if(returnMessage!=null) {
+				//outputLine="asd";
+				com.writeObject(returnMessage);
+				returnMessage=null;
 			}else {
-				outputLine="Ok!";	
-				com.writeObject(outputLine);// seu envio ao cliente
+			//	outputLine="Ok!";	
+				com.writeObject(new Message());// seu envio ao cliente
+				break;
 			} 
-			if (outputLine.equals("Ok!"))
-				break;	
+		//	if (outputLine.equals("Ok!"))
+		//		break;	
 		}
 	}
 }

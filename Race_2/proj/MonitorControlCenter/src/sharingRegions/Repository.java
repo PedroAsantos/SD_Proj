@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
+import communication.Message;
 import communication.Stub;
 import Enum.*;
 
@@ -17,8 +18,7 @@ public class Repository {
 	*   @return int the number of spectators.
 	*/
 	public int getNumberOfSpectators() {
-		int returnFunction = Integer.parseInt(sendMessage("getNumberOfSpectators"));
-		return returnFunction;
+		return (int) sendMessage(new Message("getNumberOfSpectators")).getReturn();
 	}
 	/**
 	*	Function to return the number of races that left.
@@ -26,11 +26,10 @@ public class Repository {
 	* 	@return int the number of races missing.
 	*/
 	public int getNumberOfRacesMissing() {
-		int returnFunction = Integer.parseInt(sendMessage("getNumberOfRacesMissing"));
-		return returnFunction;
+		return (int) sendMessage(new Message("getNumberOfRacesMissing")).getReturn();
 	}
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
 		int portNumb = 9949; // número do port
@@ -42,6 +41,6 @@ public class Repository {
 		Stub stub; // stub de comunicação
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 }

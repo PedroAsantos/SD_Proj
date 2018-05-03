@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
+import communication.Message;
 import communication.Stub;
 import Enum.*;
 
@@ -19,7 +20,7 @@ public class Repository {
 	* 	
 	*/
 	public void raceStarted() {
-		sendMessage("raceStarted");
+		sendMessage(new Message("raceStarted"));
 	}
 	
 	/**
@@ -29,7 +30,7 @@ public class Repository {
 	* 	@param runs Runs of the horse.
 	*/
 	public void sethorseruns(int horse_id, int runs){
-		sendMessage("sethorseruns"+";"+horse_id+";"+runs);
+		sendMessage(new Message("sethorseruns",new Object[] {horse_id,runs}));
 	}
 	
 	/**
@@ -39,7 +40,7 @@ public class Repository {
 	* 	@param position Horse position.
 	*/
 	public void sethorseposition(int horse_id, int position){
-		sendMessage("sethorseposition"+";"+horse_id+";"+position);
+		sendMessage(new Message("sethorseposition",new Object[] {horse_id,position}));
 	}
 	
 	/**
@@ -50,7 +51,7 @@ public class Repository {
 	*/
 	public void sethorserank(int horse_id, int rank){
 
-		sendMessage("sethorserank"+";"+horse_id+";"+rank);
+		sendMessage(new Message("sethorserank",new Object[] {horse_id,rank}));
 	}
 	
 	/**
@@ -58,12 +59,11 @@ public class Repository {
 	*   @return int Horses in each race.
 	*/
 	public int getHorsesPerRace() {
-		int returnFunction = Integer.parseInt(sendMessage("getHorsesPerRace"));
-		return returnFunction;
+		return (int) sendMessage(new Message("getHorsesPerRace")).getReturn();
 	}
 
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
 		int portNumb = 9949; // número do port
@@ -75,7 +75,7 @@ public class Repository {
 		Stub stub; // stub de comunicação
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 	
 }

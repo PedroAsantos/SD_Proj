@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
+import communication.Message;
 import communication.Stub;
 import Enum.*;
 
@@ -18,8 +19,7 @@ public class Repository {
 	*
 	*/
 	public void toLog(){
-		sendMessage("toLog");
-		
+		sendMessage(new Message("toLog"));
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class Repository {
 	* 	@param state Spectator State
 	*/
 	public void setSpecStat(int spectator_id, SpectatorState state){
-		sendMessage("setSpecStat"+";"+spectator_id+";"+state);
+		sendMessage(new Message("setSpecStat",new Object[] {spectator_id,state}));
 	}
 
 	/**
@@ -39,11 +39,11 @@ public class Repository {
 	* 	@param money Money of the specator.
 	*/
 	public void setspecMoney(int spectator_id, double money){
-		sendMessage("setspecMoney"+";"+spectator_id+";"+money);
+		sendMessage(new Message("setspecMoney",new Object[] {spectator_id,money}));
 	}
 
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
 		int portNumb = 9949; // número do port
@@ -55,7 +55,7 @@ public class Repository {
 		Stub stub; // stub de comunicação
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 	
 }

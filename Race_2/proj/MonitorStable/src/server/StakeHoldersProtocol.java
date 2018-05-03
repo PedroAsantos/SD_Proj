@@ -2,10 +2,8 @@ package server;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
+import communication.Message;
 import sharingRegions.MonitorStable;
 
 public class StakeHoldersProtocol {
@@ -23,121 +21,41 @@ public class StakeHoldersProtocol {
 		return instance;
 	}
 
-	public String processInput(String payload, MonitorStable mStable) {
+	public Message processInput(Message message, MonitorStable mStable) {
+		
 		Method method = null;
-		String[] payloadCamps = payload.split(";");
-		Object returnFunction=null;
-		String returnFunctionPayload=null;
-		String[] checkArray;
-		int[] oneArrayOfPayload;
-		Map<Integer,int[]> allArraysOfPayload = new HashMap<Integer,int[]>();
+		Object objectReturn = null;
 		
-		for(int argumentNumber=0;argumentNumber<payloadCamps.length;argumentNumber++) {
-			checkArray=payloadCamps[argumentNumber].split(",");
-
-			if(checkArray.length>1) {
-				//tem array, por isso converter para int
-				oneArrayOfPayload = new int[checkArray.length];
-				for(int c=0;c<checkArray.length;c++) {
-					oneArrayOfPayload[c]=Integer.parseInt(checkArray[c]);
+		Class<? extends Object>[] argsClass =null;
+		if(message.getArgs()!=null) {
+			argsClass = new Class[message.getArgs().length];
+			for(int i = 0;i<argsClass.length;i++) {
+				if(message.getArgs()[i].getClass()==Integer.class) {
+					argsClass[i]=int.class;
+				}else if(message.getArgs()[i].getClass()==Boolean.class) {
+					argsClass[i]=boolean.class;
+				}else if(message.getArgs()[i].getClass()==Double.class) {
+					argsClass[i]=double.class;
+				}else {
+					argsClass[i]=message.getArgs()[i].getClass();
 				}
-				allArraysOfPayload.put(argumentNumber,oneArrayOfPayload);
-			}else if(payloadCamps[argumentNumber].length() - payloadCamps[argumentNumber].replace(",", "").length()==1) {
-				oneArrayOfPayload = new int[1];
-				oneArrayOfPayload[0]=Integer.parseInt(checkArray[0]);
-				allArraysOfPayload.put(argumentNumber,oneArrayOfPayload);
-			}
+			}			
 		}
-		
-		
+
 		try {
-			/*
-			 * if(functionToCall.equals("proceedToStable")) {
-			 * System.out.println("method.invoke(mStable, null);");
-			 * mStable.proceedToStable(1); }else {
-			 */
-			
-			switch (payloadCamps.length) {
-			case 1:
-				method = mStable.getClass().getDeclaredMethod(payloadCamps[0]);
-				returnFunction = method.invoke(mStable);
-				break;
-			case 2:
-				if(allArraysOfPayload.isEmpty()) {
-					method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class);
-					returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]));	
-				}else {
-					method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int[].class);
-					int[] temp = Arrays.copyOf(allArraysOfPayload.get(1), allArraysOfPayload.get(1).length);
-					returnFunction= method.invoke(mStable,temp);	
-				}
-				break;
-			case 3:
-				if(allArraysOfPayload.isEmpty()) {
-					method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class,int.class);
-					returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]),Integer.parseInt(payloadCamps[2]));
-				}else {
-					if(allArraysOfPayload.containsKey(1)&&	allArraysOfPayload.containsKey(2)) {
-						method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int[].class,int.class);
-						returnFunction= method.invoke(mStable,allArraysOfPayload.get(1),allArraysOfPayload.get(2));
-					}else {
-						if(allArraysOfPayload.containsKey(1)) {
-							method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int[].class,int.class);
-							returnFunction= method.invoke(mStable,allArraysOfPayload.get(1),Integer.parseInt(payloadCamps[2]));
-						}else {
-							method = mStable.getClass().getDeclaredMethod(payloadCamps[0],int.class,int[].class);
-							returnFunction= method.invoke(mStable,Integer.parseInt(payloadCamps[1]),allArraysOfPayload.get(2));
-						}
-					}
-				}
-								
-				break;
-			case 4:
-
-				break;
-
-			default:
-				break;
-			}
-
-			// }
-		} catch (NoSuchMethodException e1) {
+			method = mStable.getClass().getDeclaredMethod(message.getFunctionName(),argsClass);
+		} catch (NoSuchMethodException | SecurityException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} catch (SecurityException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		boolean tempBoolean;
-		int tempInt;
-		int[] tempIntArray;
-		if (method.getReturnType().isArray()) {
-		        if(method.getReturnType().getComponentType().equals(Integer.TYPE)) {
-		        	tempIntArray=(int[]) returnFunction;
-		        	returnFunctionPayload="";
-		        	for(int i=0;i<tempIntArray.length;i++) {
-		        		returnFunctionPayload+=Integer.toString(tempIntArray[i]);
-		        		if(i<tempIntArray.length-1) {
-		        			returnFunctionPayload+=",";
-		    			}
-		        	}
-		        }
-		}else if(method.getReturnType().equals(Integer.TYPE)) {
-			tempInt=(int) returnFunction;  
-			returnFunctionPayload=  Integer.toString(tempInt);
-		}else if(method.getReturnType().equals(Boolean.TYPE)){
-			tempBoolean=(boolean) returnFunction;  
-			returnFunctionPayload= String.valueOf(tempBoolean);
-		}
-		return returnFunctionPayload;
+		try {
+			objectReturn = method.invoke(mStable,message.getArgs());
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	
+	
+		return new Message(objectReturn);
 	}
 }

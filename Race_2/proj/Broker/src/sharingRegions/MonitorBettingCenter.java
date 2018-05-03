@@ -2,6 +2,7 @@ package sharingRegions;
 
 
 import Interfaces.IBroker_BettingCenter;
+import communication.Message;
 import communication.Stub;
 
 
@@ -20,12 +21,13 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	*/
 	@Override
 	public void acceptTheBets() {
-		sendMessage("acceptTheBets");
+		 sendMessage(new Message("acceptTheBets") );
 	}
 
 	@Override
 	public void honourTheBets() {
-		sendMessage("honourTheBets");
+		 sendMessage(new Message("honourTheBets") );
+		
 	}
 	/**
 	*	Function to broker verify if any spectator won the bet. 
@@ -35,24 +37,10 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	*/
 	@Override
 	public boolean areThereAnyWinners(int[] horseAWinners) {
-		String array="";
-		for(int i=0;i<horseAWinners.length;i++) {
-			array+=Integer.toString(horseAWinners[i]);
-			if(i<horseAWinners.length-1) {
-				array+=",";
-			}
-		}
-		if(horseAWinners.length==1) {
-			array+=",";
-		}
-		if(sendMessage("areThereAnyWinners"+";"+array).equals("true")) {
-			return true;
-		}else {
-			return false;
-		}
+		return (boolean) sendMessage(new Message("areThereAnyWinners", new Object[] {horseAWinners})).getReturn();
 	}
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9989; // numero do port
@@ -64,7 +52,7 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 	
 

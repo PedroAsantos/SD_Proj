@@ -1,6 +1,7 @@
 package sharingRegions;
 
 import Interfaces.IBroker_Control;
+import communication.Message;
 import communication.Stub;
 
 
@@ -20,17 +21,7 @@ public class MonitorControlCenter implements IBroker_Control{
 	*/
 	@Override
 	public void reportResults(int[] horseAWinners) {
-		String array="";
-		for(int i=0;i<horseAWinners.length;i++) {
-			array+=Integer.toString(horseAWinners[i]);
-			if(i<horseAWinners.length-1) {
-				array+=",";
-			}
-		}
-		if(horseAWinners.length==1) {
-			array+=",";
-		}
-		sendMessage("reportResults"+";"+array);		
+		sendMessage(new Message("reportResults",new Object[]{horseAWinners}));
 	}
 
 	/**
@@ -40,10 +31,11 @@ public class MonitorControlCenter implements IBroker_Control{
 	*/
 	@Override
 	public void entertainTheGuests() {
-		sendMessage("entertainTheGuests");
+		sendMessage(new Message("entertainTheGuests"));
+		
 	}
 	
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9959; // numero do port
@@ -55,6 +47,6 @@ public class MonitorControlCenter implements IBroker_Control{
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 }

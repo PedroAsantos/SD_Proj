@@ -7,7 +7,7 @@ public class RunRepository {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 2000; //testar com numeros maiores.
+		int numberOfHorses = 20; //testar com numeros maiores.
 		int numberOfSpectators=4;
 		int numberOfRaces=5;
 		int horsesPerRace=4;

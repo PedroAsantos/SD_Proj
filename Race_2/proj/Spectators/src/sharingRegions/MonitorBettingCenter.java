@@ -2,6 +2,7 @@ package sharingRegions;
 
 
 
+import communication.Message;
 import communication.Stub;
 import interfaces.ISpectator_BettingCenter;
 
@@ -24,18 +25,17 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter {
 	*/
 	@Override
 	public void placeABet(int spectatorId, double money,int horsePicked) {
-		sendMessage("placeABet"+";"+ spectatorId+";"+ money+ ";"+ horsePicked);
+		sendMessage(new Message("placeABet",new Object[] {spectatorId,money,horsePicked}));
 		
 	}
 
 	@Override
 	public double goCollectTheGains(int spectatorId) {
-		sendMessage("goCollectTheGains"+";"+spectatorId);
-		return 0;
+		return (double) sendMessage(new Message("goCollectTheGains")).getReturn();
 	}
 	
 	
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9989; // numero do port
@@ -47,7 +47,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter {
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 
 }

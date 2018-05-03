@@ -2,6 +2,7 @@ package sharingRegions;
 
 
 import Interfaces.IHorse_Paddock;
+import communication.Message;
 import communication.Stub;
 
 
@@ -21,11 +22,11 @@ public class MonitorPaddock implements IHorse_Paddock {
 	*/
 	@Override
 	public void proceedToPaddock(int horseId,int performance) {	
-		sendMessage("proceedToPaddock"+";"+horseId+";"+performance);
+		sendMessage(new Message("proceedToPaddock",new Object[] {horseId,performance}));
 	}
 
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9969; // numero do port
@@ -37,6 +38,6 @@ public class MonitorPaddock implements IHorse_Paddock {
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 }

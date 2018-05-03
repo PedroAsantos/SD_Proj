@@ -1,6 +1,7 @@
 package sharingRegions;
 
 
+import communication.Message;
 import communication.Stub;
 import interfaces.ISpectator_Control;
 
@@ -28,10 +29,7 @@ public class MonitorControlCenter implements ISpectator_Control{
 	*/
 	@Override
 	public boolean haveIwon(int spectator_id, int horsePicked) {
-		if(sendMessage("haveIwon"+";"+spectator_id+";"+horsePicked).equals("true")) {
-			return true;
-		}
-		return false;
+		return (boolean) sendMessage(new Message("haveIwon",new Object[] {spectator_id,horsePicked})).getReturn();
 		
 	}
 	/**
@@ -41,10 +39,7 @@ public class MonitorControlCenter implements ISpectator_Control{
 	*/
 	@Override
 	public boolean noMoreRaces() {
-		if(sendMessage("noMoreRaces").equals("true")) {
-			return true;
-		}
-		return false;
+		return (boolean) sendMessage(new Message("noMoreRaces")).getReturn();
 		
 	}
 	
@@ -55,16 +50,16 @@ public class MonitorControlCenter implements ISpectator_Control{
 	*/
 	@Override
 	public void relaxABit(int spectator_id) {
-		sendMessage("relaxABit"+";"+spectator_id);
+		sendMessage(new Message("relaxABit",new Object[] {spectator_id}));
 	}
 
 	@Override
 	public void goWatchTheRace(int spectator_id) {
-		sendMessage("goWatchTheRace"+";"+spectator_id);
+		sendMessage(new Message("goWatchTheRace",new Object[] {spectator_id}));
 		
 	}
 	
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9959; // numero do port
@@ -76,7 +71,7 @@ public class MonitorControlCenter implements ISpectator_Control{
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 
 }

@@ -1,5 +1,6 @@
 package sharingRegions;
 
+import communication.Message;
 import communication.Stub;
 import Enum.*;
 
@@ -14,7 +15,7 @@ public class Repository {
 	*
 	*/
 	public void toLog(){
-		sendMessage("toLog");
+		sendMessage(new Message("toLog"));
 	}
 
 	/**
@@ -24,11 +25,11 @@ public class Repository {
 	* 	@param state Horse state.
 	*/
 	public void setHorseStat(int horse_id, HorseState state){
-		sendMessage("setHorseStat"+";"+horse_id+";"+state);
+		sendMessage(new Message("setHorseStat",new Object[] {horse_id,state})).getReturn();
 	
 	}
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
 		int portNumb = 9949; // número do port
@@ -40,7 +41,7 @@ public class Repository {
 		Stub stub; // stub de comunicação
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 
 	

@@ -4,7 +4,7 @@ import server.StakeHoldersThread;
 import sharingRegions.*;
 
 public class RunMonitorStable {
-	static final int PORT = 9998;
+	static final int PORT = 9999;
 
 	public static void main(String[] args) {
 

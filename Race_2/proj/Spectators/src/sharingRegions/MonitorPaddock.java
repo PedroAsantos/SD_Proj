@@ -1,5 +1,6 @@
 package sharingRegions;
 
+import communication.Message;
 import communication.Stub;
 import interfaces.ISpectator_Paddock;
 
@@ -21,8 +22,7 @@ public class MonitorPaddock implements  ISpectator_Paddock {
 	*/
 	@Override
 	public void waitForNextRace(int spectator_id) {
-		sendMessage("waitForNextRace"+";"+spectator_id);
-		
+		sendMessage(new Message("waitForNextRace",new Object[] {spectator_id}));
 	}
 	/**
 	*	Function for spectators to be able to see and choose the horse that they will bet. In this function the probabilities of each horse winning are calculated.
@@ -33,11 +33,11 @@ public class MonitorPaddock implements  ISpectator_Paddock {
 	@Override
 	public int goCheckHorses(int spectator_id) {
 
-		return Integer.parseInt(sendMessage("goCheckHorses"+";"+spectator_id));
+		return (int) sendMessage(new Message("goCheckHorses",new Object[] {spectator_id})).getReturn();
 		
 	}
 	
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9969; // numero do port
@@ -49,7 +49,7 @@ public class MonitorPaddock implements  ISpectator_Paddock {
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 	
 }

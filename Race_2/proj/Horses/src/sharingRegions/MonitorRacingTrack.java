@@ -1,6 +1,7 @@
 package sharingRegions;
 
 import Interfaces.IHorse_Track;
+import communication.Message;
 import communication.Stub;
 
 
@@ -25,7 +26,7 @@ public class MonitorRacingTrack implements IHorse_Track{
 	@Override
 	public void proceedToStartLine(int horseId,int performance) {
 	
-		sendMessage("proceedToStartLine"+";"+horseId+";"+performance);
+		sendMessage(new Message("proceedToStartLine",new Object[] {horseId,performance}));
 
 	}
 	/**
@@ -35,7 +36,7 @@ public class MonitorRacingTrack implements IHorse_Track{
 	*/
 	@Override
 	public void makeAMove(int horseId) {
-		sendMessage("makeAMove"+";"+horseId);
+		sendMessage(new Message("makeAMove",new Object[] {horseId}));
 	}
 	/**
 	*	Check if a horse has crossed the finish line and then 
@@ -47,14 +48,11 @@ public class MonitorRacingTrack implements IHorse_Track{
 	*/
 	@Override
 	public boolean hasFinishLineBeenCrossed(int horseId) {
-		if(sendMessage("hasFinishLineBeenCrossed"+";"+horseId).equals("true")) {
-			return true;
-		}
-		return false;
+		return (boolean) sendMessage(new Message("hasFinishLineBeenCrossed",new Object[] {horseId})).getReturn();
 		
 	}
 
-	public String sendMessage(String payload) {
+	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
 		int portNumb = 9979; // numero do port
@@ -66,7 +64,7 @@ public class MonitorRacingTrack implements IHorse_Track{
 		Stub stub; // stub de comunicacao
 
 		stub = new Stub(hostName, portNumb);
-		return stub.exchange(payload);	
+		return stub.exchange(message);	
 	}
 
 	
