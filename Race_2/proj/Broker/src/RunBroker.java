@@ -22,7 +22,7 @@ public class RunBroker {
 		Repository repo = new Repository();
 		Broker broker = new Broker((IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack,repo);
 		
-	
+		System.out.println("Broker is starting!");
 		broker.start();
 		
 		try {

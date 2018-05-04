@@ -33,6 +33,7 @@ public class RunSpectators {
 		
 		
 		for (int i = 0; i < spectators.length; i++) {
+			System.out.println("Spectator_"+spectators[i]+"is starting!");
 			spectators[i].start();
 		}
 	

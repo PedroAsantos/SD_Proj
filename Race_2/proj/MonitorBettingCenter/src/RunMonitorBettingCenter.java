@@ -8,11 +8,7 @@ public class RunMonitorBettingCenter {
 
 	public static void main(String[] args) {
 				
-		int numberOfHorses = 20; //testar com numeros maiores.
-		int numberOfSpectators=4;
-		int numberOfRaces=5;
-		int horsesPerRace=4;
-		int raceLength=30;
+
 		Repository repo = new Repository();
 		repo.writeLog();
 

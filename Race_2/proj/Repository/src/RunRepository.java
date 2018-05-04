@@ -1,5 +1,3 @@
-import java.util.Random;
-
 import server.*;
 import sharingRegions.*;
 
@@ -12,7 +10,6 @@ public class RunRepository {
 		int numberOfRaces=5;
 		int horsesPerRace=4;
 		int raceLength=30;
-		int maxPerformance=10;
 		Repository repo = new Repository(numberOfHorses,numberOfSpectators,numberOfRaces,horsesPerRace,raceLength);
 		repo.writeLog();
 	    

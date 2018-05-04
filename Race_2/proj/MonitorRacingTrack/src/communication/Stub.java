@@ -38,7 +38,6 @@ public class Stub {
 	public Message exchange(Message message) {
 		ClientCom com = new ClientCom(serverHostName, serverPortNumb);
 		Message fromServer, // linha de entrada
-				fromUser,
 				returnFunction=null; // linha de saida
 	
 		while (!com.open()) // estabelecimento de ligacao
@@ -53,7 +52,7 @@ public class Stub {
 		com.writeObject(message);
 		while ((fromServer = (Message) com.readObject()) != null) // teste de recepcao de mensagem do servidor
 		{
-			System.out.println("Servidor: " + fromServer); // imprimir mensagem no dispositivo de saida
+		//	System.out.println("Servidor: " + fromServer); // imprimir mensagem no dispositivo de saida
 															// standard
 			if (fromServer.getEnd()) 
 				break; // teste de continuacao	

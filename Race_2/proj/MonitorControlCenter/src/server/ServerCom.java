@@ -250,7 +250,6 @@ public class ServerCom
 
    public void writeObject (Object toClient)
    {
-	   System.out.println("TOCLIENT"+toClient);
       try
       { out.writeObject (toClient);
       }
