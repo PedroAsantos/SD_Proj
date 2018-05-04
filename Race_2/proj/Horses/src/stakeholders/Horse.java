@@ -33,7 +33,7 @@ public class Horse extends Thread {
 		while(running) {
 			switch (state) {
 				case AT_THE_STABLE:
-					System.out.println("AT_THE_STABLE");
+					System.out.println("AT_THE_STABLE horse_"+id);
 					if(monitorStable.proceedToStable(id)){
 					//s	repo.sethorseruns(id,runs);
 						state=HorseState.AT_THE_PADDOCK;
@@ -45,7 +45,7 @@ public class Horse extends Thread {
 				
 					break;
 				case AT_THE_PADDOCK:
-					System.out.println("AT_THE_PADDOCK");
+					System.out.println("AT_THE_PADDOCK horse_"+id);
 					monitorPaddock.proceedToPaddock(id,performance);
 					//state=HorseState.AT_THE_FINISH_LINE;
 					state=HorseState.AT_THE_START_LINE;
@@ -53,14 +53,14 @@ public class Horse extends Thread {
 					repo.toLog();
 					break;
 				case AT_THE_START_LINE:
-					System.out.println("AT_THE_START_LINE");
+					System.out.println("AT_THE_START_LINE horse_"+id);
 					monitorTrack.proceedToStartLine(id,performance);
 					state=HorseState.RUNNING;
 					repo.setHorseStat(id,state);
 					repo.toLog();
 					break;
 				case RUNNING:
-					System.out.println("RUNNING");
+					System.out.println("RUNNING horse_"+id);
 					monitorTrack.makeAMove(id);
 					if(monitorTrack.hasFinishLineBeenCrossed(id)) {
 						state=HorseState.AT_THE_FINISH_LINE;
@@ -69,7 +69,7 @@ public class Horse extends Thread {
 					repo.toLog();
 					break;
 				case AT_THE_FINISH_LINE:
-					System.out.println("AT_THE_FINISH_LINE");
+					System.out.println("AT_THE_FINISH_LINE horse_"+id);
 					state=HorseState.AT_THE_STABLE;
 					repo.setHorseStat(id,state);
 					repo.toLog();

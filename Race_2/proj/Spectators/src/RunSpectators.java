@@ -10,11 +10,8 @@ import stakeholders.Spectator;
 public class RunSpectators {
 	public static void main(String[] args) {
 		
-		int numberOfHorses = 20; //testar com numeros maiores.
 		int numberOfSpectators=4;
-		int numberOfRaces=5;
-		int horsesPerRace=4;
-		int raceLength=30;
+
 		Repository repo = new Repository();
 
 		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
@@ -33,7 +30,7 @@ public class RunSpectators {
 		
 		
 		for (int i = 0; i < spectators.length; i++) {
-			System.out.println("Spectator_"+spectators[i]+"is starting!");
+			System.out.println("Spectator_"+i+" is starting!");
 			spectators[i].start();
 		}
 	

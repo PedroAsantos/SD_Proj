@@ -51,6 +51,7 @@ public class Spectator extends Thread {
 		while(running) {
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
+					System.out.println("WAITING_FOR_A_RACE_TO_START Spectator_"+id);
 					monitorPaddock.waitForNextRace(id);
 					horsePicked=monitorPaddock.goCheckHorses(id);
 					repo.setspecMoney(id,money);
@@ -60,6 +61,7 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case APPRAISING_THE_HORSES:
+					System.out.println("APPRAISING_THE_HORSES Spectator_"+id);
 					double bet;
 					Random random = new Random();
 					bet = random.nextDouble()*money;
@@ -72,12 +74,14 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case PLACING_A_BET:
+					System.out.println("PLACING_A_BET Spectator_"+id);
 					monitorControl.goWatchTheRace(id);
 					state=SpectatorState.WATCHING_THE_RACE;
 					repo.setSpecStat(id,state);
 					repo.toLog();
 					break;
 				case WATCHING_THE_RACE:
+					System.out.println("WATCHING_THE_RACE Spectator_"+id);
 					if(monitorControl.haveIwon(id,horsePicked)) {
 						state=SpectatorState.COLLECTING_THE_GAINS;
 					}else {
@@ -92,6 +96,7 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case COLLECTING_THE_GAINS:
+					System.out.println("COLLECTING_THE_GAINS Spectator_"+id);
 					double moneyReceived=0;
 					moneyReceived=monitorBettingCenter.goCollectTheGains(id);
 					money=money+moneyReceived;
@@ -106,7 +111,7 @@ public class Spectator extends Thread {
 					repo.toLog();
 					break;
 				case CELEBRATING:
-						System.out.println("CELEBRATING");
+						System.out.println("CELEBRATING Spectator_"+id);
 						repo.setSpecStat(id,state);
 						repo.toLog();
 						stopRunning();

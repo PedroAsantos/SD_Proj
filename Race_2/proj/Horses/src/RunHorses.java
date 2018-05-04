@@ -34,7 +34,7 @@ public class RunHorses {
 		
 	
 		for (int i = 0; i < horses.length; i++) {
-			System.out.println("Horse"+horses[i]+"is starting!");
+			System.out.println("Horse_"+i+"is starting!");
 			horses[i].start();
 		}
 		
