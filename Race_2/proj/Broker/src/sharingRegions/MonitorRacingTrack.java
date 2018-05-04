@@ -30,7 +30,7 @@ public class MonitorRacingTrack implements IBroker_Track{
 	*/
 	@Override
 	public int[] reportResults() {
-        return (int[]) sendMessage(new Message("summonHorsesToEnd")).getReturn();
+        return (int[]) sendMessage(new Message("reportResults")).getReturn();
 	}
 	public Message sendMessage(Message message) {
 

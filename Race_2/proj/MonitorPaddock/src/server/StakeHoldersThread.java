@@ -37,7 +37,7 @@ public class StakeHoldersThread extends Thread {
 				returnMessage=null;
 			}else {
 			//	outputLine="Ok!";	
-				com.writeObject(new Message());// seu envio ao cliente
+				com.writeObject(new Message(true));// seu envio ao cliente
 				break;
 			} 
 		//	if (outputLine.equals("Ok!"))

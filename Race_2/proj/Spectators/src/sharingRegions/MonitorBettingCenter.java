@@ -31,7 +31,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter {
 
 	@Override
 	public double goCollectTheGains(int spectatorId) {
-		return (double) sendMessage(new Message("goCollectTheGains")).getReturn();
+		return (double) sendMessage(new Message("goCollectTheGains",new Object[] {spectatorId})).getReturn();
 	}
 	
 	

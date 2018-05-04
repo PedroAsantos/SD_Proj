@@ -59,7 +59,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 					e.printStackTrace();
 				}
 			}
-			
+			System.out.print("Horse_"+horseId+" exiting stable!\n");
 			horsesAtStable--;
 			if(goingToPaddock) {
 				horsesPaddock++;

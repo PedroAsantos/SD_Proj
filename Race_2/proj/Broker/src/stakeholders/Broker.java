@@ -36,25 +36,28 @@ public class Broker extends Thread {
             switch (state) {
                 case OPENING_THE_EVENT:
                     repo.setbrokerstate(state);
-                    System.out.print("Opening the event \n");
+                    System.out.print("OPENING_THE_EVENT \n");
                     monitorStable.summonHorsesToPaddock();
                     state=BrokerState.ANNOUNCING_NEXT_RACE;
                 //  state=BrokerState.PLAYING_HOST_AT_THE_BAR;
                     repo.toLog();
                     break;
                 case ANNOUNCING_NEXT_RACE:
+                    System.out.print("ANNOUNCING_NEXT_RACE\n");
                     repo.setbrokerstate(state);
                     monitorBettingCenter.acceptTheBets();
                     state=BrokerState.WAITING_FOR_THE_BETS;
                     repo.toLog();
                     break;
                 case WAITING_FOR_THE_BETS:
+               	   System.out.print("WAITING_FOR_THE_BETS\n");
                     repo.setbrokerstate(state);
                     monitorTrack.startTheRace();
                     state=BrokerState.SUPERVISING_THE_RACE;
                     repo.toLog();
                     break;
                 case SUPERVISING_THE_RACE:
+               	   System.out.print("SUPERVISING_THE_RACE\n");
                     repo.setbrokerstate(state);
                     //passar do track para o control que cavalos ganharam!
                     int[] horseAWinners;
@@ -78,6 +81,7 @@ public class Broker extends Thread {
                     repo.toLog();
                     break;
                 case SETTING_ACCOUNTS:
+               	   System.out.print("SETTING_ACCOUNTS\n");
                     repo.setbrokerstate(state);
                     if(repo.getNumberOfRacesMissing()==0) {
                         monitorControl.entertainTheGuests();
@@ -92,6 +96,7 @@ public class Broker extends Thread {
                     repo.toLog();
                     break;
                 case PLAYING_HOST_AT_THE_BAR:
+                	System.out.print("PLAYING_HOST_AT_THE_BAR\n");
                     repo.setbrokerstate(state);
                     System.out.println("EVENT END");
                     stopRunning();
