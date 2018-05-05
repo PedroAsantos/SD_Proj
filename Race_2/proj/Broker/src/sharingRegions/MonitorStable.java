@@ -12,8 +12,10 @@ public class MonitorStable implements IBroker_Stable {
 
 	}
 
-	
-
+	@Override
+	public void turnOffServer() {
+		sendMessage(new Message(".EndServer"));
+	}
 	/**
 	 * When the event are ending the horses are going to the end of event
 	 *

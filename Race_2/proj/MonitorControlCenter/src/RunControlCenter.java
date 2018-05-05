@@ -14,18 +14,7 @@ public class RunControlCenter {
 		
 
 		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
-		/*
-		 * ServerSocket serverSocket = null;
-		 * 
-		 * Socket socket = null;
-		 * 
-		 * try { serverSocket = new ServerSocket(PORT); } catch (IOException e) {
-		 * e.printStackTrace();
-		 * 
-		 * } while (true) { try { socket = serverSocket.accept(); } catch (IOException
-		 * e) { System.out.println("I/O error: " + e); } // new thread for a client new
-		 * EchoThread(socket,mStable).start(); }
-		 */
+	
 		ServerCom scon, sconi; // canais de comunicacao
 		int portNumb = 9959; // numero do port em que o servico e
 								// estabelecido
@@ -41,10 +30,12 @@ public class RunControlCenter {
 
 		StakeHoldersThread thread; // agente prestador de servico
 
-		while (true) {
+		while (shp.getServerState()) {
 			sconi = scon.accept(); // entrar em processo de escuta
-			thread = new StakeHoldersThread(sconi, shp, mControlCenter); // lancar agente prestador de servico
-			thread.start();
+			if(sconi!=null) {
+				thread = new StakeHoldersThread(sconi, shp, mControlCenter); // lancar agente prestador de servico
+				thread.start();	
+			}
 		}
 	}
 }

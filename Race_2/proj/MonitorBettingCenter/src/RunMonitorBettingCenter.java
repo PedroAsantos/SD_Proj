@@ -30,10 +30,12 @@ public class RunMonitorBettingCenter {
 
 		StakeHoldersThread thread; // agente prestador de servico
 
-		while (true) {
+		while (shp.getServerState()) {
 			sconi = scon.accept(); // entrar em processo de escuta
-			thread = new StakeHoldersThread(sconi, shp, mBettingCenter); // lancar agente prestador de servico
-			thread.start();
+			if(sconi!=null) {
+				thread = new StakeHoldersThread(sconi, shp, mBettingCenter); // lancar agente prestador de servico
+				thread.start();	
+			}
 		}
 		
 	}

@@ -11,18 +11,7 @@ public class RunMonitorStable {
 		Repository repo = new Repository();
 
 		MonitorStable mStable = new MonitorStable(repo);
-		/*
-		 * ServerSocket serverSocket = null;
-		 * 
-		 * Socket socket = null;
-		 * 
-		 * try { serverSocket = new ServerSocket(PORT); } catch (IOException e) {
-		 * e.printStackTrace();
-		 * 
-		 * } while (true) { try { socket = serverSocket.accept(); } catch (IOException
-		 * e) { System.out.println("I/O error: " + e); } // new thread for a client new
-		 * EchoThread(socket,mStable).start(); }
-		 */
+	
 		ServerCom scon, sconi; // canais de comunicacao
 		int portNumb = 9999; // numero do port em que o servico ee
 								// estabelecido
@@ -31,6 +20,7 @@ public class RunMonitorStable {
 		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associacao
 		scon.start(); // com o endereco publico
 		shp = StakeHoldersProtocol.getInstance(); // activar oo servico
+		StakeHoldersProtocol.setServerCom(scon);
 		System.out.println("MonitorStable was established!");
 		System.out.println("MonitorStable is listenning.");
 
@@ -38,10 +28,12 @@ public class RunMonitorStable {
 
 		StakeHoldersThread thread; // agente prestador de servico
 
-		while (true) {
+		while (shp.getServerState()) {
 			sconi = scon.accept(); // entrar em processo de escuta
-			thread = new StakeHoldersThread(sconi, shp, mStable); // lancar agente prestador de servico
-			thread.start();
+			if(sconi!=null) {
+				thread = new StakeHoldersThread(sconi, shp, mStable); // lancar agente prestador de servico
+				thread.start();	
+			}
 		}
 	}
 

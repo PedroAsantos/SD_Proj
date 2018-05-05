@@ -1,9 +1,11 @@
 import Interfaces.IBroker_BettingCenter;
 import Interfaces.IBroker_Control;
+import Interfaces.IBroker_Paddock;
 import Interfaces.IBroker_Stable;
 import Interfaces.IBroker_Track;
 import sharingRegions.MonitorBettingCenter;
 import sharingRegions.MonitorControlCenter;
+import sharingRegions.MonitorPaddock;
 import sharingRegions.MonitorRacingTrack;
 import sharingRegions.MonitorStable;
 import sharingRegions.Repository;
@@ -19,8 +21,9 @@ public class RunBroker {
 		MonitorControlCenter mControlCenter = new MonitorControlCenter();
 		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack();
 		MonitorStable mStable = new MonitorStable();
+		MonitorPaddock mPaddock = new MonitorPaddock();
 		Repository repo = new Repository();
-		Broker broker = new Broker((IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack,repo);
+		Broker broker = new Broker((IBroker_Control) mControlCenter,(IBroker_BettingCenter) mBettingCenter,(IBroker_Stable) mStable,(IBroker_Track) mRacingTrack,(IBroker_Paddock) mPaddock ,repo);
 		
 		System.out.println("Broker is starting!");
 		broker.start();

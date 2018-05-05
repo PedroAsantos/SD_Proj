@@ -35,6 +35,11 @@ public class MonitorControlCenter implements IBroker_Control{
 		
 	}
 	
+	@Override
+	public void turnOffServer() {
+		sendMessage(new Message(".EndServer"));
+	}
+	
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor

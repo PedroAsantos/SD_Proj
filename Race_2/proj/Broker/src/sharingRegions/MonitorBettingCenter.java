@@ -39,6 +39,11 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	public boolean areThereAnyWinners(int[] horseAWinners) {
 		return (boolean) sendMessage(new Message("areThereAnyWinners", new Object[] {horseAWinners})).getReturn();
 	}
+	
+	@Override
+	public void turnOffServer() {
+		sendMessage(new Message(".EndServer"));
+	}
 
 	public Message sendMessage(Message message) {
 

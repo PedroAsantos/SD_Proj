@@ -22,7 +22,11 @@ public class MonitorRacingTrack implements IBroker_Track{
 		sendMessage(new Message("startTheRace"));
 	}
 	
-
+	@Override
+	public void turnOffServer() {
+		sendMessage(new Message(".EndServer"));
+	}
+	
 	/**
 	*	Report the results to spectators returning an array with rankings
 	*

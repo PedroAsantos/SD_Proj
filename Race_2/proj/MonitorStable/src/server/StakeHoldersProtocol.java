@@ -9,11 +9,15 @@ import sharingRegions.MonitorStable;
 public class StakeHoldersProtocol {
 
 	private static StakeHoldersProtocol instance = null;
-
+	private volatile boolean serverOn=true;
+	private static ServerCom sCon;
 	protected StakeHoldersProtocol() {
 		// Exists only to defeat instantiation.
 	}
-
+	
+	public static void setServerCom(ServerCom scon) {
+		sCon=scon;
+	}
 	public static StakeHoldersProtocol getInstance() {
 		if (instance == null) {
 			instance = new StakeHoldersProtocol();
@@ -58,4 +62,11 @@ public class StakeHoldersProtocol {
 	
 		return new Message(objectReturn);
 	}
+	   public boolean getServerState() {
+		   return serverOn;
+	   }
+	   
+	   public void setServerOff() {
+		   serverOn=false;
+	   }
 }

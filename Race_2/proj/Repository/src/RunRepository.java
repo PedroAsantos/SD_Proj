@@ -1,3 +1,6 @@
+
+import java.net.SocketTimeoutException;
+
 import server.*;
 import sharingRegions.*;
 
@@ -23,15 +26,17 @@ public class RunRepository {
 		shp = StakeHoldersProtocol.getInstance(); // activar oo servico
 		System.out.println("Repository was established!");
 		System.out.println("Repository is listenning.");
-
+		
 		/* processamento de pedidos */
-
+		
 		StakeHoldersThread thread; // agente prestador de servico
-
-		while (true) {
-			sconi = scon.accept(); // entrar em processo de escuta
-			thread = new StakeHoldersThread(sconi, shp, repo); // lancar agente prestador de servico
-			thread.start();
+		while (shp.getServerState()) {
+			
+			sconi = scon.accept(); // entrar em processo de escuta	
+			if(sconi!=null) {
+				thread = new StakeHoldersThread(sconi, shp, repo); // lancar agente prestador de servico
+				thread.start();	
+			}
 		}
 		
 	}

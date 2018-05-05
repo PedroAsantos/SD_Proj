@@ -21,8 +21,14 @@ public class StakeHoldersThread extends Thread {
 		Message messageFromClient;
 		while ((messageFromClient = (Message) com.readObject()) != null) // o cliente respondeu?
 		{
-		 // teste de fim de comunicacao
+			// teste de fim de comunicacao-> verificar se é para matar o servidor ou se é parar executar uma função.
 			if(messageFromClient.getFunctionName()!=null) {
+				if(messageFromClient.getFunctionName().equals(".EndServer")) {
+					com.writeObject(new Message(true));
+					System.out.println(".EndServer");
+					shp.setServerOff();
+					break;
+				}
 				returnMessage=shp.processInput(messageFromClient,mRacingTrack); // geracao da mensagem seguinte
 			}
 		

@@ -80,6 +80,7 @@ public class ServerCom
    {
       try
       { listeningSocket = new ServerSocket (serverPortNumb);
+    	listeningSocket.setSoTimeout(10000);
       }
       catch (BindException e)                         // erro fatal --- port ja em uso
       { System.out.println (Thread.currentThread ().getName () +
@@ -129,9 +130,14 @@ public class ServerCom
       ServerCom scon;                                      // canal de comunicacao
 
       scon = new ServerCom(serverPortNumb, listeningSocket);
+      boolean success=false;
       try
       { scon.commSocket = listeningSocket.accept();
+         success=true;
       }
+      catch (SocketTimeoutException e) {
+  		// TODO: handle exception
+  	  }
       catch (SocketException e)
       { System.out.println (Thread.currentThread ().getName () +
                                  " - foi fechado o socket de escuta durante o processo de escuta!");
@@ -144,28 +150,30 @@ public class ServerCom
         e.printStackTrace ();
         System.exit (1);
       }
-
-      try
-      { scon.in = new ObjectInputStream (scon.commSocket.getInputStream ());
+      if(success) {
+	      try
+	      { scon.in = new ObjectInputStream (scon.commSocket.getInputStream ());
+	      }
+	      catch (IOException e)
+	      { System.out.println (Thread.currentThread ().getName () +
+	                                 " - nao foi possivel abrir o canal de entrada do socket!");
+	        e.printStackTrace ();
+	        System.exit (1);
+	      }
+	
+	      try
+	      { scon.out = new ObjectOutputStream (scon.commSocket.getOutputStream ());
+	      }
+	      catch (IOException e)
+	      { System.out.println (Thread.currentThread ().getName () +
+	                                 " - nao foi possivel abrir o canal de saida do socket!");
+	        e.printStackTrace ();
+	        System.exit (1);
+	      }
+      
+    	  return scon;
       }
-      catch (IOException e)
-      { System.out.println (Thread.currentThread ().getName () +
-                                 " - nao foi possivel abrir o canal de entrada do socket!");
-        e.printStackTrace ();
-        System.exit (1);
-      }
-
-      try
-      { scon.out = new ObjectOutputStream (scon.commSocket.getOutputStream ());
-      }
-      catch (IOException e)
-      { System.out.println (Thread.currentThread ().getName () +
-                                 " - nao foi possivel abrir o canal de saida do socket!");
-        e.printStackTrace ();
-        System.exit (1);
-      }
-
-      return scon;
+      return null;
    }
 
   /**
@@ -250,7 +258,7 @@ public class ServerCom
 
    public void writeObject (Object toClient)
    {
-	   System.out.println("TOCLIENT"+toClient);
+	  
       try
       { out.writeObject (toClient);
       }

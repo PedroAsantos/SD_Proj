@@ -56,7 +56,9 @@ public class Repository {
 		sendMessage(new Message("setbrokerstate", new Object[] {brokerstate}));
 	}
 
-
+	public void turnOffServer() {
+		sendMessage(new Message(".EndServer"));
+	}
 
 	public Message sendMessage(Message message) {
 
@@ -72,4 +74,6 @@ public class Repository {
 		stub = new Stub(hostName, portNumb);
 		return stub.exchange(message);	
 	}
+
+	
 }
