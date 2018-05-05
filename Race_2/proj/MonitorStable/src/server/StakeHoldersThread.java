@@ -21,9 +21,9 @@ public class StakeHoldersThread extends Thread {
 		Message messageFromClient;
 		while ((messageFromClient = (Message) com.readObject()) != null) // o cliente respondeu?
 		{
-		   // teste de fim de comunicacao-> verificar se é para matar o servidor ou se é parar executar uma função.
+		   // teste de fim de comunicacao-> verificar se ee para matar o servidor ou se ee parar executar uma funcao.
 			if(messageFromClient.getFunctionName()!=null) {
-				//verifcar se é para matar o monitor. 
+				//verifcar se ee para matar o monitor. 
 				if(messageFromClient.getFunctionName().equals(".EndServer")) {
 					com.writeObject(new Message(true));
 					System.out.println(".EndServer");
