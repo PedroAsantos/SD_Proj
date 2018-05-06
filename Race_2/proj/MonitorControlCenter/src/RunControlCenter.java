@@ -3,11 +3,13 @@ import server.StakeHoldersProtocol;
 import server.StakeHoldersThread;
 import sharingRegions.MonitorControlCenter;
 import sharingRegions.Repository;
+import java.util.*;
+import java.io.*;
 
 public class RunControlCenter {
 	static final int PORT = 9998;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException{
 
 
 		Repository repo = new Repository();
@@ -15,8 +17,15 @@ public class RunControlCenter {
 
 		MonitorControlCenter mControlCenter = new MonitorControlCenter(repo);
 	
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portControlCenter")); // numero do port em que o servico ee
+
 		ServerCom scon, sconi; // canais de comunicacao
-		int portNumb = 9959; // numero do port em que o servico e
+		//int portNumb = 9959; // numero do port em que o servico e
 								// estabelecido
 		StakeHoldersProtocol shp; // servico a ser fornecido
 

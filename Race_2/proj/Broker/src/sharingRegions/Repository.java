@@ -3,6 +3,9 @@ package sharingRegions;
 import communication.Message;
 import communication.Stub;
 import Enum.*;
+import java.util.*;
+
+import java.io.*;
 
 public class Repository {
 
@@ -24,7 +27,7 @@ public class Repository {
 	*	Function to remove all the horses that were running.
 	*
 	*/
-	public void clearhorsesRunning() {
+	public void clearhorsesRunning(){
 		sendMessage(new Message("clearhorsesRunning"));
 	}
 
@@ -41,7 +44,7 @@ public class Repository {
 	*	Function to update the number of races that were made.
 	*	
 	*/
-	public void raceDone() {
+	public void raceDone(){
 		sendMessage(new Message("raceDone"));
 	}
 	
@@ -56,16 +59,32 @@ public class Repository {
 		sendMessage(new Message("setbrokerstate", new Object[] {brokerstate}));
 	}
 
-	public void turnOffServer() {
+	public void turnOffServer(){
 		sendMessage(new Message(".EndServer"));
 	}
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message){
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		//int portNumb = 9949; // número do port
 
-		hostName = "localhost";
+		//hostName = "localhost";
+
+		hostName = prop.getProperty("machine_repository");
 
 		/* troca de mensagens com o servidor */
 

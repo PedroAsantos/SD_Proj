@@ -3,18 +3,27 @@ import server.StakeHoldersProtocol;
 import server.StakeHoldersThread;
 import sharingRegions.MonitorRacingTrack;
 import sharingRegions.Repository;
+import java.util.*;
+import java.io.*;
+
 
 public class RunMonitorRacingTrack {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException{
 		
 		int raceLength=30;
 		Repository repo = new Repository();
 
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
 		
+		int portNumb = Integer.parseInt(prop.getProperty("portRacingTrack")); // numero do port em que o servico ee
+
 		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack(raceLength, repo);
 	
 		ServerCom scon, sconi; // canais de comunicacao
-		int portNumb = 9979; // numero do port em que o servico ee
+		//int portNumb = 9979; // numero do port em que o servico ee
 								// estabelecido
 		StakeHoldersProtocol shp; // servico a ser fornecido
 

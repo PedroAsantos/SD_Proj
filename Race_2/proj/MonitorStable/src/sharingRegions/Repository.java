@@ -19,14 +19,14 @@ public class Repository {
 	*   @param horseId Horse ID 
 	*   @return boolean return false if the race is already full.
 	*/
-	public boolean addHorsesToRun(int horseId) {
+	public boolean addHorsesToRun(int horseId) throws IOException{
 		return (boolean) sendMessage(new Message("addHorsesToRun",new Object[] {horseId})).getReturn();
 	}
 	/**
 	*	Function to return the number of horses per race.
 	*   @return int Horses in each race.
 	*/
-	public int getHorsesPerRace() {
+	public int getHorsesPerRace() throws IOException{
 	
 		return (int) sendMessage(new Message("getHorsesPerRace")).getReturn();
 	}
@@ -34,17 +34,24 @@ public class Repository {
 	*	Function to return the number of total horses in the event.
 	*   @return int Horses in the event.
 	*/
-	public int getTotalHorses() {
+	public int getTotalHorses() throws IOException{
 		
 		return (int) sendMessage(new Message("getTotalHorses")).getReturn();
 	}
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message) throws IOException{
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
-
-		hostName = "localhost";
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		//int portNumb = 9949; // número do port
+		
+		hostName = prop.getProperty("machine_repository");
+		//hostName = "localhost";
 
 		/* troca de mensagens com o servidor */
 

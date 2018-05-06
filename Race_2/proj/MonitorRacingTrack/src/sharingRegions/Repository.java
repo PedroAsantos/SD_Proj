@@ -19,7 +19,7 @@ public class Repository {
 	*
 	* 	
 	*/
-	public void raceStarted() {
+	public void raceStarted() throws IOException{
 		sendMessage(new Message("raceStarted"));
 	}
 	
@@ -29,7 +29,7 @@ public class Repository {
 	* 	@param horse_id Horse ID.
 	* 	@param runs Runs of the horse.
 	*/
-	public void sethorseruns(int horse_id, int runs){
+	public void sethorseruns(int horse_id, int runs) throws IOException{
 		sendMessage(new Message("sethorseruns",new Object[] {horse_id,runs}));
 	}
 	
@@ -39,7 +39,7 @@ public class Repository {
 	* 	@param horse_id Horse ID.
 	* 	@param position Horse position.
 	*/
-	public void sethorseposition(int horse_id, int position){
+	public void sethorseposition(int horse_id, int position) throws IOException{
 		sendMessage(new Message("sethorseposition",new Object[] {horse_id,position}));
 	}
 	
@@ -49,7 +49,7 @@ public class Repository {
 	* 	@param horse_id Spectator ID.
 	* 	@param rank Horse place.
 	*/
-	public void sethorserank(int horse_id, int rank){
+	public void sethorserank(int horse_id, int rank) throws IOException{
 
 		sendMessage(new Message("sethorserank",new Object[] {horse_id,rank}));
 	}
@@ -58,17 +58,24 @@ public class Repository {
 	*	Function to return the number of horses per race.
 	*   @return int Horses in each race.
 	*/
-	public int getHorsesPerRace() {
+	public int getHorsesPerRace() throws IOException{
 		return (int) sendMessage(new Message("getHorsesPerRace")).getReturn();
 	}
 
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message) throws IOException{
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		//int portNumb = 9949; // número do port
 
-		hostName = "localhost";
+		hostName = prop.getProperty("machine_repository");
+		//hostName = "localhost";
 
 		/* troca de mensagens com o servidor */
 

@@ -4,6 +4,9 @@ package sharingRegions;
 import Interfaces.IBroker_Stable;
 import communication.Message;
 import communication.Stub;
+import java.util.*;
+
+import java.io.*;
 
 public class MonitorStable implements IBroker_Stable {
 
@@ -32,17 +35,34 @@ public class MonitorStable implements IBroker_Stable {
 	 * 
 	 */
 	@Override
-	public void summonHorsesToPaddock() {
-		sendMessage(new Message("summonHorsesToPaddock"));
+	public void summonHorsesToPaddock(){
+		sendMessage(new Message("summonHorsesToPaddock"));		
 	}
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message){
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9999; // numero do port
 
-		hostName = "localhost";
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 		int portNumb;
+ 		
+			try {
+				prop.load(new FileInputStream("resources/"+propFileName));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			portNumb = Integer.parseInt(prop.getProperty("portStable"));
+			//int portNumb = 9999; // numero do port
 
+			hostName = prop.getProperty("machine_Stable");
+			//hostName = "localhost";
+		
 		/* troca de mensagens com o servidor */
 
 		Stub stub; // stub de comunicacao

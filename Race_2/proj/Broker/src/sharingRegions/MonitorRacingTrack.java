@@ -3,8 +3,9 @@ package sharingRegions;
 import Interfaces.IBroker_Track;
 import communication.Message;
 import communication.Stub;
+import java.util.*;
 
-
+import java.io.*;
 
 
 public class MonitorRacingTrack implements IBroker_Track{
@@ -18,12 +19,12 @@ public class MonitorRacingTrack implements IBroker_Track{
 	*
 	*/
 	@Override
-	public void startTheRace() {
+	public void startTheRace(){
 		sendMessage(new Message("startTheRace"));
 	}
 	
 	@Override
-	public void turnOffServer() {
+	public void turnOffServer(){
 		sendMessage(new Message(".EndServer"));
 	}
 	
@@ -33,15 +34,31 @@ public class MonitorRacingTrack implements IBroker_Track{
 	*	@return int[] horseAWinners 
 	*/
 	@Override
-	public int[] reportResults() {
-        return (int[]) sendMessage(new Message("reportResults")).getReturn();
+	public int[] reportResults(){
+		return (int[]) sendMessage(new Message("reportResults")).getReturn();
+        
 	}
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message){
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9979; // numero do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRacingTrack"));
+		//int portNumb = 9979; // número do port
 
-		hostName = "localhost";
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_RacingTrack");
 
 		/* troca de mensagens com o servidor */
 

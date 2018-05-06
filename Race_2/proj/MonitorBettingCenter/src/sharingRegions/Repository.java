@@ -14,14 +14,14 @@ public class Repository {
 
 	}
 	
-	public void writeLog(){
+	public void writeLog() throws IOException{
 		sendMessage(new Message("writeLog"));
 	}
 	/**
 	*	Function to know the number of spectors in the event.
 	*   @return int the number of spectators.
 	*/
-	public int getNumberOfSpectators() {
+	public int getNumberOfSpectators() throws IOException{
 		return (int) sendMessage(new Message("getNumberOfSpectators")).getReturn();
 	}
 	/**
@@ -30,7 +30,7 @@ public class Repository {
 	* 	@param spectator_id Spectator ID.
 	* 	@param amount bet amount.
 	*/
-	public void setspecbetamount(int spectator_id, double amount){
+	public void setspecbetamount(int spectator_id, double amount)throws IOException{
 		sendMessage(new Message("setspecbetamount",new Object[] {spectator_id, amount}));
 	}
 
@@ -40,7 +40,7 @@ public class Repository {
 	* 	@param spec_id Spectator ID.
 	* 	@param horse_id Horse picked.
 	*/
-	public void setspecbets(int spec_id,int horse_id){
+	public void setspecbets(int spec_id,int horse_id) throws IOException{
 		sendMessage(new Message("setspecbets",new Object[] {spec_id, horse_id}));
 	}
 
@@ -48,17 +48,24 @@ public class Repository {
 	*	Function to clear the horse place on the end of the race.
 	*
 	*/
-	public void clearhorserank() {
+	public void clearhorserank() throws IOException{
 		sendMessage(new Message("clearhorserank"));
 		
 	}
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message) throws IOException{
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		//int portNumb = 9949; // número do port
 
-		hostName = "localhost";
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_repository");
 
 		/* troca de mensagens com o servidor */
 

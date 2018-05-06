@@ -3,18 +3,26 @@ import server.StakeHoldersProtocol;
 import server.StakeHoldersThread;
 import sharingRegions.MonitorPaddock;
 import sharingRegions.Repository;
+import java.util.*;
+import java.io.*;
+
 
 public class RunPaddock {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException{
 
 		Repository repo = new Repository();
 
 		MonitorPaddock mPaddock = new MonitorPaddock(repo);
 	
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
 		
+		int portNumb = Integer.parseInt(prop.getProperty("portPaddock")); // numero do port em que o servico ee
 		
 		ServerCom scon, sconi; // canais de comunicacao
-		int portNumb = 9969; // numero do port em que o servico e
+		//int portNumb = 9969; // numero do port em que o servico e
 								// estabelecido
 		StakeHoldersProtocol shp; // servico a ser fornecido
 

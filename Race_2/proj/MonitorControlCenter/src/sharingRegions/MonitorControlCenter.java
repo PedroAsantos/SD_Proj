@@ -1,5 +1,6 @@
 package sharingRegions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
@@ -31,7 +32,12 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		eventNotEnd=true;
 		this.repo=repo;
 		spectatorsWatchingRace=0;
-		this.totalSpectators=repo.getNumberOfSpectators();
+		try {
+			this.totalSpectators=repo.getNumberOfSpectators();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		spectatorsRelaxing=0;
 	}
 	
@@ -116,6 +122,9 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 		mutex.lock();
 		try {
 			numberOfRaces = repo.getNumberOfRacesMissing();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}

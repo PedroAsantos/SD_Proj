@@ -3,6 +3,8 @@ package sharingRegions;
 import communication.Message;
 import communication.Stub;
 import Enum.*;
+import java.util.*;
+import java.io.*;
 
 public class Repository {
 
@@ -42,9 +44,24 @@ public class Repository {
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
+		//int portNumb = 9949; // número do port
 
-		hostName = "localhost";
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		hostName = prop.getProperty("machine_repository");
+		//hostName = "localhost";
 
 		/* troca de mensagens com o servidor */
 

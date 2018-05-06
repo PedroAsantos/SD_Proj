@@ -1,6 +1,7 @@
 package sharingRegions;
 
-
+import java.util.*;
+import java.io.*;
 
 import communication.Message;
 import communication.Stub;
@@ -38,10 +39,27 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter {
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9989; // numero do port
+		
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portBettingCenter"));
 
-		hostName = "localhost";
+		//int portNumb = 9989; // numero do port
 
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_BettingCenter");
+		
 		/* troca de mensagens com o servidor */
 
 		Stub stub; // stub de comunicacao

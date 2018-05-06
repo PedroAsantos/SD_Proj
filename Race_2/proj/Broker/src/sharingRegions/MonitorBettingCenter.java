@@ -4,7 +4,8 @@ package sharingRegions;
 import Interfaces.IBroker_BettingCenter;
 import communication.Message;
 import communication.Stub;
-
+import java.io.*;
+import java.util.*;
 
 
 public class MonitorBettingCenter implements IBroker_BettingCenter {
@@ -21,13 +22,12 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	*/
 	@Override
 	public void acceptTheBets() {
-		 sendMessage(new Message("acceptTheBets") );
+		sendMessage(new Message("acceptTheBets") );
 	}
 
 	@Override
 	public void honourTheBets() {
-		 sendMessage(new Message("honourTheBets") );
-		
+		sendMessage(new Message("honourTheBets") );
 	}
 	/**
 	*	Function to broker verify if any spectator won the bet. 
@@ -42,15 +42,30 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	
 	@Override
 	public void turnOffServer() {
-		sendMessage(new Message(".EndServer"));
+			sendMessage(new Message(".EndServer"));
 	}
 
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9989; // numero do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portBettingCenter"));
+		//int portNumb = 9989; // número do port
 
-		hostName = "localhost";
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_BettingCenter");
 
 		/* troca de mensagens com o servidor */
 

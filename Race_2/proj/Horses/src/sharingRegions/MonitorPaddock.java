@@ -4,7 +4,8 @@ package sharingRegions;
 import Interfaces.IHorse_Paddock;
 import communication.Message;
 import communication.Stub;
-
+import java.io.*;
+import java.util.*;
 
 public class MonitorPaddock implements IHorse_Paddock {
 	
@@ -29,9 +30,24 @@ public class MonitorPaddock implements IHorse_Paddock {
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9969; // numero do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		hostName = "localhost";
+		int portNumb = Integer.parseInt(prop.getProperty("portPaddock"));
+		//int portNumb = 9969; // numero do port
+
+		hostName = prop.getProperty("machine_Paddock");
+		//hostName = "localhost";
 
 		/* troca de mensagens com o servidor */
 

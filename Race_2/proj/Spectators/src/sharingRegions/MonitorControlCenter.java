@@ -4,6 +4,9 @@ package sharingRegions;
 import communication.Message;
 import communication.Stub;
 import interfaces.ISpectator_Control;
+import java.util.*;
+import java.io.*;
+
 
 //import com.sun.corba.se.pept.broker.Broker;
 
@@ -62,9 +65,26 @@ public class MonitorControlCenter implements ISpectator_Control{
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9959; // numero do port
 
-		hostName = "localhost";
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portControlCenter"));
+
+		//int portNumb = 9959; // numero do port
+
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_ControlCenter");
 
 		/* troca de mensagens com o servidor */
 

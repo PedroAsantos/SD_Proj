@@ -18,7 +18,7 @@ public class Repository {
 	*	Function to know the number of spectors in the event.
 	*   @return int the number of spectators.
 	*/
-	public int getNumberOfSpectators() {
+	public int getNumberOfSpectators() throws IOException{
 		return (int) sendMessage(new Message("getNumberOfSpectators")).getReturn();
 	}
 	
@@ -28,7 +28,7 @@ public class Repository {
 	* 	@param horse_id Horse ID.
 	* 	@param probabilitie Horse winning probabilitie.
 	*/
-	public void setHorseProbabilitie(int horse_id,double probabilitie) {
+	public void setHorseProbabilitie(int horse_id,double probabilitie) throws IOException{
 		sendMessage(new Message("setHorseProbabilitie",new Object[] {horse_id,probabilitie}));
 	}
 	/**
@@ -37,10 +37,10 @@ public class Repository {
 	* 	@param horse_id Horse ID.
 	* 	@param runs Runs of the horse.
 	*/
-	public void sethorseruns(int horse_id, int runs){
+	public void sethorseruns(int horse_id, int runs) throws IOException{
 		sendMessage(new Message("sethorseruns",new Object[] {horse_id,runs}));
 	}
-	public void setHorsePerformance(int horse_id, int performance) {
+	public void setHorsePerformance(int horse_id, int performance) throws IOException{
 		sendMessage(new Message("setHorsePerformance",new Object[] {horse_id,performance}));
 	}
 	
@@ -48,17 +48,24 @@ public class Repository {
 	*	Function to return the number of horses per race.
 	*   @return int Horses in each race.
 	*/
-	public int getHorsesPerRace() {
+	public int getHorsesPerRace() throws IOException{
 		return (int) sendMessage(new Message("getHorsesPerRace")).getReturn();
 	}
 
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message) throws IOException{
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		//int portNumb = 9949; // número do port
 
-		hostName = "localhost";
+		hostName = prop.getProperty("machine_repository");
+		//hostName = "localhost";
 
 		/* troca de mensagens com o servidor */
 

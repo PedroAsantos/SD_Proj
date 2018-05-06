@@ -1,5 +1,6 @@
 package sharingRegions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,7 +37,7 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	Repository repo;
 
 
-	public MonitorBettingCenter(Repository repo) {
+	public MonitorBettingCenter(Repository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
@@ -98,6 +99,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			numberOfBets=0;
@@ -158,6 +162,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			spectatorsQueueBol=false;
 			spectatorWaiting_condition.signal();
 				
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		} finally {
 			mutex.unlock();
 			
@@ -274,6 +281,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 			//openHonorStand=true;
 			spectatorBets.clear();
 			repo.clearhorserank();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}
@@ -304,6 +314,9 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 				repo.clearhorserank();
 			}
 			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}finally {
 			mutex.unlock();
 		}

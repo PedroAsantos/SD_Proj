@@ -1,4 +1,5 @@
 package sharingRegions;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	Repository repo;
 	
 
-	public MonitorRacingTrack(int raceLength,Repository repo) {
+	public MonitorRacingTrack(int raceLength,Repository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		horseWaitingMoving_condition = mutex.newCondition();
@@ -95,6 +96,9 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 				System.out.println("EXIT startTheRace() BROKER");
 	
 				
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}finally {
 				mutex.unlock();
 			}
@@ -188,6 +192,9 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 			System.out.println("Horse_"+ horseId+" is on the position "+ newPos +" at run "+horseRuns.get(horseId));
 		
 			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}
@@ -303,7 +310,12 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 		for(int i = 0;i<horsesArrivalOrder.size();i++) {
 			System.out.println("horsesarrival:"+horsesArrivalOrder.get(i));
 			//System.out.println(horsesArrivalOrder.get(i)+" "+(i+1));
-			repo.sethorserank(horsesArrivalOrder.get(i),i+1);
+			try {
+				repo.sethorserank(horsesArrivalOrder.get(i),i+1);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	
 		int[] horseAWinners = new int[1]; 

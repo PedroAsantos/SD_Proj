@@ -2,18 +2,25 @@ import server.ServerCom;
 import server.StakeHoldersProtocol;
 import server.StakeHoldersThread;
 import sharingRegions.*;
+import java.util.*;
+import java.io.*;
 
 public class RunMonitorStable {
 	static final int PORT = 9999;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException{
 
 		Repository repo = new Repository();
 
 		MonitorStable mStable = new MonitorStable(repo);
-	
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portStable")); // numero do port em que o servico ee
 		ServerCom scon, sconi; // canais de comunicacao
-		int portNumb = 9999; // numero do port em que o servico ee
+		//int portNumb = 9999; // numero do port em que o servico ee
 								// estabelecido
 		StakeHoldersProtocol shp; // servico a ser fornecido
 

@@ -3,11 +3,20 @@ import java.net.SocketTimeoutException;
 
 import server.*;
 import sharingRegions.*;
+import java.util.*;
+import java.io.*;
 
 public class RunRepository {
 
-	public static void main(String[] args) {
-				
+	public static void main(String[] args) throws IOException{
+		
+		int portNumb;
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		portNumb = Integer.parseInt(prop.getProperty("portRepository")); // numero do port em que o servico ee
 		int numberOfHorses = 20; //testar com numeros maiores.
 		int numberOfSpectators=4;
 		int numberOfRaces=5;
@@ -17,7 +26,6 @@ public class RunRepository {
 		repo.writeLog();
 	    
 		ServerCom scon, sconi; // canais de comunicacao
-		int portNumb = 9949; // numero do port em que o servico ee
 								// estabelecido
 		StakeHoldersProtocol shp; // servico a ser fornecido
 

@@ -17,7 +17,7 @@ public class Repository {
 	*	Function to know the number of spectors in the event.
 	*   @return int the number of spectators.
 	*/
-	public int getNumberOfSpectators() {
+	public int getNumberOfSpectators() throws IOException{
 		return (int) sendMessage(new Message("getNumberOfSpectators")).getReturn();
 	}
 	/**
@@ -25,16 +25,23 @@ public class Repository {
 	*
 	* 	@return int the number of races missing.
 	*/
-	public int getNumberOfRacesMissing() {
+	public int getNumberOfRacesMissing() throws IOException{
 		return (int) sendMessage(new Message("getNumberOfRacesMissing")).getReturn();
 	}
 
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message) throws IOException{
 
 		String hostName; // nome da máquina onde está o servidor
-		int portNumb = 9949; // número do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		prop.load(new FileInputStream("resources/"+propFileName));
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portRepository"));
+		//int portNumb = 9949; // número do port
 
-		hostName = "localhost";
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_repository");
 
 		/* troca de mensagens com o servidor */
 

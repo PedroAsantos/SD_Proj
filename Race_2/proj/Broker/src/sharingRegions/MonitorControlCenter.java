@@ -3,6 +3,8 @@ package sharingRegions;
 import Interfaces.IBroker_Control;
 import communication.Message;
 import communication.Stub;
+import java.io.*;
+import java.util.*;
 
 
 //import com.sun.corba.se.pept.broker.Broker;
@@ -20,7 +22,7 @@ public class MonitorControlCenter implements IBroker_Control{
 	*	@param horseAWinners Array with the horses that won the last race.
 	*/
 	@Override
-	public void reportResults(int[] horseAWinners) {
+	public void reportResults(int[] horseAWinners){
 		sendMessage(new Message("reportResults",new Object[]{horseAWinners}));
 	}
 
@@ -30,9 +32,8 @@ public class MonitorControlCenter implements IBroker_Control{
 	*	
 	*/
 	@Override
-	public void entertainTheGuests() {
+	public void entertainTheGuests(){
 		sendMessage(new Message("entertainTheGuests"));
-		
 	}
 	
 	@Override
@@ -40,12 +41,27 @@ public class MonitorControlCenter implements IBroker_Control{
 		sendMessage(new Message(".EndServer"));
 	}
 	
-	public Message sendMessage(Message message) {
+	public Message sendMessage(Message message){
 
 		String hostName; // nome da maquina onde esta o servidor
-		int portNumb = 9959; // numero do port
+		Properties prop = new Properties();
+		String propFileName = "config.properties";
+ 	
+		try {
+			prop.load(new FileInputStream("resources/"+propFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int portNumb = Integer.parseInt(prop.getProperty("portControlCenter"));
+		//int portNumb = 9959; // número do port
 
-		hostName = "localhost";
+		//hostName = "localhost";
+		hostName = prop.getProperty("machine_ControlCenter");
 
 		/* troca de mensagens com o servidor */
 

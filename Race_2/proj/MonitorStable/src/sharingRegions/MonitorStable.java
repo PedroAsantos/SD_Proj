@@ -1,6 +1,7 @@
 package sharingRegions;
 
 
+import java.io.IOException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,7 +22,7 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 	private boolean horseCanNotGo;
 	Repository repo;
 	
-	public MonitorStable(Repository repo) {
+	public MonitorStable(Repository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();
@@ -69,6 +70,9 @@ public class MonitorStable implements IHorse_Stable, IBroker_Stable {
 					horsesPaddock=0;
 				}
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}

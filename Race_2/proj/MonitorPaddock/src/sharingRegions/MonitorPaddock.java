@@ -1,5 +1,6 @@
 package sharingRegions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private HashMap<Integer,Double> horseProbabilities;
 	Repository repo;
 	
-	public MonitorPaddock(Repository repo) {
+	public MonitorPaddock(Repository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		spectatorWaiting_condition = mutex.newCondition();
@@ -88,6 +89,9 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 				 }
 				 
 				 
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}
@@ -125,7 +129,7 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	*/
 	@Override
 	public int goCheckHorses(int spectator_id) {
-		int horsePicked; 
+		int horsePicked = 0; 
 		mutex.lock();
 		try {
 			System.out.println("Spectator_"+spectator_id+" is checking the horses!");
@@ -193,6 +197,9 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 			
 				
 			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}
