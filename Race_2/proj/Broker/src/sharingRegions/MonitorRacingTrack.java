@@ -10,7 +10,11 @@ import java.io.*;
 
 public class MonitorRacingTrack implements IBroker_Track{
 	
-
+	/**
+	*	Stub of Monitor Racing track.
+	*
+	*	 
+	*/
 	public MonitorRacingTrack() {
 		
 	}
@@ -22,7 +26,11 @@ public class MonitorRacingTrack implements IBroker_Track{
 	public void startTheRace(){
 		sendMessage(new Message("startTheRace"));
 	}
-	
+	/**
+	*	Function to broker turn off the server.
+	*
+	*	 
+	*/
 	@Override
 	public void turnOffServer(){
 		sendMessage(new Message(".EndServer"));
@@ -38,6 +46,12 @@ public class MonitorRacingTrack implements IBroker_Track{
 		return (int[]) sendMessage(new Message("reportResults")).getReturn();
         
 	}
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message){
 
 		String hostName; // nome da maquina onde esta o servidor

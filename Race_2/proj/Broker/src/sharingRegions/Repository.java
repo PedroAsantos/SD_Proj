@@ -9,7 +9,11 @@ import java.io.*;
 
 public class Repository {
 
-	//winnerHoreses
+	/**
+	*	Stub of Repository
+	*
+	*	 
+	*/
 	public Repository(){
 		
 	}
@@ -58,11 +62,20 @@ public class Repository {
 	public void setbrokerstate(BrokerState brokerstate){
 		sendMessage(new Message("setbrokerstate", new Object[] {brokerstate}));
 	}
-
+	/**
+	*	Function to broker turn off the server.
+	*
+	*	 
+	*/
 	public void turnOffServer(){
 		sendMessage(new Message(".EndServer"));
 	}
-
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message){
 
 		String hostName; // nome da máquina onde está o servidor

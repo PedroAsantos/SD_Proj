@@ -9,12 +9,20 @@ import java.util.*;
 import java.io.*;
 
 public class MonitorStable implements IBroker_Stable {
-
+	/**
+	*	Stub of Monitor Stable
+	*
+	*	 
+	*/
 	public MonitorStable() {
 
 
 	}
-
+	/**
+	*	Function to broker turn off the server.
+	*
+	*	 
+	*/
 	@Override
 	public void turnOffServer() {
 		sendMessage(new Message(".EndServer"));
@@ -38,7 +46,12 @@ public class MonitorStable implements IBroker_Stable {
 	public void summonHorsesToPaddock(){
 		sendMessage(new Message("summonHorsesToPaddock"));		
 	}
-
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message){
 
 		String hostName; // nome da maquina onde esta o servidor

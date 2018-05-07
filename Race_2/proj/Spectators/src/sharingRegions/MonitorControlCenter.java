@@ -55,13 +55,22 @@ public class MonitorControlCenter implements ISpectator_Control{
 	public void relaxABit(int spectator_id) {
 		sendMessage(new Message("relaxABit",new Object[] {spectator_id}));
 	}
-
+	/**
+	*	Function for spectators watch the race.
+	*
+	*	@param spectator_id Spectator ID.
+	*/
 	@Override
 	public void goWatchTheRace(int spectator_id) {
 		sendMessage(new Message("goWatchTheRace",new Object[] {spectator_id}));
 		
 	}
-	
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor

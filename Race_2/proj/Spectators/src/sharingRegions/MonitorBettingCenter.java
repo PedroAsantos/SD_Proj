@@ -29,13 +29,23 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter {
 		sendMessage(new Message("placeABet",new Object[] {spectatorId,money,horsePicked}));
 		
 	}
-
+	/**
+	*	Function to spectator collect the gains.
+	*
+	*	@param spectatorId Spectator ID 
+	*	@return double the amount of gains.r.
+	*/
 	@Override
 	public double goCollectTheGains(int spectatorId) {
 		return (double) sendMessage(new Message("goCollectTheGains",new Object[] {spectatorId})).getReturn();
 	}
 	
-	
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor

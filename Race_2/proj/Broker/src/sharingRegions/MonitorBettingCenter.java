@@ -10,7 +10,11 @@ import java.util.*;
 
 public class MonitorBettingCenter implements IBroker_BettingCenter {
 
-
+	/**
+	*	Stub of Monitor Betting center.
+	*
+	*	 
+	*/
 
 	public MonitorBettingCenter() {
 		
@@ -25,6 +29,11 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 		sendMessage(new Message("acceptTheBets") );
 	}
 
+	/**
+	*	Function to broker honour the bets of spectators.
+	*
+	*	 
+	*/
 	@Override
 	public void honourTheBets() {
 		sendMessage(new Message("honourTheBets") );
@@ -39,12 +48,22 @@ public class MonitorBettingCenter implements IBroker_BettingCenter {
 	public boolean areThereAnyWinners(int[] horseAWinners) {
 		return (boolean) sendMessage(new Message("areThereAnyWinners", new Object[] {horseAWinners})).getReturn();
 	}
-	
+	/**
+	*	Function to broker turn off the server.
+	*
+	*	 
+	*/
 	@Override
 	public void turnOffServer() {
 			sendMessage(new Message(".EndServer"));
 	}
 
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor
