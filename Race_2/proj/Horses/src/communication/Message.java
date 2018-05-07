@@ -22,7 +22,7 @@ public class Message implements java.io.Serializable {
 	/**
 	* Constructor with one object argument
 	*
-	* @param returnFucntion name of the function to execute on monitor
+	* @param returnFunction name of the function to execute on monitor
 	*/
 	public Message(Object returnFunction) {
 		this.returnFunction=returnFunction;
