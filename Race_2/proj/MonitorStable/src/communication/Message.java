@@ -31,7 +31,7 @@ public class Message implements java.io.Serializable {
 	/**
 	* Constructor with one string argument
 	*
-	* @param functionName
+	* @param functionName name of the function to execute on monitor
 	*/
 	public Message(String functionName) {
 		this.functionName=functionName;
