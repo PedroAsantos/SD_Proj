@@ -4,64 +4,79 @@ public class Message implements java.io.Serializable {
 	
 	private String functionName;
 	private Object[] args;
-	//hostNames[0]= MonitorStable
-	//hostNames[1]= MonitorControlCenter
-	//hostNames[2]= MonitorPaddock
-	//hostNames[3]= MonitorBettingCenter
-	//hostNames[4]= MonitorRacingTrack
-	//private String[] hostNames;
 	private Object returnFunction;
 	private boolean end;
 	
+	/**
+	* Constructor with boolean argument
+	*
+	* @param end indicates if it's to end
+	*/
 	public Message(boolean end) {
 		this.end=end;
 	}
+
 	public Message() {
 		
 	}
+	/**
+	* Constructor with one object argument
+	*
+	* @param returnFunction
+	*/
 	public Message(Object returnFunction) {
 		this.returnFunction=returnFunction;
 	}
 	
+	/**
+	* Constructor with one string argument
+	*
+	* @param functionName
+	*/
 	public Message(String functionName) {
 		this.functionName=functionName;
 	}
-	
+
+	/**
+	* Constructor with one string argument and an array of objects
+	*
+	* @param functionName
+	* @param args
+	*/
 	public Message(String functionName,Object[] args) {
 		this.functionName=functionName;
 		this.args=args;
 	}
 	
-	/*public Message(String functionName,Object arg1,Object arg2) {
-		this.functionName=functionName;
-		this.arg1=arg1;
-		this.arg2=arg2;
-	}
-	
-	public Message(String functionName,Object arg1,Object arg2, Object arg3) {
-		this.functionName=functionName;
-		this.arg1=arg1;
-		this.arg2=arg2;
-		this.arg3=arg3;
-	}*/
-	
-	/*public Message(String[] hostNames) {
-		this.hostNames=hostNames;
-	}
-	
-	public String[] getHostNames(){
-		return hostNames;
-	}*/
-	
+
+	/**
+	* Get function name
+	*
+	*/
 	public String getFunctionName() {
 		return functionName;
 	}
+
+	/**
+	* Get arguments
+	*
+	*/
 	public Object[] getArgs() {
 		return args;
 	}
+
+	/**
+	* Get the return of the function
+	*
+	*/
 	public Object getReturn() {
 		return returnFunction;
 	}
+
+	/**
+	* Get end variable that indicates if it's to end
+	*
+	*/
 	public boolean getEnd() {
 		return end;
 	}
