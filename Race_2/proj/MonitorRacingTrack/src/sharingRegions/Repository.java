@@ -17,6 +17,7 @@ public class Repository {
 	/**
 	*	Function to update the number of races that are missing.
 	*
+	*  @exception IOException IOException
 	* 	
 	*/
 	public void raceStarted() throws IOException{
@@ -26,6 +27,7 @@ public class Repository {
 	/**
 	*	Function to update the number of runs of a horse.
 	*
+	*  @exception IOException IOException
 	* 	@param horse_id Horse ID.
 	* 	@param runs Runs of the horse.
 	*/
@@ -36,6 +38,7 @@ public class Repository {
 	/**
 	*	Function to update the position of the horse.
 	*
+	*  @exception IOException IOException
 	* 	@param horse_id Horse ID.
 	* 	@param position Horse position.
 	*/
@@ -46,6 +49,7 @@ public class Repository {
 	/**
 	*	Function to update the horse place on the end of the race.
 	*
+	*  @exception IOException IOException
 	* 	@param horse_id Spectator ID.
 	* 	@param rank Horse place.
 	*/
@@ -56,6 +60,7 @@ public class Repository {
 	
 	/**
 	*	Function to return the number of horses per race.
+	*  @exception IOException IOException
 	*   @return int Horses in each race.
 	*/
 	public int getHorsesPerRace() throws IOException{
@@ -65,6 +70,7 @@ public class Repository {
 	/**
 	*	Function to send the message with the function to execute and all the arguments
 	*
+	*  @exception IOException IOException
 	*	@param message Message object with the message to send to the monitor.
 	*	@return message the message from the monitor.
 	*/

@@ -19,6 +19,7 @@ public class Repository {
 	}
 	/**
 	*	Function to know the number of spectors in the event.
+	*  @exception IOException IOException
 	*   @return int the number of spectators.
 	*/
 	public int getNumberOfSpectators() throws IOException{
@@ -27,6 +28,7 @@ public class Repository {
 	/**
 	*	Function to update the money that a spectator put on a bet.
 	*
+	*  @exception IOException IOException
 	* 	@param spectator_id Spectator ID.
 	* 	@param amount bet amount.
 	*/
@@ -37,6 +39,7 @@ public class Repository {
 	/**
 	*	Function to update the horse that a given spectator bet.
 	*
+	*  @exception IOException IOException
 	* 	@param spec_id Spectator ID.
 	* 	@param horse_id Horse picked.
 	*/
@@ -47,6 +50,7 @@ public class Repository {
 	/**
 	*	Function to clear the horse place on the end of the race.
 	*
+	*  @exception IOException IOException
 	*/
 	public void clearhorserank() throws IOException{
 		sendMessage(new Message("clearhorserank"));
@@ -55,6 +59,7 @@ public class Repository {
 	/**
 	*	Function to send the message with the function to execute and all the arguments
 	*
+	*  @exception IOException IOException
 	*	@param message Message object with the message to send to the monitor.
 	*	@return message the message from the monitor.
 	*/

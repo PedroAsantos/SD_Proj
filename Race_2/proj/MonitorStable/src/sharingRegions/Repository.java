@@ -16,6 +16,7 @@ public class Repository {
 	
 	/**
 	*	Function to add the horses that are running or they will run in the next race.
+	*  @exception IOException IOException
 	*   @param horseId Horse ID 
 	*   @return boolean return false if the race is already full.
 	*/
@@ -24,6 +25,7 @@ public class Repository {
 	}
 	/**
 	*	Function to return the number of horses per race.
+	*  @exception IOException IOException
 	*   @return int Horses in each race.
 	*/
 	public int getHorsesPerRace() throws IOException{
@@ -32,6 +34,7 @@ public class Repository {
 	}
 	/**
 	*	Function to return the number of total horses in the event.
+	*  @exception IOException IOException
 	*   @return int Horses in the event.
 	*/
 	public int getTotalHorses() throws IOException{
@@ -41,6 +44,7 @@ public class Repository {
 	/**
 	*	Function to send the message with the function to execute and all the arguments
 	*
+	*  @exception IOException IOException
 	*	@param message Message object with the message to send to the monitor.
 	*	@return message the message from the monitor.
 	*/

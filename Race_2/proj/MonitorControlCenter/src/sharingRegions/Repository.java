@@ -15,6 +15,7 @@ public class Repository {
 	
 	/**
 	*	Function to know the number of spectors in the event.
+	*  @exception IOException IOException
 	*   @return int the number of spectators.
 	*/
 	public int getNumberOfSpectators() throws IOException{
@@ -23,6 +24,7 @@ public class Repository {
 	/**
 	*	Function to return the number of races that left.
 	*
+	*  @exception IOException IOException
 	* 	@return int the number of races missing.
 	*/
 	public int getNumberOfRacesMissing() throws IOException{
@@ -31,6 +33,7 @@ public class Repository {
 	/**
 	*	Function to send the message with the function to execute and all the arguments
 	*
+	*  @exception IOException IOException
 	*	@param message Message object with the message to send to the monitor.
 	*	@return message the message from the monitor.
 	*/

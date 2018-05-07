@@ -16,6 +16,7 @@ public class Repository {
 	
 	/**
 	*	Function to know the number of spectors in the event.
+	*  @exception IOException IOException
 	*   @return int the number of spectators.
 	*/
 	public int getNumberOfSpectators() throws IOException{
@@ -25,6 +26,7 @@ public class Repository {
 	/**
 	*	Function to update the probabilitie of the given horse winning.
 	*
+	*  @exception IOException IOException
 	* 	@param horse_id Horse ID.
 	* 	@param probabilitie Horse winning probabilitie.
 	*/
@@ -34,6 +36,7 @@ public class Repository {
 	/**
 	*	Function to update the number of runs of a horse.
 	*
+	*  @exception IOException IOException
 	* 	@param horse_id Horse ID.
 	* 	@param runs Runs of the horse.
 	*/
@@ -43,6 +46,7 @@ public class Repository {
 	/**
 	*	Function to update perfomance horse.
 	*
+	*  @exception IOException IOException
 	* 	@param horse_id int id of horse.
 	* 	@param performance int perfomance horse.
 	*/
@@ -52,6 +56,7 @@ public class Repository {
 	
 	/**
 	*	Function to return the number of horses per race.
+	*  @exception IOException IOException
 	*   @return int Horses in each race.
 	*/
 	public int getHorsesPerRace() throws IOException{
@@ -61,6 +66,7 @@ public class Repository {
 	/**
 	*	Function to send the message with the function to execute and all the arguments
 	*
+	*  @exception IOException IOException
 	*	@param message Message object with the message to send to the monitor.
 	*	@return message the message from the monitor.
 	*/
