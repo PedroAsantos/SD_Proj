@@ -35,12 +35,21 @@ public class MonitorControlCenter implements IBroker_Control{
 	public void entertainTheGuests(){
 		sendMessage(new Message("entertainTheGuests"));
 	}
-	
+	/**
+	*	Function to broker turn off the server.
+	*
+	*	 
+	*/
 	@Override
 	public void turnOffServer() {
 		sendMessage(new Message(".EndServer"));
 	}
-	
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message){
 
 		String hostName; // nome da maquina onde esta o servidor

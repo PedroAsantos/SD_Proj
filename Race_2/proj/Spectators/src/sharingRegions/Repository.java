@@ -40,7 +40,12 @@ public class Repository {
 		sendMessage(new Message("setspecMoney",new Object[] {spectator_id,money}));
 	}
 
-
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da máquina onde está o servidor

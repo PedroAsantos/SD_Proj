@@ -33,8 +33,9 @@ public class Stub {
 
 	/**
 	 * Troca de mensagens com os servidor KnockKnock.
+	 * @param message Message to send.
+	 * @return Message received message.
 	 */
-
 	public Message exchange(Message message) {
 		ClientCom com = new ClientCom(serverHostName, serverPortNumb);
 		Message fromServer, // linha de entrada
