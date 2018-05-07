@@ -22,7 +22,7 @@ public class Message implements java.io.Serializable {
 	/**
 	* Constructor with one object argument
 	*
-	* @param returnFunction
+	* @param returnFucntion name of the function to execute on monitor
 	*/
 	public Message(Object returnFunction) {
 		this.returnFunction=returnFunction;
@@ -40,8 +40,8 @@ public class Message implements java.io.Serializable {
 	/**
 	* Constructor with one string argument and an array of objects
 	*
-	* @param functionName
-	* @param args
+	* @param functionName name of the function.
+	* @param args arguments needed to function.
 	*/
 	public Message(String functionName,Object[] args) {
 		this.functionName=functionName;
@@ -51,7 +51,7 @@ public class Message implements java.io.Serializable {
 
 	/**
 	* Get function name
-	*
+	*@return name of the function.
 	*/
 	public String getFunctionName() {
 		return functionName;
@@ -59,7 +59,7 @@ public class Message implements java.io.Serializable {
 
 	/**
 	* Get arguments
-	*
+	*	@return Object[] get arguments of the function
 	*/
 	public Object[] getArgs() {
 		return args;
@@ -67,7 +67,7 @@ public class Message implements java.io.Serializable {
 
 	/**
 	* Get the return of the function
-	*
+	*	@return Object get return of the function
 	*/
 	public Object getReturn() {
 		return returnFunction;
@@ -75,7 +75,7 @@ public class Message implements java.io.Serializable {
 
 	/**
 	* Get end variable that indicates if it's to end
-	*
+	* @return if the message is to finish the conversation between client and server
 	*/
 	public boolean getEnd() {
 		return end;
