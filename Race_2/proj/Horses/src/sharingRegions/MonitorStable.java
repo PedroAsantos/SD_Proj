@@ -26,7 +26,12 @@ public class MonitorStable implements IHorse_Stable {
 		return (boolean) sendMessage(new Message("proceedToStable",new Object[] {horseId})).getReturn();
 				
 	}
-	
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message) {
 
 		String hostName; // nome da maquina onde esta o servidor

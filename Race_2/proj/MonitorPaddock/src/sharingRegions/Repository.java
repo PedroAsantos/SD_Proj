@@ -40,6 +40,12 @@ public class Repository {
 	public void sethorseruns(int horse_id, int runs) throws IOException{
 		sendMessage(new Message("sethorseruns",new Object[] {horse_id,runs}));
 	}
+	/**
+	*	Function to update perfomance horse.
+	*
+	* 	@param horse_id int id of horse.
+	* 	@param performance int perfomance horse.
+	*/
 	public void setHorsePerformance(int horse_id, int performance) throws IOException{
 		sendMessage(new Message("setHorsePerformance",new Object[] {horse_id,performance}));
 	}
@@ -52,7 +58,12 @@ public class Repository {
 		return (int) sendMessage(new Message("getHorsesPerRace")).getReturn();
 	}
 
-
+	/**
+	*	Function to send the message with the function to execute and all the arguments
+	*
+	*	@param message Message object with the message to send to the monitor.
+	*	@return message the message from the monitor.
+	*/
 	public Message sendMessage(Message message) throws IOException{
 
 		String hostName; // nome da máquina onde está o servidor
