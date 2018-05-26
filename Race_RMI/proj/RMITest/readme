@@ -1,0 +1,4 @@
+rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false
+
+start java -classpath C:\Users\Rute\Documents\Cadeiras\2_semestre\SD\proj\RMITest\bin -Djava.rmi.server.codebase=file:C:\Users\Rute\Documents\Cadeiras\2_semestre\SD\proj\RMITest\bin/ hello.Server
+
