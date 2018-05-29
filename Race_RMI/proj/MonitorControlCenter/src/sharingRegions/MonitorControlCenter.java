@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import Interfaces.IBroker_Control;
-import Interfaces.ISpectator_Control;
+import Interfaces.IMonitor_Control;
+import Interfaces.IRepository;
 
 //import com.sun.corba.se.pept.broker.Broker;
 
-public class MonitorControlCenter implements ISpectator_Control, IBroker_Control{
+public class MonitorControlCenter implements IMonitor_Control {
 	private final ReentrantLock mutex;
 	private final Condition spectator_condition;
 	private final Condition broker_condidition;
@@ -22,9 +22,9 @@ public class MonitorControlCenter implements ISpectator_Control, IBroker_Control
 	private int spectatorsRelaxing;
 	private int totalSpectators;
 	private List<Integer> winners;
-	Repository repo;
+	IRepository repo;
 
-	public MonitorControlCenter(Repository repo) {
+	public MonitorControlCenter(IRepository repo) {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condidition = mutex.newCondition();

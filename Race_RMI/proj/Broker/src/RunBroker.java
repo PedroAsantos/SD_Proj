@@ -3,6 +3,11 @@ import Interfaces.IBroker_Control;
 import Interfaces.IBroker_Paddock;
 import Interfaces.IBroker_Stable;
 import Interfaces.IBroker_Track;
+import Interfaces.IMonitor_BettingCenter;
+import Interfaces.IMonitor_Control;
+import Interfaces.IMonitor_Paddock;
+import Interfaces.IMonitor_Stable;
+import Interfaces.IMonitor_Track;
 import Interfaces.IRepository;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,7 +32,7 @@ public class RunBroker {
             String propFileName = "config.properties";
             
             try {
-		prop.load(new FileInputStream("src/resources/"+propFileName));
+		prop.load(new FileInputStream("resources/"+propFileName));
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
 		e.printStackTrace();
@@ -42,22 +47,19 @@ public class RunBroker {
             
           
             try {
-                Registry registryStable = LocateRegistry.getRegistry(rmiRegHostName,rmiRegPortNumb);
+                Registry registry = LocateRegistry.getRegistry(rmiRegHostName,rmiRegPortNumb);
              
-                IBroker_Stable mStable = (IBroker_Stable) registryStable.lookup("stubStable");
-                /*IBroker_Control mControlCenter = (IBroker_Control) registryControl.lookup("stubControlBroker");
-                IBroker_Paddock mPaddock = (IBroker_Paddock) registryPaddock.lookup("stubPaddockBroker");
-                IBroker_BettingCenter mBettingCenter = (IBroker_BettingCenter) registryRacingTrack.lookup("stubBettingCenterBroker");
-                IBroker_Track mRacingTrack = (IBroker_Track) registryBettingCenter.lookup("stubRacingTrackBroker");
-               */
-                IBroker_Control mControlCenter = null;
-                IBroker_Paddock mPaddock = null;
-                IBroker_BettingCenter mBettingCenter = null;
-                IBroker_Track mRacingTrack = null;
+                IMonitor_Stable mStable = (IMonitor_Stable) registry.lookup("stubStable");
+                IMonitor_Control mControlCenter = (IMonitor_Control) registry.lookup("stubControl");
+                IMonitor_Paddock mPaddock = (IMonitor_Paddock) registry.lookup("stubPaddock");
+                IMonitor_BettingCenter mBettingCenter = (IMonitor_BettingCenter) registry.lookup("stubBettingCenter");
+                IMonitor_Track mRacingTrack = (IMonitor_Track) registry.lookup("stubRacingTrack");
+               
+         
                 
-                IRepository repo =(IRepository) registryStable.lookup("stubRepository");
+                IRepository repo =(IRepository) registry.lookup("stubRepository");
                 
-                Broker broker = new Broker(mControlCenter,mBettingCenter,mStable,mRacingTrack,mPaddock ,repo);
+                Broker broker = new Broker(mControlCenter,mBettingCenter,mStable,mRacingTrack,mPaddock,repo);
 		
                 System.out.println("Broker is starting!");
                 broker.start();
@@ -70,11 +72,6 @@ public class RunBroker {
                 e.printStackTrace();
             }
    	
-		
-		
-		
-	
-	
 		
 	}	
 	

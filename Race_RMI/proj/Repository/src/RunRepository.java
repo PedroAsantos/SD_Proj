@@ -22,7 +22,7 @@ public class RunRepository {
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
  	
-		prop.load(new FileInputStream("src/resources/"+propFileName));
+		prop.load(new FileInputStream("resources/"+propFileName));
 		
 		portNumb = Integer.parseInt(prop.getProperty("portRepository")); // numero do port em que o servico ee
                 String rmiRegHostName = prop.getProperty("rmiRegHostName");

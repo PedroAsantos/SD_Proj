@@ -1,4 +1,5 @@
 package sharingRegions;
+import Interfaces.IMonitor_Track;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,13 +11,13 @@ import java.util.Random;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import Interfaces.IBroker_Track;
-import Interfaces.IHorse_Track;
+
+import Interfaces.IRepository;
 
 
 
 
-public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
+public class MonitorRacingTrack implements IMonitor_Track {
 	private final ReentrantLock mutex;
 	private final Condition horse_condition;
 	private final Condition broker_condition;
@@ -40,10 +41,10 @@ public class MonitorRacingTrack implements IHorse_Track, IBroker_Track{
 	private List<Integer> horsesInRace;
 	private int wait;
 	private volatile int cycle;
-	Repository repo;
+	IRepository repo;
 	
 
-	public MonitorRacingTrack(int raceLength,Repository repo) throws IOException {
+	public MonitorRacingTrack(int raceLength,IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		horseWaitingMoving_condition = mutex.newCondition();

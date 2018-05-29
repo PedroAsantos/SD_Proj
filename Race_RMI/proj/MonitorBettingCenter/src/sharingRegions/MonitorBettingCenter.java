@@ -9,11 +9,12 @@ import java.util.Queue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import Interfaces.IBroker_BettingCenter;
-import Interfaces.ISpectator_BettingCenter;
+
+import Interfaces.IMonitor_BettingCenter;
+import Interfaces.IRepository;
 
 
-public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_BettingCenter {
+public class MonitorBettingCenter implements IMonitor_BettingCenter {
 	private final ReentrantLock mutex;
 	private final Condition spectator_condition;
 	private final Condition broker_condition;
@@ -34,10 +35,10 @@ public class MonitorBettingCenter implements ISpectator_BettingCenter, IBroker_B
 	private boolean brokerIsOccupied;
 	private int spectReceiving;
 	private boolean brokerCanNotAccept;
-	Repository repo;
+	IRepository repo;
 
 
-	public MonitorBettingCenter(Repository repo) throws IOException {
+	public MonitorBettingCenter(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		spectator_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();

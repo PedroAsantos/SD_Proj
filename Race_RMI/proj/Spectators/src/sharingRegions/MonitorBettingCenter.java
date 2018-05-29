@@ -5,7 +5,7 @@ import java.io.*;
 
 import communication.Message;
 import communication.Stub;
-import interfaces.ISpectator_BettingCenter;
+import Interfaces.ISpectator_BettingCenter;
 
 
 public class MonitorBettingCenter implements ISpectator_BettingCenter {

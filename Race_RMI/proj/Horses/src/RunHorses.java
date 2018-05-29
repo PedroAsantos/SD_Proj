@@ -4,6 +4,16 @@ import java.util.Random;
 import Interfaces.IHorse_Paddock;
 import Interfaces.IHorse_Stable;
 import Interfaces.IHorse_Track;
+import Interfaces.IMonitor_Paddock;
+import Interfaces.IMonitor_Stable;
+import Interfaces.IMonitor_Track;
+import Interfaces.IRepository;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Properties;
 import sharingRegions.MonitorPaddock;
 import sharingRegions.MonitorRacingTrack;
 import sharingRegions.MonitorStable;
@@ -15,41 +25,67 @@ public class RunHorses {
 	public static void main(String[] args) {
 		int numberOfHorses = 20; //testar com numeros maiores.
 		int maxPerformance=10;
-		
-		Repository repo = new Repository();
-
-		MonitorPaddock mPaddock = new MonitorPaddock();
-		MonitorRacingTrack mRacingTrack = new MonitorRacingTrack();
-		MonitorStable mStable = new MonitorStable();
-		
+	
 		Horse[] horses = new Horse[numberOfHorses];
-		
-		for (int i = 0; i < horses.length; i++) {
+	
+                String hostName; // nome da maquina onde esta o servidor
+
+                Properties prop = new Properties();
+                String propFileName = "config.properties";
+
+                try {
+                    prop.load(new FileInputStream("resources/"+propFileName));
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+
+                String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
+                int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 	
+
+
+                try {
+                    Registry registry = LocateRegistry.getRegistry(rmiRegHostName,rmiRegPortNumb);
+
+                    IMonitor_Stable mStable = (IMonitor_Stable) registry.lookup("stubStable"); 
+                    IMonitor_Paddock mPaddock = (IMonitor_Paddock) registry.lookup("stubPaddock");
+                    IMonitor_Track mRacingTrack = (IMonitor_Track) registry.lookup("stubRacingTrack");
+                  
+
+                    IRepository repo =(IRepository) registry.lookup("stubRepository");
+
+                    for (int i = 0; i < horses.length; i++) {
 			Random random = new Random();
 			int performace= random.nextInt(maxPerformance)+1;
-			horses[i] = new Horse(i,performace,(IHorse_Track) mRacingTrack,(IHorse_Stable) mStable,(IHorse_Paddock) mPaddock, repo);
-		}
-		
-		 /* start of the simulation */
-		
-	
-		for (int i = 0; i < horses.length; i++) {
-			System.out.println("Horse_"+i+"is starting!");
-			horses[i].start();
-		}
-		
-		
-	     /* wait for the end of the simulation */
+			horses[i] = new Horse(i,performace,mRacingTrack, mStable, mPaddock, repo);
+                    }
+                    
+                    /* start of the simulation */
+                    for (int i = 0; i < horses.length; i++) {
+                        System.out.println("Horse_" + i + "is starting!");
+                        horses[i].start();
+                    }
 
+                    /* wait for the end of the simulation */
+                    for (int i = 0; i < horses.length; i++) {
+                        try {
+                            horses[i].join();
+                        } catch (InterruptedException e) {
+                            System.out.println("Horse thread " + i + " has ended.\n");
+                        }
+                    }
+                    
+                } catch (Exception e) {
+                    System.err.println("Client exception: " + e.toString());
+                    e.printStackTrace();
+                }
+                
 		
 		
-		for (int i = 0; i < horses.length; i++) {
-			try {
-				horses[i].join();
-			}catch(InterruptedException e) {
-				 System.out.println("Horse thread " + i + " has ended.\n");
-			}
-		}
 		
 	}	
 	

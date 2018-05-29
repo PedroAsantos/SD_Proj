@@ -9,10 +9,12 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import Interfaces.IHorse_Paddock;
+import Interfaces.IMonitor_Paddock;
+import Interfaces.IRepository;
 import Interfaces.ISpectator_Paddock;
 
 
-public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
+public class MonitorPaddock implements IMonitor_Paddock {
 	private final ReentrantLock mutex;
 	private final Condition horse_condition;
 	private final Condition spectatorWaiting_condition;
@@ -28,9 +30,9 @@ public class MonitorPaddock implements IHorse_Paddock, ISpectator_Paddock {
 	private HashMap<Integer,Integer> horsePerformance;
 	private List<Integer> pickHorse;
 	private HashMap<Integer,Double> horseProbabilities;
-	Repository repo;
+	IRepository repo;
 	
-	public MonitorPaddock(Repository repo) throws IOException {
+	public MonitorPaddock(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		spectatorWaiting_condition = mutex.newCondition();

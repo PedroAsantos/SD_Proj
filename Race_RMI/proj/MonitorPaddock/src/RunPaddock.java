@@ -1,18 +1,20 @@
-import server.ServerCom;
-import server.StakeHoldersProtocol;
-import server.StakeHoldersThread;
+import Interfaces.IMonitor_Paddock;
+import Interfaces.IRepository;
+import Interfaces.Register;
 import sharingRegions.MonitorPaddock;
-import sharingRegions.Repository;
 import java.util.*;
 import java.io.*;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 
 public class RunPaddock {
 	public static void main(String[] args) throws IOException{
 
-		Repository repo = new Repository();
-
-		MonitorPaddock mPaddock = new MonitorPaddock(repo);
 	
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
@@ -20,29 +22,73 @@ public class RunPaddock {
 		prop.load(new FileInputStream("resources/"+propFileName));
 		
 		int portNumb = Integer.parseInt(prop.getProperty("portPaddock")); // numero do port em que o servico ee
-		
-		ServerCom scon, sconi; // canais de comunicacao
-		//int portNumb = 9969; // numero do port em que o servico e
-								// estabelecido
-		StakeHoldersProtocol shp; // servico a ser fornecido
+		 String rmiRegHostName = prop.getProperty("rmiRegHostName");
+                int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
+                String nameEntryBase = prop.getProperty("nameEntry");
+                String nameEntryObject = "stubPaddock";
 
-		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associacao
-		scon.start(); // com o endereco publico
-		shp = StakeHoldersProtocol.getInstance(); // activar oo servico
-		System.out.println("MonitorPaddock was established!");
-		System.out.println("MonitorPaddock is listenning.");
+                IMonitor_Paddock stubPaddock = null;
+                Registry registry = null;
+                Register reg = null;
+                IRepository repo = null;
+                try {
+                    registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+                } catch (RemoteException e) {
+                    System.out.println("RMI registry creation exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
 
+                System.out.println("RMI registry was created!");
 
-		/* processamento de pedidos */
+                try {
+                    reg = (Register) registry.lookup(nameEntryBase);
+                } catch (RemoteException e) {
+                    System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                } catch (NotBoundException e) {
+                    System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                
+                try {
+                   repo = (IRepository) registry.lookup("stubRepository");
+                 } catch (RemoteException e) {
+                    System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                } catch (NotBoundException e) {
+                    System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                
+                MonitorPaddock mPaddock = new MonitorPaddock(repo);
+	
 
-		StakeHoldersThread thread; // agente prestador de servico
+                try {
+                    stubPaddock = (IMonitor_Paddock) UnicastRemoteObject.exportObject(mPaddock, portNumb);
+                } catch (RemoteException e) {
+                    System.out.println(nameEntryObject + " stub generation exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.out.println("Stub was generated!");
 
-		while (shp.getServerState()) {
-			sconi = scon.accept(); // entrar em processo de escuta
-			if(sconi!=null) {
-				thread = new StakeHoldersThread(sconi, shp, mPaddock); // lancar agente prestador de servico
-				thread.start();	
-			}
-		}
+                try {
+                    reg.bind(nameEntryObject, stubPaddock);
+                } catch (RemoteException e) {
+                    System.out.println(nameEntryObject + " registration exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                } catch (AlreadyBoundException e) {
+                    System.out.println(nameEntryObject + " already bound exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.out.println(nameEntryObject + " object was registered!");
+
 	}
 }

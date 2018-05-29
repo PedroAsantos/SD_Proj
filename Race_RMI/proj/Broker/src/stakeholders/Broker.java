@@ -6,6 +6,7 @@ import Interfaces.IBroker_Control;
 import Interfaces.IBroker_Paddock;
 import Interfaces.IBroker_Stable;
 import Interfaces.IBroker_Track;
+import Interfaces.IMonitor_Paddock;
 import Interfaces.IRepository;
 import sharingRegions.*;
 
@@ -17,10 +18,10 @@ public class Broker extends Thread {
     private final IBroker_BettingCenter monitorBettingCenter;
     private final IBroker_Stable monitorStable;
     private final IBroker_Track monitorTrack;
-    private final IBroker_Paddock monitorPaddock;
+    private final IMonitor_Paddock monitorPaddock;
     IRepository repo;
    
-    public Broker(IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack, IBroker_Paddock monitorPaddock,IRepository repo) {
+    public Broker(IBroker_Control mControl, IBroker_BettingCenter mBettingCenter, IBroker_Stable monitorStable, IBroker_Track monitorTrack, IMonitor_Paddock monitorPaddock,IRepository repo) {
         this.monitorControl=mControl;
         this.monitorBettingCenter=mBettingCenter;
         this.monitorStable = monitorStable;
@@ -104,11 +105,11 @@ public class Broker extends Thread {
                 	System.out.print("PLAYING_HOST_AT_THE_BAR\n");
                     repo.setbrokerstate(state);
                     System.out.println("EVENT END");
-                    monitorStable.turnOffServer();
-                    monitorControl.turnOffServer();
-                    monitorTrack.turnOffServer();
-                    monitorBettingCenter.turnOffServer();
-                    monitorPaddock.turnOffServer();
+                    //monitorStable.turnOffServer();
+                    //monitorControl.turnOffServer();
+                    //monitorTrack.turnOffServer();
+                    //monitorBettingCenter.turnOffServer();
+                    //monitorPaddock.turnOffServer();
                     //repo.turnOffServer();
                     System.out.println("ALL DEAD");
                     stopRunning();

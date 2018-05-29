@@ -3,6 +3,8 @@ import Enum.HorseState;
 import Interfaces.IHorse_Paddock;
 import Interfaces.IHorse_Stable;
 import Interfaces.IHorse_Track;
+import Interfaces.IRepository;
+import java.rmi.RemoteException;
 import sharingRegions.*;
 public class Horse extends Thread {
     private volatile boolean running = true;
@@ -12,9 +14,9 @@ public class Horse extends Thread {
 	private final IHorse_Track monitorTrack;
 	private final IHorse_Stable monitorStable;
 	private final IHorse_Paddock monitorPaddock;
-	Repository repo;
+	IRepository repo;
 
-	public Horse(int id,int performance,IHorse_Track monitorTrack,IHorse_Stable monitorStable,IHorse_Paddock monitorPaddock, Repository repo) {
+	public Horse(int id,int performance,IHorse_Track monitorTrack,IHorse_Stable monitorStable,IHorse_Paddock monitorPaddock, IRepository repo) throws RemoteException {
 		this.id=id;
 		this.performance=performance;
 		this.monitorTrack = monitorTrack;
@@ -31,6 +33,7 @@ public class Horse extends Thread {
 	public void run() {
 		
 		while(running) {
+                     try {
 			switch (state) {
 				case AT_THE_STABLE:
 					System.out.println("AT_THE_STABLE horse_"+id);
@@ -77,6 +80,9 @@ public class Horse extends Thread {
 				default:
 					break;
 			}
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 		/*	try {
 				Thread.sleep(500);
 			} catch(Exception e) {

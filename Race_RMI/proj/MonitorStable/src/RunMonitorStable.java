@@ -11,17 +11,12 @@ import java.rmi.RemoteException;
 public class RunMonitorStable {
 
 	public static void main(String[] args) throws IOException, NotBoundException, AlreadyBoundException{
-
-           
-       
-            Repository repo = new Repository();
-            MonitorStable mStable = new MonitorStable(repo);
            
             Properties prop = new Properties();
             String propFileName = "config.properties";
           /*  System.out.println("Working Directory = " +
               System.getProperty("user.dir"));*/
-            prop.load(new FileInputStream("src/resources/"+propFileName));
+            prop.load(new FileInputStream("resources/"+propFileName));
                
             int portNumb = Integer.parseInt(prop.getProperty("portStable")); // numero do port em que o servico ee
             String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
@@ -32,15 +27,6 @@ public class RunMonitorStable {
             IMonitor_Stable stubStable = null;
             Registry registry = null;
             Register reg = null;
-            try
-            { stubStable= (IMonitor_Stable) UnicastRemoteObject.exportObject(mStable, portNumb);
-            }
-            catch (RemoteException e)
-            {   System.out.println (nameEntryObject+" stub generation exception: " + e.getMessage ());
-                e.printStackTrace ();
-                System.exit (1);
-            }
-            System.out.println ("Stub was generated!");
             
             try {
                 registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
@@ -63,6 +49,21 @@ public class RunMonitorStable {
                 e.printStackTrace();
                 System.exit(1);
             }
+            
+            IRepository repo =(IRepository) registry.lookup("stubRepository");
+            MonitorStable mStable = new MonitorStable(repo);
+            
+            try
+            { stubStable= (IMonitor_Stable) UnicastRemoteObject.exportObject(mStable, portNumb);
+            }
+            catch (RemoteException e)
+            {   System.out.println (nameEntryObject+" stub generation exception: " + e.getMessage ());
+                e.printStackTrace ();
+                System.exit (1);
+            }
+            System.out.println ("Stub was generated!");
+            
+            
             try {
                 reg.bind(nameEntryObject, stubStable);
             } catch (RemoteException e) {

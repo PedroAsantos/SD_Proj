@@ -3,7 +3,7 @@ package sharingRegions;
 
 import communication.Message;
 import communication.Stub;
-import interfaces.ISpectator_Control;
+import Interfaces.ISpectator_Control;
 import java.util.*;
 import java.io.*;
 

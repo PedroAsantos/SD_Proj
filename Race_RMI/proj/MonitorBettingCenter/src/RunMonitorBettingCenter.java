@@ -1,48 +1,94 @@
-import server.ServerCom;
-import server.StakeHoldersProtocol;
-import server.StakeHoldersThread;
+import Interfaces.IMonitor_BettingCenter;
+import Interfaces.IRepository;
+import Interfaces.Register;
 import sharingRegions.*;
 import java.util.*;
 import java.io.*;
+import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
 public class RunMonitorBettingCenter {
 
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, RemoteException {
 				
-
-		Repository repo = new Repository();
-		repo.writeLog();
-
-		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
-
 		Properties prop = new Properties();
 		String propFileName = "config.properties";
  	
 		prop.load(new FileInputStream("resources/"+propFileName));
 		
 		int portNumb = Integer.parseInt(prop.getProperty("portBettingCenter")); // numero do port em que o servico ee
-		ServerCom scon, sconi; // canais de comunicacao
-		//int portNumb = 9989; // numero do port em que o servico ee
-								// estabelecido
-		StakeHoldersProtocol shp; // servico a ser fornecido
+                String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
+                int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 	
+                String nameEntryBase = prop.getProperty("nameEntry"); 	
+                String nameEntryObject = "stubBettingCenter";
+                
+                IMonitor_BettingCenter stubBettingCenter = null;
+                IRepository repo = null;
+                Registry registry = null;
+                Register reg = null;
+                
+           
+                try {
+                    registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+                } catch (RemoteException e) {
+                    System.out.println("RMI registry creation exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
 
-		scon = new ServerCom(portNumb); // criar um canal de escuta e sua associacao
-		scon.start(); // com o endereco publico
-		shp = StakeHoldersProtocol.getInstance(); // activar oo servico
-		System.out.println("MonitorBettingCenter was established!");
-		System.out.println("MonitorBettingCenter is listenning.");
+                System.out.println("RMI registry was created!");
 
-		/* processamento de pedidos */
+                try {
+                    reg = (Register) registry.lookup(nameEntryBase);
+                } catch (RemoteException e) {
+                    System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                } catch (NotBoundException e) {
+                    System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }       
+                try {
+                 repo =(IRepository) registry.lookup("stubRepository");
+                  } catch (RemoteException e) {
+                    System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                } catch (NotBoundException e) {
+                    System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                
+		MonitorBettingCenter mBettingCenter = new MonitorBettingCenter(repo);
+              
+                try {
+                    stubBettingCenter = (IMonitor_BettingCenter) UnicastRemoteObject.exportObject(mBettingCenter, portNumb);
+                } catch (RemoteException e) {
+                    System.out.println(nameEntryObject + " stub generation exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.out.println("Stub was generated!");
 
-		StakeHoldersThread thread; // agente prestador de servico
-
-		while (shp.getServerState()) {
-			sconi = scon.accept(); // entrar em processo de escuta
-			if(sconi!=null) {
-				thread = new StakeHoldersThread(sconi, shp, mBettingCenter); // lancar agente prestador de servico
-				thread.start();	
-			}
-		}
+                
+                try {
+                    reg.bind(nameEntryObject, stubBettingCenter);
+                } catch (RemoteException e) {
+                    System.out.println(nameEntryObject + " registration exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                } catch (AlreadyBoundException e) {
+                    System.out.println(nameEntryObject + " already bound exception: " + e.getMessage());
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+                System.out.println(nameEntryObject + " object was registered!");
 		
 	}
 }

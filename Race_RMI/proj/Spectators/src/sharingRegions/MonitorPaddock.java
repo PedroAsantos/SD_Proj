@@ -2,7 +2,7 @@ package sharingRegions;
 
 import communication.Message;
 import communication.Stub;
-import interfaces.ISpectator_Paddock;
+import Interfaces.ISpectator_Paddock;
 import java.util.*;
 import java.io.*;
 

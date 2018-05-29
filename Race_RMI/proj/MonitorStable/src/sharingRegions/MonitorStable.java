@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 import Interfaces.IMonitor_Stable;
+import Interfaces.IRepository;
 import java.rmi.RemoteException;
 
 
@@ -21,9 +22,9 @@ public class MonitorStable implements IMonitor_Stable {
 	private int totalHorses;
 	private int horsesPaddock;
 	private boolean horseCanNotGo;
-	Repository repo;
+	IRepository repo;
 	
-	public MonitorStable(Repository repo) throws IOException {
+	public MonitorStable(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
 		broker_condition = mutex.newCondition();

@@ -3,9 +3,11 @@ package stakeholders;
 import java.util.Random;
 
 import Enum.SpectatorState;
-import interfaces.ISpectator_BettingCenter;
-import interfaces.ISpectator_Control;
-import interfaces.ISpectator_Paddock;
+import Interfaces.IRepository;
+import Interfaces.ISpectator_BettingCenter;
+import Interfaces.ISpectator_Control;
+import Interfaces.ISpectator_Paddock;
+import java.rmi.RemoteException;
 import sharingRegions.*;
 
 public class Spectator extends Thread {
@@ -18,9 +20,9 @@ public class Spectator extends Thread {
 	private double money;
 	private int horsePicked;
 	private SpectatorState state;
-	Repository repo;
+	IRepository repo;
 
-	public Spectator(int id,int money,ISpectator_BettingCenter monitorBettingCenter, ISpectator_Control monitorControl, ISpectator_Paddock monitorPaddock, Repository repo) {
+	public Spectator(int id,int money,ISpectator_BettingCenter monitorBettingCenter, ISpectator_Control monitorControl, ISpectator_Paddock monitorPaddock, IRepository repo) throws RemoteException {
 		this.id=id;
 		this.money=money;
 		this.monitorBettingCenter = monitorBettingCenter;
@@ -32,7 +34,7 @@ public class Spectator extends Thread {
 	}
 	
 	
-	public void addMoney(double moneyWon) {
+	public void addMoney(double moneyWon) throws RemoteException {
 		money=money+moneyWon;
 		repo.setspecMoney(id,money);
 	}
@@ -49,6 +51,7 @@ public class Spectator extends Thread {
 	public void run() {
 			
 		while(running) {
+                    try{
 			switch (state) {
 				case WAITING_FOR_A_RACE_TO_START:
 					System.out.println("WAITING_FOR_A_RACE_TO_START Spectator_"+id);
@@ -119,6 +122,9 @@ public class Spectator extends Thread {
 				default:
 					break;
 			}
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 		/*	try {
 				Thread.sleep(500);
 			} catch(Exception e) {
