@@ -16,7 +16,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class RunRepository {
 
-	public static void main(String[] args) throws IOException{
+
+        
+	public static void main(String[] args) throws RemoteException, IOException{
 		
 		int portNumb;
 		Properties prop = new Properties();
@@ -85,8 +87,17 @@ public class RunRepository {
                     System.exit(1);
                 }
                 System.out.println(nameEntryObject+" object was registered!");
-		
-	}
+
+
+                try {
+                    registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+                } catch (RemoteException ex) {
+                    System.out.println("Erro ao localizar o registo");
+                    ex.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        
 
 }
 

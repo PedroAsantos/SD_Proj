@@ -5,9 +5,7 @@
  */
 package Interfaces;
 
-import Enum.BrokerState;
-import Enum.HorseState;
-import Enum.SpectatorState;
+import Enum.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -39,4 +37,5 @@ public interface IRepository extends Remote {
     public void clearhorserank() throws RemoteException;
     public int getHorsesPerRace() throws RemoteException;
     public int getTotalHorses() throws RemoteException;
+    public void finished() throws RemoteException;
 }

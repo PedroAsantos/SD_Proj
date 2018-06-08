@@ -8,6 +8,7 @@ import Interfaces.ISpectator_Paddock;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Properties;
@@ -30,6 +31,8 @@ public class RunSpectators {
                 Properties prop = new Properties();
                 String propFileName = "config.properties";
 
+                IRepository repo = null;
+                
                 try {
                     prop.load(new FileInputStream("resources/"+propFileName));
                 } catch (FileNotFoundException e) {
@@ -52,7 +55,7 @@ public class RunSpectators {
                     IMonitor_Paddock mPaddock = (IMonitor_Paddock) registry.lookup("stubPaddock");
                     IMonitor_BettingCenter mBettingCenter = (IMonitor_BettingCenter) registry.lookup("stubBettingCenter"); 
 
-                    IRepository repo =(IRepository) registry.lookup("stubRepository");
+                    repo =(IRepository) registry.lookup("stubRepository");
 
                     int money;
                     for (int i = 0; i < spectators.length; i++) {
@@ -80,6 +83,13 @@ public class RunSpectators {
                     e.printStackTrace();
                 }
                 
+                try {
+                    repo.finished();
+                } catch (RemoteException ex) {
+                    System.out.println("Error closing all!");
+                    ex.printStackTrace();
+                    System.exit(1);
+                }
                 
           
 		

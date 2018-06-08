@@ -8,7 +8,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import Interfaces.IMonitor_Stable;
 import Interfaces.IRepository;
+import Interfaces.Register;
+import java.io.FileInputStream;
+import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Properties;
 
 
 public class MonitorStable implements IMonitor_Stable {
@@ -23,6 +31,16 @@ public class MonitorStable implements IMonitor_Stable {
 	private int horsesPaddock;
 	private boolean horseCanNotGo;
 	IRepository repo;
+        
+        /**
+        * RMI Register host name
+        */
+        private String rmiRegHostName;
+
+        /**
+        * RMI Register host name
+        */
+        private int rmiRegPortNumb;
 	
 	public MonitorStable(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
@@ -141,7 +159,69 @@ public class MonitorStable implements IMonitor_Stable {
     public void turnOffServer() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-	
+       
+    @Override
+    public void signalShutdown() throws RemoteException, IOException {
+        Register reg = null;
+        Registry registry = null;
+
+        String rmiRegHostName;
+        int rmiRegPortNumb;
+
+        Properties prop = new Properties();
+        String propFileName = "config.properties";
+
+        prop.load(new FileInputStream("resources/"+propFileName));
+
+        rmiRegHostName = this.rmiRegHostName;
+        rmiRegPortNumb = this.rmiRegPortNumb;
+
+        try {
+            registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+        } catch (RemoteException ex) {
+            System.out.println("Erro ao localizar o registo");
+            ex.printStackTrace();
+            System.exit(1);
+        }
+
+        String nameEntryBase = prop.getProperty("nameEntry");
+        String nameEntryObject = prop.getProperty("machine_BettingCenter");
+
+
+        try {
+            reg = (Register) registry.lookup(nameEntryBase);
+        } catch (RemoteException e) {
+            System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+        try {
+            // Unregister ourself
+            reg.unbind(nameEntryObject);
+        } catch (RemoteException e) {
+            System.out.println("Stable registration exception: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        } catch (NotBoundException e) {
+            System.out.println("Stable not bound exception: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        try {
+            // Unexport; this will also remove us from the RMI runtime
+            UnicastRemoteObject.unexportObject(this, true);
+        } catch (NoSuchObjectException ex) {
+            ex.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("Stable closed.");
+    }
 
 
 }

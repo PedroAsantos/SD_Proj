@@ -12,6 +12,7 @@ import Interfaces.IRepository;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Properties;
@@ -30,7 +31,7 @@ public class RunBroker {
 
             Properties prop = new Properties();
             String propFileName = "config.properties";
-            
+            IRepository repo = null;
             try {
 		prop.load(new FileInputStream("resources/"+propFileName));
             } catch (FileNotFoundException e) {
@@ -57,7 +58,7 @@ public class RunBroker {
                
          
                 
-                IRepository repo =(IRepository) registry.lookup("stubRepository");
+                repo =(IRepository) registry.lookup("stubRepository");
                 
                 Broker broker = new Broker(mControlCenter,mBettingCenter,mStable,mRacingTrack,mPaddock,repo);
 		
@@ -70,6 +71,14 @@ public class RunBroker {
             } catch (Exception e) {
                 System.err.println("Client exception: " + e.toString());
                 e.printStackTrace();
+            }
+            
+            try {
+                repo.finished();
+            } catch (RemoteException ex) {
+                System.out.println("Error closing all!");
+                ex.printStackTrace();
+                System.exit(1);
             }
    	
 		

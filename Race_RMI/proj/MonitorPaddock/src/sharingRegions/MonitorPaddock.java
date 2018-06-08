@@ -12,6 +12,15 @@ import Interfaces.IHorse_Paddock;
 import Interfaces.IMonitor_Paddock;
 import Interfaces.IRepository;
 import Interfaces.ISpectator_Paddock;
+import Interfaces.Register;
+import java.io.FileInputStream;
+import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Properties;
 
 
 public class MonitorPaddock implements IMonitor_Paddock {
@@ -31,6 +40,17 @@ public class MonitorPaddock implements IMonitor_Paddock {
 	private List<Integer> pickHorse;
 	private HashMap<Integer,Double> horseProbabilities;
 	IRepository repo;
+        
+        /**
+        * RMI Register host name
+        */
+        private String rmiRegHostName;
+
+        /**
+        * RMI Register host name
+        */
+        private int rmiRegPortNumb;
+        
 	
 	public MonitorPaddock(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
@@ -208,4 +228,66 @@ public class MonitorPaddock implements IMonitor_Paddock {
 		return horsePicked;
 	}
 	
+        @Override
+        public void signalShutdown() throws RemoteException, IOException {
+            Register reg = null;
+            Registry registry = null;
+
+            String rmiRegHostName;
+            int rmiRegPortNumb;
+
+            Properties prop = new Properties();
+            String propFileName = "config.properties";
+
+            prop.load(new FileInputStream("resources/"+propFileName));
+            
+            rmiRegHostName = this.rmiRegHostName;
+            rmiRegPortNumb = this.rmiRegPortNumb;
+
+            try {
+                registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+            } catch (RemoteException ex) {
+                System.out.println("Erro ao localizar o registo");
+                ex.printStackTrace();
+                System.exit(1);
+            }
+
+            String nameEntryBase = prop.getProperty("nameEntry");
+            String nameEntryObject = prop.getProperty("machine_Paddock");
+
+
+            try {
+                reg = (Register) registry.lookup(nameEntryBase);
+            } catch (RemoteException e) {
+                System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            }
+            try {
+                // Unregister ourself
+                reg.unbind(nameEntryObject);
+            } catch (RemoteException e) {
+                System.out.println("Paddock registration exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Paddock not bound exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            try {
+                // Unexport; this will also remove us from the RMI runtime
+                UnicastRemoteObject.unexportObject(this, true);
+            } catch (NoSuchObjectException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+
+            System.out.println("Paddock closed.");
+        }
 }

@@ -39,4 +39,5 @@ public interface IRepository extends Remote {
     public void clearhorserank() throws RemoteException;
     public int getHorsesPerRace() throws RemoteException;
     public int getTotalHorses() throws RemoteException;
+    public void finished() throws RemoteException;
 }

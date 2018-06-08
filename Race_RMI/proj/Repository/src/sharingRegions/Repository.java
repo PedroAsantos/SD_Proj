@@ -5,7 +5,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 
 import Enum.*;
-import Interfaces.IRepository;
+import Interfaces.*;
+import java.rmi.registry.*;
+import java.rmi.*;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Repository implements IRepository {
 	private final ReentrantLock mutex;
@@ -20,7 +25,18 @@ public class Repository implements IRepository {
 	private String l;
 	private String l1;
 	private int numberOfRacesMissing;
+        /**
+        * RMI Register host name
+        */
+        private String rmiRegHostName;
+
+        /**
+        * RMI Register host name
+        */
+        private int rmiRegPortNumb;
 	
+        private int numberEntitiesRunning=3;
+        
 	//Stat - broker state - Broker Class
 	private BrokerState brokerstate;
 	//St# - spectator/better state (# - 0 .. 3) - Spectator Class
@@ -612,4 +628,155 @@ public class Repository implements IRepository {
 	public int getTotalHorses() {
 		return this.totalHorses;
 	}
+        
+        @Override
+        public void finished() {
+            numberEntitiesRunning--;
+            if (numberEntitiesRunning > 0) {
+                return;
+            }
+            try {
+                terminateServers();
+            } catch (IOException ex) {
+                Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        private void terminateServers() throws IOException {
+            Register reg = null;
+            Registry registry = null;
+            String rmiRegHostName;
+            int rmiRegPortNumb;
+            
+            Properties prop = new Properties();
+            String propFileName = "config.properties";
+
+            prop.load(new FileInputStream("resources/"+propFileName));
+		
+		
+            
+            rmiRegHostName = this.rmiRegHostName;
+            rmiRegPortNumb = this.rmiRegPortNumb;
+
+            try {
+                registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+            } catch (RemoteException ex) {
+                System.out.println("Erro na localização do registo");
+                ex.printStackTrace();
+                System.exit(1);
+            }
+            
+            String nameEntryBase = prop.getProperty("nameEntry");
+            String nameEntryObject = prop.getProperty("machine_repository");
+            
+            // shutdown Betting Center
+            try {
+                IMonitor_BettingCenter betting_Center = (IMonitor_BettingCenter) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                betting_Center.signalShutdown();
+            } catch (RemoteException e) {
+                System.out.println("Exception thrown while locating Betting Center: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Betting Center is not registered: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            // shutdown Control Center
+            try {
+                IMonitor_Control control_Center = (IMonitor_Control) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                control_Center.signalShutdown();
+            } catch (RemoteException e) {
+                System.out.println("Exception thrown while locating Control Center: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Betting Center is not registered: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            
+            // shutdown Paddock
+            try {
+                IMonitor_Paddock paddock = (IMonitor_Paddock) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                paddock.signalShutdown();
+            } catch (RemoteException e) {
+                System.out.println("Exception thrown while locating Paddock: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Paddock is not registered: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            // shutdown Racing Track
+            try {
+                IMonitor_Track racing_track = (IMonitor_Track) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                racing_track.signalShutdown();
+            } catch (RemoteException e) {
+                System.out.println("Exception thrown while locating Racing Track: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Racing Track is not registered: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            // shutdown Stable
+            try {
+                IMonitor_Stable stable = (IMonitor_Stable) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                stable.signalShutdown();
+            } catch (RemoteException e) {
+                System.out.println("Exception thrown while locating Stable: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Stable is not registered: " + e.getMessage() + "!");
+                e.printStackTrace();
+                System.exit(1);
+            }
+            
+            // shutdown log
+
+            try {
+                reg = (Register) registry.lookup(nameEntryBase);
+            } catch (RemoteException e) {
+                System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            try {
+                // Unregister ourself
+                reg.unbind(nameEntryObject);
+            } catch (RemoteException e) {
+                System.out.println("Log registration exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            } catch (NotBoundException e) {
+                System.out.println("Log not bound exception: " + e.getMessage());
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            try {
+                // Unexport; this will also remove us from the RMI runtime
+                UnicastRemoteObject.unexportObject(this, true);
+            } catch (NoSuchObjectException ex) {
+                ex.printStackTrace();
+                System.exit(1);
+            }
+
+    //        writeEnd();
+
+            System.out.println("Repository closed.");
+        }
 }
