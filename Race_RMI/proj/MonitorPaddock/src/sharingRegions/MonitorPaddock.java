@@ -30,7 +30,7 @@ public class MonitorPaddock implements IMonitor_Paddock {
 	private final Condition spectatorCheckHorses_condition;
 	private final int horsesPerRace;
 	private final int totalSpectators;
-	
+
 	private boolean horsesCanNotGo;
 	private boolean spectatorsCheckingHorses;
 	private int horsesInPaddock;
@@ -40,7 +40,7 @@ public class MonitorPaddock implements IMonitor_Paddock {
 	private List<Integer> pickHorse;
 	private HashMap<Integer,Double> horseProbabilities;
 	IRepository repo;
-        
+
         /**
         * RMI Register host name
         */
@@ -50,8 +50,8 @@ public class MonitorPaddock implements IMonitor_Paddock {
         * RMI Register host name
         */
         private int rmiRegPortNumb;
-        
-	
+
+
 	public MonitorPaddock(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
 		horse_condition = mutex.newCondition();
@@ -69,32 +69,32 @@ public class MonitorPaddock implements IMonitor_Paddock {
 		horseProbabilities = new HashMap<Integer,Double>();
 		this.repo = repo;
 	}
-	
+
 
 	/**
 	*	Function for horses to stay in the paddock. They are awake at the end of the spectators all have seen the horses.
 	*
-	*	@param horseId Horse ID 
+	*	@param horseId Horse ID
 	*	@param performance Performance of the horse
 	*/
 	@Override
 	public void proceedToPaddock(int horseId,int performance) {
-		
+
 		mutex.lock();
 		try {
-			
+
 			horsesInPaddock++;
 			System.out.println("Horse_"+horseId+" is going to paddock!");
-			
+
 			horsesRunning.add(horseId);
 			horsePerformance.put(horseId, performance);
 
 			repo.setHorsePerformance(horseId, performance);
-			repo.sethorseruns(horseId,0);					
+			repo.sethorseruns(horseId,0);
 			if(horsesInPaddock==horsesPerRace) {
 				spectatorWaiting_condition.signalAll();
 			}
-			
+
 			try {
 				 while(horsesCanNotGo) {
 					 horse_condition.await();
@@ -102,28 +102,28 @@ public class MonitorPaddock implements IMonitor_Paddock {
 			}catch(Exception e) {
 				System.out.println("Horse ProceedToPaddock (paddockMonitor) "+e);
 			}
-			
-				 
+
+
 				 horsesInPaddock--;
-				 
+
 				 if(horsesInPaddock==0) {
 					 horsesCanNotGo=true;
 				 }
-				 
-				 
+
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}
-		
-	
+
+
 	}
 	/**
 	*	Function for spectators to be able to wait for the horses to be in the paddock.
 	*
-	*	@param spectator_id Spectator ID 
+	*	@param spectator_id Spectator ID
 	*/
 	@Override
 	public void waitForNextRace(int spectator_id) {
@@ -137,26 +137,26 @@ public class MonitorPaddock implements IMonitor_Paddock {
 					e.printStackTrace();
 				}
 			}
-			
+
 		} finally {
 			mutex.unlock();
 		}
-		
+
 	}
 	/**
 	*	Function for spectators to be able to see and choose the horse that they will bet. In this function the probabilities of each horse winning are calculated.
 	*
-	*	@param spectator_id Spectator ID 
+	*	@param spectator_id Spectator ID
 	*	@return int the id of the chosen horse.
 	*/
 	@Override
 	public int goCheckHorses(int spectator_id) {
-		int horsePicked = 0; 
+		int horsePicked = 0;
 		mutex.lock();
 		try {
 			System.out.println("Spectator_"+spectator_id+" is checking the horses!");
 			spectatorsInPaddock++;
-			
+
 			if(spectatorsInPaddock==totalSpectators) {
 				spectatorsCheckingHorses=false;
 				spectatorCheckHorses_condition.signalAll();
@@ -164,7 +164,7 @@ public class MonitorPaddock implements IMonitor_Paddock {
 				horsesCanNotGo=false;
 				horse_condition.signalAll();
 			}
-			
+
 			while(spectatorsCheckingHorses) {
 				try {
 					spectatorCheckHorses_condition.await();
@@ -172,25 +172,25 @@ public class MonitorPaddock implements IMonitor_Paddock {
 					e.printStackTrace();
 				}
 			}
-			
+
 			if(horseProbabilities.size()==0) {
 				int totalP=0;
 				for(int i = 0 ;i<horsesRunning.size();i++) {
 					totalP+=horsePerformance.get(horsesRunning.get(i));
 				}
-				
+
 				double prob;
 				for(int i=0;i<horsesRunning.size();i++) {
 					if(horsesRunning.size()<100) {
 						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*100;
 					}else {
-						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*horsesRunning.size()*2;	
+						prob=(double)horsePerformance.get(horsesRunning.get(i))/totalP*horsesRunning.size()*2;
 					}
 					horseProbabilities.put(horsesRunning.get(i), prob);
 					repo.setHorseProbabilitie(horsesRunning.get(i), prob);
 				//	repo.sethorseProbabilities(horseProbabilities);
-				} 	
-			
+				}
+
 
 				int toPut;
 
@@ -205,9 +205,9 @@ public class MonitorPaddock implements IMonitor_Paddock {
 			}
 			Random random = new Random();
 			int n = random.nextInt(pickHorse.size());
-			horsePicked=pickHorse.get(n); 
-			
-			
+			horsePicked=pickHorse.get(n);
+
+
 			spectatorsInPaddock--;
 			if(spectatorsInPaddock==0) {
 				spectatorsCheckingHorses=true;
@@ -216,9 +216,9 @@ public class MonitorPaddock implements IMonitor_Paddock {
 				horseProbabilities.clear();
 				pickHorse.clear();
 			}
-			
-				
-			
+
+
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -227,22 +227,19 @@ public class MonitorPaddock implements IMonitor_Paddock {
 		}
 		return horsePicked;
 	}
-	
-        @Override
+
+            @Override
         public void signalShutdown() throws RemoteException, IOException {
             Register reg = null;
             Registry registry = null;
-
-            String rmiRegHostName;
-            int rmiRegPortNumb;
 
             Properties prop = new Properties();
             String propFileName = "config.properties";
 
             prop.load(new FileInputStream("resources/"+propFileName));
-            
-            rmiRegHostName = this.rmiRegHostName;
-            rmiRegPortNumb = this.rmiRegPortNumb;
+
+						String rmiRegHostName = prop.getProperty("rmiRegHostName");
+						int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
             try {
                 registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
@@ -253,7 +250,7 @@ public class MonitorPaddock implements IMonitor_Paddock {
             }
 
             String nameEntryBase = prop.getProperty("nameEntry");
-            String nameEntryObject = prop.getProperty("machine_Paddock");
+            String nameEntryObject = "stubPaddock";
 
 
             try {
@@ -271,11 +268,11 @@ public class MonitorPaddock implements IMonitor_Paddock {
                 // Unregister ourself
                 reg.unbind(nameEntryObject);
             } catch (RemoteException e) {
-                System.out.println("Paddock registration exception: " + e.getMessage());
+                System.out.println("stubControl Registration exception: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
-                System.out.println("Paddock not bound exception: " + e.getMessage());
+                System.out.println("stubControl Not bound exception: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             }
@@ -290,4 +287,5 @@ public class MonitorPaddock implements IMonitor_Paddock {
 
             System.out.println("Paddock closed.");
         }
+
 }

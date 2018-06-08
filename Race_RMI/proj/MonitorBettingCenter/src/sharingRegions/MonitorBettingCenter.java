@@ -42,18 +42,6 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 	private int spectReceiving;
 	private boolean brokerCanNotAccept;
 	IRepository repo;
-        
-        /**
-        * RMI Register host name
-        */
-        private String rmiRegHostName;
-
-        /**
-        * RMI Register host name
-        */
-        private int rmiRegPortNumb;
-
-
 
 	public MonitorBettingCenter(IRepository repo) throws IOException {
 		mutex = new ReentrantLock(true);
@@ -80,19 +68,19 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 	/**
 	*	Function to broker accept the bets of spectators.
 	*
-	*	 
+	*
 	*/
 	@Override
 	public void acceptTheBets() {
-		
+
 		mutex.lock();
 		try {
 			System.out.println("ACCEPTING BETS BROKER");
-			
+
 			while(numberOfBets < numberOfSpectators) {
 				try {
 					while(brokerCanNotAccept) {
-						broker_condition.await();	
+						broker_condition.await();
 					}
 					//place bet
 					List <double[]> listTemp = new ArrayList<double[]>();
@@ -104,7 +92,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 						listTemp.add(temp);
 						spectatorBets.put(horseId,listTemp);
 						repo.setspecbets((int)bet[0],horseId);
-					}else {	
+					}else {
 						listTemp.add(temp);
 						spectatorBets.put(horseId,listTemp);
 						repo.setspecbets((int)bet[0],horseId);
@@ -124,21 +112,21 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 			}
 			numberOfBets=0;
 			spectatorsQueueBol=false;
-		
+
 			//repo.setspectatorBets(spectatorBets);
 			System.out.println("BROKER WAKE UP");
-			
-			
+
+
 		} finally {
 			mutex.unlock();
 		}
-		
-		
+
+
 	}
 	/**
 	*	Function to spectator place a bet.
 	*
-	*	@param spectatorId Spectator ID 
+	*	@param spectatorId Spectator ID
 	*	@param money Money of the bet
 	*	@param horsePicked Horse chosen by the spectator.
 	*/
@@ -146,7 +134,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 	public void placeABet(int spectatorId, double money,int horsePicked) {
 		mutex.lock();
 		try {
-		
+
 			while(spectatorsQueueBol) {
 				try {
 					spectatorWaiting_condition.await();
@@ -157,8 +145,8 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 			}
 			spectatorsQueueBol=true;
 			System.out.println("Spectator_"+spectatorId+" is betting!");
-			
-			this.horseId=horsePicked; 
+
+			this.horseId=horsePicked;
 			this.bet[0]=spectatorId; //spectator_id
 			this.bet[1]=money; //money
 			//spectator.payBet(this.bet[1]);
@@ -166,7 +154,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 			repo.setspecbetamount(spectatorId,bet[1]);
 			brokerCanNotAccept=false;
 			broker_condition.signal();
-		
+
 			while(spectatorBetAproving) {
 				try {
 					spectator_condition.await();
@@ -175,31 +163,31 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 					e.printStackTrace();
 				}
 			}
-			
+
 			spectatorBetAproving=true;
 			spectatorsQueueBol=false;
 			spectatorWaiting_condition.signal();
-				
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} finally {
 			mutex.unlock();
-			
+
 		}
-		
+
 	}
 	/**
 	*	Function to spectator collect the gains if he won the bet.
 	*
 	*	@param spectatorId Spectator ID
-	*	@return double the money that the spectator won. 
+	*	@return double the money that the spectator won.
 	*/
 	@Override
 	public double goCollectTheGains(int spectatorId) {
 		// TODO Auto-generated method stub
 		//jogar com o facto de a ordem de chegada e igual a de  saida FIFO. E dar assim a saida deles.registando a entrada
-		
+
 		mutex.lock();
 		try {
 			//openHonorStand=false;
@@ -225,15 +213,15 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 				}
 			}
 			//PAY ATTENTO TO THIS
-		
+
 			//System.out.println("queu size"+queueToReceivMoney.size()+"->"+queueToReceivMoney.peek().getID());
 			brokerIsOccupied=false;
 			receivingDividends=true;
 			if(!queueToReceivMoney.isEmpty()) {
 				receivMoneyList[queueToReceivMoney.peek()].signal();
 			}
-				
-			
+
+
 			///----------------------
 			System.out.println("Spectator_"+spectatorId+" received the money!");
 			//repo.getNumberOfRaces();
@@ -253,7 +241,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 		try {
 
 			List<double[]> winners = new ArrayList<double[]>();
-		
+
 			for(int i=0;i<horseWinners.size();i++) {
 				System.out.println("HORSE WINNERS:"+horseWinners.get(i));
 				if(spectatorBets.containsKey(horseWinners.get(i))) {
@@ -265,11 +253,11 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 			}*/
 			int spectatorReceivingMoney;
 			int betsPayed=0;
-			
+
 			while(betsPayed<winners.size()/*|| openHonorStand*/) {
 				try {
 					while(spectReceiving==0) {
-						broker_condition.await();	
+						broker_condition.await();
 					}
 					spectatorReceivingMoney=queueToReceivMoney.remove();
 					for(int i=0;i<winners.size();i++) {
@@ -283,19 +271,19 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 							betsPayed++;
 							break;
 						}
-						
+
 					}
-					
+
 					receivingDividends=false;
 					spectReceiving--;
 					receivMoneyList[spectatorReceivingMoney].signal();
-					
+
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-					
+
 			}
-			
+
 			//openHonorStand=true;
 			spectatorBets.clear();
 			repo.clearhorserank();
@@ -305,10 +293,10 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 		} finally {
 			mutex.unlock();
 		}
-		
+
 	}
 	/**
-	*	Function to broker verify if any spectator won the bet. 
+	*	Function to broker verify if any spectator won the bet.
 	*
 	*	@param horseAWinners Array with the horses that won the last race.
 	*   @return boolean returns true if at least one spectator won the bet.
@@ -331,7 +319,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 				spectatorBets.clear();
 				repo.clearhorserank();
 			}
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -340,22 +328,19 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 		}
 		return thereAreWinner;
 	}
-        
+
         @Override
         public void signalShutdown() throws RemoteException, IOException {
             Register reg = null;
             Registry registry = null;
 
-            String rmiRegHostName;
-            int rmiRegPortNumb;
-
             Properties prop = new Properties();
             String propFileName = "config.properties";
 
             prop.load(new FileInputStream("resources/"+propFileName));
-            
-            rmiRegHostName = this.rmiRegHostName;
-            rmiRegPortNumb = this.rmiRegPortNumb;
+
+						String rmiRegHostName = prop.getProperty("rmiRegHostName");
+						int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
             try {
                 registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
@@ -366,7 +351,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
             }
 
             String nameEntryBase = prop.getProperty("nameEntry");
-            String nameEntryObject = prop.getProperty("machine_BettingCenter");
+            String nameEntryObject = "stubBettingCenter";
 
 
             try {
@@ -384,11 +369,11 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
                 // Unregister ourself
                 reg.unbind(nameEntryObject);
             } catch (RemoteException e) {
-                System.out.println("Museum registration exception: " + e.getMessage());
+                System.out.println("stubBettingCenter Registration exception: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
-                System.out.println("Museum not bound exception: " + e.getMessage());
+                System.out.println("stubBettingCenter Not bound exception: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             }

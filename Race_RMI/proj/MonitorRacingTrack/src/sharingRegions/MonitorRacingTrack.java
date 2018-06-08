@@ -33,13 +33,13 @@ public class MonitorRacingTrack implements IMonitor_Track {
 	private final Condition horseWaitingMoving_condition;
 	private final Condition brokerReportResults_condition;
 	private final int horsesPerRace;
-	
+
 	private final int raceLength;
 	private int horsesRacing;
 	private int horses_at_start_line;
 	private boolean horsesCanNotRace;
 	private	HashMap<Integer,Integer> horsePosition;
-	private HashMap<Integer,Integer> horsesFinalPos; 
+	private HashMap<Integer,Integer> horsesFinalPos;
 	private HashMap<Integer,Integer> horseFinalRuns;
 	private HashMap<Integer,Integer> horseRuns;
 	private HashMap<Integer,List<Integer>> invertedhorseFinalRuns;
@@ -51,7 +51,7 @@ public class MonitorRacingTrack implements IMonitor_Track {
 	private int wait;
 	private volatile int cycle;
 	IRepository repo;
-	
+
         /**
         * RMI Register host name
         */
@@ -82,7 +82,7 @@ public class MonitorRacingTrack implements IMonitor_Track {
 		waitList = new LinkedList<Integer>();
 		wait=0;
 		cycle=0;
-		this.repo = repo;	
+		this.repo = repo;
 		horsePerformance = new HashMap<Integer,Integer>();
 		horsePosition = new HashMap<Integer,Integer>();
 		horsesInRace=new ArrayList<Integer>();
@@ -95,9 +95,9 @@ public class MonitorRacingTrack implements IMonitor_Track {
 	public void startTheRace() {
 			mutex.lock();
 			try {
-				
+
 				System.out.println("STARTING THE RACE");
-				
+
 				//to be updated the races that left after this.
 			//	repo.raceDone();
 		        repo.raceStarted();
@@ -111,10 +111,10 @@ public class MonitorRacingTrack implements IMonitor_Track {
 				}
 				horsesCanNotRace=false;
 				horse_condition.signalAll();
-								
+
 				System.out.println("EXIT startTheRace() BROKER");
-	
-				
+
+
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -122,9 +122,9 @@ public class MonitorRacingTrack implements IMonitor_Track {
 				mutex.unlock();
 			}
 	}
-	
+
 	/**
-	*	Send horses to start line and then when all horses to race are at start line 
+	*	Send horses to start line and then when all horses to race are at start line
 	*	the broker is woken up.
 	*
 	*	@param horseId Horse ID
@@ -132,7 +132,7 @@ public class MonitorRacingTrack implements IMonitor_Track {
 	*/
 	@Override
 	public void proceedToStartLine(int horseId,int performance) {
-	
+
 		mutex.lock();
 		try {
 			horses_at_start_line++;
@@ -140,14 +140,14 @@ public class MonitorRacingTrack implements IMonitor_Track {
 			if(horsesInRace.size()==0) {
 				horseCanRun.put(horseId,false);
 			}else {
-				horseCanRun.put(horseId, true);		
+				horseCanRun.put(horseId, true);
 			}
-	
+
 			horsePerformance.put(horseId, performance);
-			horsesInRace.add(horseId); 
+			horsesInRace.add(horseId);
 			horseRuns.put(horseId, 0);
 			horsePosition.put(horseId, 0);
-			
+
 			if(horses_at_start_line == horsesPerRace) {
 				broker_condition.signal();
 			}
@@ -188,8 +188,8 @@ public class MonitorRacingTrack implements IMonitor_Track {
 					cycle=0;
 				}
 			}
-						
-			
+
+
 			if(horseCanRun.get(horseId)) {
 				waitList.add(horseId);
 			}
@@ -200,8 +200,8 @@ public class MonitorRacingTrack implements IMonitor_Track {
 					e.printStackTrace();
 				}
 			}
-			
-			
+
+
 		    Random random = new Random();
 		    int newPos = horsePosition.get(horseId)+random.nextInt(horsePerformance.get(horseId))+10;
 		    horsePosition.put(horseId, newPos);
@@ -209,23 +209,23 @@ public class MonitorRacingTrack implements IMonitor_Track {
 			horseRuns.put(horseId,horseRuns.get(horseId)+1);
 			repo.sethorseruns(horseId,horseRuns.get(horseId));
 			System.out.println("Horse_"+ horseId+" is on the position "+ newPos +" at run "+horseRuns.get(horseId));
-		
-			
+
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			mutex.unlock();
 		}
-		
+
 	}
 	/**
-	*	Check if a horse has crossed the finish line and then 
-	*	if all horses already finished the broker is woken up 
+	*	Check if a horse has crossed the finish line and then
+	*	if all horses already finished the broker is woken up
 	* 	else continue to run.
 	*
 	*	@param horseId Horse ID
-	*   @return boolean Returns true if the line has been crossed by the horse. 
+	*   @return boolean Returns true if the line has been crossed by the horse.
 	*/
 	@Override
 	public boolean hasFinishLineBeenCrossed(int horseId) {
@@ -246,20 +246,20 @@ public class MonitorRacingTrack implements IMonitor_Track {
 					}
 					horseCanRun.put(horsesInRace.get(cycle%horsesInRace.size()),false);
 					horseWaitingMoving_condition.signalAll();
-					cycle++;	
+					cycle++;
 					if(cycle>=horsesInRace.size()) {
 						cycle=0;
 					}
 
 				}
-								
+
 		        List<Integer> valuesList = new ArrayList<Integer>(horseFinalRuns.values());
 		        //verificar se existe algum cavalo na mesma run.
 		        if(valuesList.contains(horseRuns.get(horseId))) {
 		        	horseFinalRuns.put(horseId,horseRuns.get(horseId));
 		        	List<Integer> horsesInTheSameRun = invertedhorseFinalRuns.get(horseRuns.get(horseId));
 		        	horsesInTheSameRun.add(horseId);
-		        	invertedhorseFinalRuns.put(horseId,horsesInTheSameRun);	
+		        	invertedhorseFinalRuns.put(horseId,horsesInTheSameRun);
 		        	horsesArrivalOrder.removeAll(horsesInTheSameRun);
 		        	//int max = horsesInTheSameRun.get(0);
  		        	for(int i = 0;i<horsesInTheSameRun.size();i++) {
@@ -273,17 +273,17 @@ public class MonitorRacingTrack implements IMonitor_Track {
  		        			 }
  		        		 }
  		        		//posOrder.add(max);
-		        	}	        	
-		        	
+		        	}
+
 		        	horsesArrivalOrder.addAll(horsesInTheSameRun);
-		        	
+
 		        }else {
 		        	horseFinalRuns.put(horseId,horseRuns.get(horseId));
 		        	List<Integer> horsesInTheSameRun = new ArrayList<Integer>();
 		        	horsesInTheSameRun.add(horseId);
-		        	invertedhorseFinalRuns.put(horseRuns.get(horseId),horsesInTheSameRun);	
+		        	invertedhorseFinalRuns.put(horseRuns.get(horseId),horsesInTheSameRun);
 		        }
-		      
+
 				horsesRacing--;
 				if(horsesRacing==0) {
 					cycle=0;
@@ -294,20 +294,20 @@ public class MonitorRacingTrack implements IMonitor_Track {
 				}
 				hasCross=true;
 			}
-			
-		
-				
+
+
+
 		} finally {
 			mutex.unlock();
 		}
-		
+
 		return hasCross;
 	}
 
 	/**
 	*	Report the results to spectators returning an array with rankings
 	*
-	*	@return int[] horseAWinners 
+	*	@return int[] horseAWinners
 	*/
 	@Override
 	public int[] reportResults() {
@@ -336,19 +336,19 @@ public class MonitorRacingTrack implements IMonitor_Track {
 				e.printStackTrace();
 			}
 		}
-	
-		int[] horseAWinners = new int[1]; 
+
+		int[] horseAWinners = new int[1];
 		horseAWinners[0]=horsesArrivalOrder.get(0);
-		
-		
+
+
 		int i=1;
 		while(i<horsesArrivalOrder.size() &&  horseFinalRuns.get(horsesArrivalOrder.get(0))==horseFinalRuns.get(horsesArrivalOrder.get(i)) && horsesFinalPos.get(horsesArrivalOrder.get(0))==horsesFinalPos.get(horsesArrivalOrder.get(i)) ) {
 			Arrays.copyOf(horseAWinners,horseAWinners.length+1);
 			horseAWinners[horseAWinners.length-1]=horsesArrivalOrder.get(i);
 			i++;
 		}
-		
-		
+
+
 		horsesArrivalOrder.clear();
 		invertedhorseFinalRuns.clear();
 		horseFinalRuns.clear();
@@ -356,73 +356,72 @@ public class MonitorRacingTrack implements IMonitor_Track {
         horsePosition.clear();
         horseRuns.clear();
 		//repo.clearhorserank();
-		
+
         return horseAWinners;
 	}
-        
-        @Override
-        public void signalShutdown() throws RemoteException, IOException {
-            Register reg = null;
-            Registry registry = null;
 
-            String rmiRegHostName;
-            int rmiRegPortNumb;
+	@Override
+	public void signalShutdown() throws RemoteException, IOException {
+			Register reg = null;
+			Registry registry = null;
 
-            Properties prop = new Properties();
-            String propFileName = "config.properties";
+			Properties prop = new Properties();
+			String propFileName = "config.properties";
 
-            prop.load(new FileInputStream("resources/"+propFileName));
-            
-            rmiRegHostName = this.rmiRegHostName;
-            rmiRegPortNumb = this.rmiRegPortNumb;
+			prop.load(new FileInputStream("resources/"+propFileName));
 
-            try {
-                registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
-            } catch (RemoteException ex) {
-                System.out.println("Erro ao localizar o registo");
-                ex.printStackTrace();
-                System.exit(1);
-            }
+			String rmiRegHostName = prop.getProperty("rmiRegHostName");
+			int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
-            String nameEntryBase = prop.getProperty("nameEntry");
-            String nameEntryObject = prop.getProperty("machine_RacingTrack");
+			try {
+					registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
+			} catch (RemoteException ex) {
+					System.out.println("Erro ao localizar o registo");
+					ex.printStackTrace();
+					System.exit(1);
+			}
+
+			String nameEntryBase = prop.getProperty("nameEntry");
+			String nameEntryObject = "stubRacingTrack";
 
 
-            try {
-                reg = (Register) registry.lookup(nameEntryBase);
-            } catch (RemoteException e) {
-                System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            } catch (NotBoundException e) {
-                System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            }
-            try {
-                // Unregister ourself
-                reg.unbind(nameEntryObject);
-            } catch (RemoteException e) {
-                System.out.println("Racing Track registration exception: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            } catch (NotBoundException e) {
-                System.out.println("Racing Track not bound exception: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            }
+			try {
+					reg = (Register) registry.lookup(nameEntryBase);
+			} catch (RemoteException e) {
+					System.out.println("RegisterRemoteObject lookup exception: " + e.getMessage());
+					e.printStackTrace();
+					System.exit(1);
+			} catch (NotBoundException e) {
+					System.out.println("RegisterRemoteObject not bound exception: " + e.getMessage());
+					e.printStackTrace();
+					System.exit(1);
+			}
+			try {
+					// Unregister ourself
+					reg.unbind(nameEntryObject);
+			} catch (RemoteException e) {
+					System.out.println("stubControl Registration exception: " + e.getMessage());
+					e.printStackTrace();
+					System.exit(1);
+			} catch (NotBoundException e) {
+					System.out.println("stubControl Not bound exception: " + e.getMessage());
+					e.printStackTrace();
+					System.exit(1);
+			}
 
-            try {
-                // Unexport; this will also remove us from the RMI runtime
-                UnicastRemoteObject.unexportObject(this, true);
-            } catch (NoSuchObjectException ex) {
-                ex.printStackTrace();
-                System.exit(1);
-            }
+			try {
+					// Unexport; this will also remove us from the RMI runtime
+					UnicastRemoteObject.unexportObject(this, true);
+			} catch (NoSuchObjectException ex) {
+					ex.printStackTrace();
+					System.exit(1);
+			}
 
-            System.out.println("Racing Track closed.");
-        }
+			System.out.println("Control Center closed.");
+	}
 
 
-	
+
+
+
 }

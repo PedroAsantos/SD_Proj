@@ -25,23 +25,13 @@ public class Repository implements IRepository {
 	private String l;
 	private String l1;
 	private int numberOfRacesMissing;
-        /**
-        * RMI Register host name
-        */
-        private String rmiRegHostName;
+  private int numberEntitiesRunning=3;
 
-        /**
-        * RMI Register host name
-        */
-        private int rmiRegPortNumb;
-	
-        private int numberEntitiesRunning=3;
-        
 	//Stat - broker state - Broker Class
 	private BrokerState brokerstate;
 	//St# - spectator/better state (# - 0 .. 3) - Spectator Class
 	private	HashMap<Integer,SpectatorState> specStat;
-	//Am# - spectator/better amount of money she has presently (# - 0 .. 3) - 
+	//Am# - spectator/better amount of money she has presently (# - 0 .. 3) -
 	private	HashMap<Integer,Double> specMoney;
 	//RN - race number - RunRace -----------------------Ta mal
 	private int numberOfRaces;
@@ -68,6 +58,7 @@ public class Repository implements IRepository {
 		mutex = new ReentrantLock(true);
 	//	this.horsesFinalPos = new int[totalHorses];
 		horsePerformance = new HashMap<Integer,Integer>();
+	//	this.numberEntitiesRunning=totalHorses+numberOfSpectators+1;
 		this.numberOfRaces=numberOfRaces;
 		this.numberOfRacesMissing=numberOfRaces;
 		this.totalHorses=totalHorses;
@@ -86,7 +77,7 @@ public class Repository implements IRepository {
 		this.horserank = new HashMap<Integer,Integer>();
 		this.raceLength=raceLength;
 	}
-	
+
         @Override
 	public void writeLog(){
 		String header = "         AFTERNOON AT THE RACE TRACK - "
@@ -98,8 +89,8 @@ public class Repository implements IRepository {
 		String header3 = "                                        "
                     + "RACE" + " " + numberOfRaces + " " + "Status";
 		String header4 = " RN Dist BS0  BA0 BS1  BA1 BS2  BA2 BS3  BA3   Od0 "
-                    + "N0 PS0 SD0 Od1 N1 PS1 SD1 Od2 N2 PS2 SD2 Od3 N3 PS3 SD3";          
-		
+                    + "N0 PS0 SD0 Od1 N1 PS1 SD1 Od2 N2 PS2 SD2 Od3 N3 PS3 SD3";
+
 		File file = new File("log.txt");
 		try{
 			PrintWriter writer = new PrintWriter(file);
@@ -109,7 +100,7 @@ public class Repository implements IRepository {
 			writer.println(header3);
 			writer.println(header4);
 			writer.close();
-		}catch (FileNotFoundException ex)  
+		}catch (FileNotFoundException ex)
 	    {
 	        System.err.println("Error writing");
 	    }
@@ -118,34 +109,34 @@ public class Repository implements IRepository {
 	/**
 	*	Function to write in the log files the update values.
 	*
-	
+
 	*/
-       @Override 
+       @Override
 	public void toLog(){
-		
+
 		try{
 			PrintWriter writer = new PrintWriter(new FileOutputStream(
 				new File("log.txt"),
 				true));
 			String stat="";
 			if (brokerstate != null) {
-				stat=""+brokerstate;	
+				stat=""+brokerstate;
 			}
 			else{
 				stat="-";
 			}
-			
+
 			String[] specStAll = new String[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
 				if (specStat.get(i)!=null) {
-					specStAll[i]=""+specStat.get(i);	
+					specStAll[i]=""+specStat.get(i);
 				}else{
 					specStAll[i]="-";
 				}
-	
-			
+
+
 			}
-			
+
 			double[] specAmAll = new double[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
 				if(specMoney.get(i)!=null){
@@ -156,15 +147,15 @@ public class Repository implements IRepository {
 				}
 
 			}
-			
+
 			//VER ISTO
 		//	int rn=numberOfRaces;
-			
+
 			String[] horseStAll = new String[horsesPerRace];
 			if(horsesRunnning.size()>0) {
 			for (int i = 0;i<horsesPerRace; i++ ) {
 				if (i<horsesRunnning.size() && horseStat.get(horsesRunnning.get(i))!=null) {
-					horseStAll[i]=""+horseStat.get(horsesRunnning.get(i));	
+					horseStAll[i]=""+horseStat.get(horsesRunnning.get(i));
 				}
 				else{
 					horseStAll[i]="AT_THE_STABLE";
@@ -175,8 +166,8 @@ public class Repository implements IRepository {
 					horseStAll[i]="AT_THE_STABLE";
 				}
 			}
-			
-			
+
+
 			int[] lenAll = new int[horsesPerRace];
 			for (int i = 0;i<horsesPerRace; i++ ) {
 				if(i<horsesRunnning.size() && horsePerformance.get(horsesRunnning.get(i))!=null){
@@ -187,7 +178,7 @@ public class Repository implements IRepository {
 			}
 
 			int dist=raceLength;
-			
+
 			String[] bsAll = new String[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
 				if(specbets.get(i)!=null){
@@ -196,23 +187,23 @@ public class Repository implements IRepository {
 				}else{
 					bsAll[i]="-";
 				}
-								
+
 			}
 			double[] baAll = new double[numberOfSpectators];
 			for (int i = 0;i<numberOfSpectators; i++ ) {
-			
+
 				if (specbetamount.get(i) != null) {
-					baAll[i]=specbetamount.get(i);	
+					baAll[i]=specbetamount.get(i);
 				}else{
 					baAll[i]=0.0;
 				}
-			
+
 
 			}
 			double[] odAll = new double[horsesPerRace];
 			for (int i = 0;i<horsesPerRace; i++ ) {
 				if (i<horsesRunnning.size() && horseProbabilities.get(horsesRunnning.get(i))!=null) {
-					odAll[i]=horseProbabilities.get(horsesRunnning.get(i));	
+					odAll[i]=horseProbabilities.get(horsesRunnning.get(i));
 
 				}else{
 					odAll[i]=0.0;
@@ -220,11 +211,11 @@ public class Repository implements IRepository {
 
 			}
 
-			
+
 			int[] nAll = new int[horsesPerRace];
 			for (int i = 0;i<horsesPerRace; i++ ) {
 				if (i<horsesRunnning.size() && horseruns.get(horsesRunnning.get(i))!=null) {
-					nAll[i]=horseruns.get(horsesRunnning.get(i));	
+					nAll[i]=horseruns.get(horsesRunnning.get(i));
 				}else{
 					nAll[i]=0;
 				}
@@ -239,11 +230,11 @@ public class Repository implements IRepository {
 					psAll[i]=0;
 				}
 			}
-		
+
 			String[] sdAll = new String[horsesPerRace];
 			if (horsesRunnning.size()>0) {
 				for (int i = 0;i<horsesPerRace; i++ ) {
-					
+
 					if(i<horsesRunnning.size() && horserank.get(horsesRunnning.get(i))==null){
 						sdAll[i]="-";
 						//sdAll[i]=""+horserank.get(i);
@@ -256,88 +247,88 @@ public class Repository implements IRepository {
 						}
 					}
 					//System.out.println("++"+sdAll[i]+"i"+i);
-				}	
+				}
 			}else{
 				for (int i = 0;i<horsesPerRace; i++ ) {
 					sdAll[i]="-";
-					
+
 				}
 			}
-			
-			
+
+
 			//System.out.println(bestofTheBests);
 
-			l = "  " + stat+ "  " + 
-                specStAll[0] + "  " + 
-                String.format("%.2f", specAmAll[0]) + " " + 
-                specStAll[1] + "  " + 
-                String.format("%.2f", specAmAll[1]) + " " + 
-                specStAll[2] + "  " + 
-                String.format("%.2f", specAmAll[2]) + " " + 
-                specStAll[3] + "  " + 
-                String.format("%.2f", specAmAll[3]) + "  " + 
-                numberOfRaces + " " + horseStAll[0] + 
-                "  " + String.format("%02d", lenAll[0]) + "  " + 
-                horseStAll[1] + "  " + 
-                String.format("%02d", lenAll[1]) + "  " + 
-                horseStAll[2] + "  " + 
-                String.format("%02d", lenAll[2]) + "  " + 
-                horseStAll[3] + "  " + 
+			l = "  " + stat+ "  " +
+                specStAll[0] + "  " +
+                String.format("%.2f", specAmAll[0]) + " " +
+                specStAll[1] + "  " +
+                String.format("%.2f", specAmAll[1]) + " " +
+                specStAll[2] + "  " +
+                String.format("%.2f", specAmAll[2]) + " " +
+                specStAll[3] + "  " +
+                String.format("%.2f", specAmAll[3]) + "  " +
+                numberOfRaces + " " + horseStAll[0] +
+                "  " + String.format("%02d", lenAll[0]) + "  " +
+                horseStAll[1] + "  " +
+                String.format("%02d", lenAll[1]) + "  " +
+                horseStAll[2] + "  " +
+                String.format("%02d", lenAll[2]) + "  " +
+                horseStAll[3] + "  " +
                 String.format("%02d", lenAll[3]);
-			
+
 			/*if (horserank.size()==4) {
-				l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0] 
-                + "  " + String.format("%.2f", baAll[0]) + "  " + 
-                bsAll[1] + "  " + 
-                String.format("%.2f", baAll[1]) + "  " + 
-                bsAll[2] + "  " + 
-                String.format("%.2f", baAll[2]) + "  " + 
-                bsAll[3] + "  " + 
-                String.format("%.2f", baAll[3]) + "  " + 
-                String.format("%.2f", odAll[0]) + " " + 
-                String.format("%02d", nAll[0]) + "  " + 
+				l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0]
+                + "  " + String.format("%.2f", baAll[0]) + "  " +
+                bsAll[1] + "  " +
+                String.format("%.2f", baAll[1]) + "  " +
+                bsAll[2] + "  " +
+                String.format("%.2f", baAll[2]) + "  " +
+                bsAll[3] + "  " +
+                String.format("%.2f", baAll[3]) + "  " +
+                String.format("%.2f", odAll[0]) + " " +
+                String.format("%02d", nAll[0]) + "  " +
                 String.format("%02d", psAll[0]) + "  " +
-                sdAll[horsesRunnning.get(0)] + " " + 
-                String.format("%.2f", odAll[1]) + " " + 
-                String.format("%02d", nAll[1]) + "  " + 
+                sdAll[horsesRunnning.get(0)] + " " +
+                String.format("%.2f", odAll[1]) + " " +
+                String.format("%02d", nAll[1]) + "  " +
                 String.format("%02d", psAll[1]) + "  " +
-                sdAll[horsesRunnning.get(1)] + " " + 
-                String.format("%.2f", odAll[2]) + " " + 
-                String.format("%02d", nAll[2]) + "  " + 
+                sdAll[horsesRunnning.get(1)] + " " +
+                String.format("%.2f", odAll[2]) + " " +
+                String.format("%02d", nAll[2]) + "  " +
                 String.format("%02d", psAll[2]) + "  " +
-                sdAll[horsesRunnning.get(2)] + " " + 
-                String.format("%.2f", odAll[3]) + " " + 
-                String.format("%02d", nAll[3]) + "  " + 
+                sdAll[horsesRunnning.get(2)] + " " +
+                String.format("%.2f", odAll[3]) + " " +
+                String.format("%02d", nAll[3]) + "  " +
                 String.format("%02d", psAll[3]) + "  " +
-                sdAll[horsesRunnning.get(3)];	
+                sdAll[horsesRunnning.get(3)];
 			}
             else{*/
-            	l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0] 
-                + "  " + String.format("%.2f", baAll[0]) + "  " + 
-                bsAll[1] + "  " + 
-                String.format("%.2f", baAll[1]) + "  " + 
-                bsAll[2] + "  " + 
-                String.format("%.2f", baAll[2]) + "  " + 
-                bsAll[3] + "  " + 
-                String.format("%.2f", baAll[3]) + "  " + 
-                String.format("%.2f", odAll[0]) + " " + 
-                String.format("%02d", nAll[0]) + "  " + 
+            	l1 = "  " + numberOfRaces + "  " + dist + "   " + bsAll[0]
+                + "  " + String.format("%.2f", baAll[0]) + "  " +
+                bsAll[1] + "  " +
+                String.format("%.2f", baAll[1]) + "  " +
+                bsAll[2] + "  " +
+                String.format("%.2f", baAll[2]) + "  " +
+                bsAll[3] + "  " +
+                String.format("%.2f", baAll[3]) + "  " +
+                String.format("%.2f", odAll[0]) + " " +
+                String.format("%02d", nAll[0]) + "  " +
                 String.format("%02d", psAll[0]) + "  " +
-                sdAll[0] + " " + 
-                String.format("%.2f", odAll[1]) + " " + 
-                String.format("%02d", nAll[1]) + "  " + 
+                sdAll[0] + " " +
+                String.format("%.2f", odAll[1]) + " " +
+                String.format("%02d", nAll[1]) + "  " +
                 String.format("%02d", psAll[1]) + "  " +
-                sdAll[1] + " " + 
-                String.format("%.2f", odAll[2]) + " " + 
-                String.format("%02d", nAll[2]) + "  " + 
+                sdAll[1] + " " +
+                String.format("%.2f", odAll[2]) + " " +
+                String.format("%02d", nAll[2]) + "  " +
                 String.format("%02d", psAll[2]) + "  " +
-                sdAll[2] + " " + 
-                String.format("%.2f", odAll[3]) + " " + 
-                String.format("%02d", nAll[3]) + "  " + 
+                sdAll[2] + " " +
+                String.format("%.2f", odAll[3]) + " " +
+                String.format("%02d", nAll[3]) + "  " +
                 String.format("%02d", psAll[3]) + "  " +
                 sdAll[3];
             //}
-            
+
             writer.println(l);
             writer.println(l1);
             writer.println("----------------------------------------------------------");
@@ -345,12 +336,12 @@ public class Repository implements IRepository {
 		}catch(FileNotFoundException ex){
 			System.err.println("Error Writing");
 		}
-		
+
 	}
 
 	/**
 	*	Function to add the horses that are running or they will run in the next race.
-	*   @param horseId Horse ID 
+	*   @param horseId Horse ID
 	*   @return boolean return false if the race is already full.
 	*/
         @Override
@@ -366,7 +357,7 @@ public class Repository implements IRepository {
 			mutex.unlock();
 		}
 		return boo;
-		
+
 	}
 	/**
 	*	Function to remove all the horses that were running.
@@ -412,7 +403,7 @@ public class Repository implements IRepository {
 	/**
 	*	Function to update the number of races that are missing.
 	*
-	* 	
+	*
 	*/
         @Override
 	public void raceStarted() {
@@ -420,13 +411,13 @@ public class Repository implements IRepository {
 	}
 	/**
 	*	Function to update the number of races that were made.
-	*	
+	*
 	*/
         @Override
 	public void raceDone() {
 		numberOfRaces--;
 	}
-	
+
 	/*public void setspectatorBets(HashMap<Integer,List<double[]>> spectatorBets){
 		this.spectatorBets = spectatorBets;
 	}*/
@@ -444,10 +435,10 @@ public class Repository implements IRepository {
 		} finally {
 			mutex.unlock();
 		}
-		
+
 		//toLog();
 	}
-	
+
 	/**
 	*	Function to update the probabilitie of the given horse winning.
 	*
@@ -477,7 +468,7 @@ public class Repository implements IRepository {
 		} finally {
 			mutex.unlock();
 		}
-		
+
 		//toLog();
 	}
 	/**
@@ -494,7 +485,7 @@ public class Repository implements IRepository {
 		} finally {
 			mutex.unlock();
 		}
-		
+
 		toLog();
 	}
         @Override
@@ -517,7 +508,7 @@ public class Repository implements IRepository {
 	public void sethorseposition(int horse_id, int position){
 		mutex.lock();
 		try {
-			this.horseposition.put(horse_id,position);	
+			this.horseposition.put(horse_id,position);
 		} finally {
 			mutex.unlock();
 		}
@@ -533,7 +524,7 @@ public class Repository implements IRepository {
 	public void setspecbetamount(int spectator_id, double amount){
 		mutex.lock();
 		try {
-			this.specbetamount.put(spectator_id,amount);	
+			this.specbetamount.put(spectator_id,amount);
 		} finally {
 			mutex.unlock();
 		}
@@ -549,7 +540,7 @@ public class Repository implements IRepository {
 	public void setspecMoney(int spectator_id, double money){
 		mutex.lock();
 		try {
-			this.specMoney.put(spectator_id,money);	
+			this.specMoney.put(spectator_id,money);
 		} finally {
 			mutex.unlock();
 		}
@@ -563,7 +554,7 @@ public class Repository implements IRepository {
 	*	Function to update the broker state
 	*
 	* 	@param brokerstate state.
-	* 	
+	*
 	*/
         @Override
 	public void setbrokerstate(BrokerState brokerstate){
@@ -580,7 +571,7 @@ public class Repository implements IRepository {
 	public void setspecbets(int spec_id,int horse_id){
 		mutex.lock();
 		try {
-			this.specbets.put(spec_id,horse_id);	
+			this.specbets.put(spec_id,horse_id);
 		} finally {
 			mutex.unlock();
 		}
@@ -610,7 +601,7 @@ public class Repository implements IRepository {
         @Override
 	public void clearhorserank() {
 		this.horserank.clear();
-		
+
 	}
 	/**
 	*	Function to return the number of horses per race.
@@ -628,35 +619,40 @@ public class Repository implements IRepository {
 	public int getTotalHorses() {
 		return this.totalHorses;
 	}
-        
-        @Override
-        public void finished() {
-            numberEntitiesRunning--;
-            if (numberEntitiesRunning > 0) {
-                return;
-            }
-            try {
-                terminateServers();
-            } catch (IOException ex) {
-                Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
+
+  @Override
+  public void finished() {
+		mutex.lock();
+		try {
+			numberEntitiesRunning--;
+		//	System.out.println("Number of entitites: "+numberEntitiesRunning);
+			if (numberEntitiesRunning > 0) {
+				return;
+			}
+			try {
+				terminateServers();
+			} catch (IOException ex) {
+				Logger.getLogger(Repository.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+		} finally {
+			mutex.unlock();
+		}
+
+  }
+
         private void terminateServers() throws IOException {
             Register reg = null;
             Registry registry = null;
-            String rmiRegHostName;
-            int rmiRegPortNumb;
-            
+
             Properties prop = new Properties();
             String propFileName = "config.properties";
 
             prop.load(new FileInputStream("resources/"+propFileName));
-		
-		
-            
-            rmiRegHostName = this.rmiRegHostName;
-            rmiRegPortNumb = this.rmiRegPortNumb;
+
+
+						String rmiRegHostName = prop.getProperty("rmiRegHostName");
+						int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
             try {
                 registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
@@ -665,16 +661,16 @@ public class Repository implements IRepository {
                 ex.printStackTrace();
                 System.exit(1);
             }
-            
+
             String nameEntryBase = prop.getProperty("nameEntry");
-            String nameEntryObject = prop.getProperty("machine_repository");
-            
+            String nameEntryObject = "stubRepository";
+
             // shutdown Betting Center
             try {
-                IMonitor_BettingCenter betting_Center = (IMonitor_BettingCenter) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                IMonitor_BettingCenter betting_Center = (IMonitor_BettingCenter) registry.lookup("stubBettingCenter");
                 betting_Center.signalShutdown();
             } catch (RemoteException e) {
-                System.out.println("Exception thrown while locating Betting Center: " + e.getMessage() + "!");
+                System.out.println("Exception thrown while locating betting_Center: " + e.getMessage() + "!");
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
@@ -682,13 +678,13 @@ public class Repository implements IRepository {
                 e.printStackTrace();
                 System.exit(1);
             }
-            
+
             // shutdown Control Center
             try {
-                IMonitor_Control control_Center = (IMonitor_Control) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                IMonitor_Control control_Center = (IMonitor_Control) registry.lookup("stubControl");
                 control_Center.signalShutdown();
             } catch (RemoteException e) {
-                System.out.println("Exception thrown while locating Control Center: " + e.getMessage() + "!");
+                System.out.println("Exception thrown while locating control_Center: " + e.getMessage() + "!");
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
@@ -696,14 +692,14 @@ public class Repository implements IRepository {
                 e.printStackTrace();
                 System.exit(1);
             }
-            
-            
+
+
             // shutdown Paddock
             try {
-                IMonitor_Paddock paddock = (IMonitor_Paddock) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                IMonitor_Paddock paddock = (IMonitor_Paddock) registry.lookup("stubPaddock");
                 paddock.signalShutdown();
             } catch (RemoteException e) {
-                System.out.println("Exception thrown while locating Paddock: " + e.getMessage() + "!");
+                System.out.println("Exception thrown while locating paddock: " + e.getMessage() + "!");
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
@@ -711,13 +707,13 @@ public class Repository implements IRepository {
                 e.printStackTrace();
                 System.exit(1);
             }
-            
+
             // shutdown Racing Track
             try {
-                IMonitor_Track racing_track = (IMonitor_Track) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                IMonitor_Track racing_track = (IMonitor_Track) registry.lookup("stubRacingTrack");
                 racing_track.signalShutdown();
             } catch (RemoteException e) {
-                System.out.println("Exception thrown while locating Racing Track: " + e.getMessage() + "!");
+                System.out.println("Exception thrown while locating racing_track: " + e.getMessage() + "!");
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
@@ -725,13 +721,13 @@ public class Repository implements IRepository {
                 e.printStackTrace();
                 System.exit(1);
             }
-            
+
             // shutdown Stable
             try {
-                IMonitor_Stable stable = (IMonitor_Stable) registry.lookup(prop.getProperty("machine_BettingCenter"));
+                IMonitor_Stable stable = (IMonitor_Stable) registry.lookup("stubStable");
                 stable.signalShutdown();
             } catch (RemoteException e) {
-                System.out.println("Exception thrown while locating Stable: " + e.getMessage() + "!");
+                System.out.println("Exception thrown while locating stable: " + e.getMessage() + "!");
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
@@ -739,7 +735,7 @@ public class Repository implements IRepository {
                 e.printStackTrace();
                 System.exit(1);
             }
-            
+
             // shutdown log
 
             try {

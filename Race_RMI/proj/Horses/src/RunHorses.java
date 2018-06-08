@@ -26,11 +26,11 @@ public class RunHorses {
 	public static void main(String[] args) throws RemoteException{
 		int numberOfHorses = 20; //testar com numeros maiores.
 		int maxPerformance=10;
-	
+
                 IRepository repo = null;
-                
+
 		Horse[] horses = new Horse[numberOfHorses];
-	
+
                 String hostName; // nome da maquina onde esta o servidor
 
                 Properties prop = new Properties();
@@ -47,26 +47,26 @@ public class RunHorses {
                 }
 
 
-                String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
-                int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 	
+                String rmiRegHostName = prop.getProperty("rmiRegHostName");
+                int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
 
                 try {
                     Registry registry = LocateRegistry.getRegistry(rmiRegHostName,rmiRegPortNumb);
 
-                    IMonitor_Stable mStable = (IMonitor_Stable) registry.lookup("stubStable"); 
+                    IMonitor_Stable mStable = (IMonitor_Stable) registry.lookup("stubStable");
                     IMonitor_Paddock mPaddock = (IMonitor_Paddock) registry.lookup("stubPaddock");
                     IMonitor_Track mRacingTrack = (IMonitor_Track) registry.lookup("stubRacingTrack");
-                  
+
 
                     repo =(IRepository) registry.lookup("stubRepository");
 
                     for (int i = 0; i < horses.length; i++) {
-			Random random = new Random();
-			int performace= random.nextInt(maxPerformance)+1;
-			horses[i] = new Horse(i,performace,mRacingTrack, mStable, mPaddock, repo);
+												Random random = new Random();
+												int performace= random.nextInt(maxPerformance)+1;
+												horses[i] = new Horse(i,performace,mRacingTrack, mStable, mPaddock, repo);
                     }
-                    
+
                     /* start of the simulation */
                     for (int i = 0; i < horses.length; i++) {
                         System.out.println("Horse_" + i + "is starting!");
@@ -81,12 +81,12 @@ public class RunHorses {
                             System.out.println("Horse thread " + i + " has ended.\n");
                         }
                     }
-                    
+
                 } catch (Exception e) {
                     System.err.println("Client exception: " + e.toString());
                     e.printStackTrace();
                 }
-                
+
 		try {
                     repo.finished();
                 } catch (RemoteException ex) {
@@ -94,8 +94,8 @@ public class RunHorses {
                     ex.printStackTrace();
                     System.exit(1);
                 }
-		
-		
-	}	
-	
+
+
+	}
+
 }

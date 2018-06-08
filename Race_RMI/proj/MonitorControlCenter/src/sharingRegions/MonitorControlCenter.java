@@ -24,7 +24,7 @@ public class MonitorControlCenter implements IMonitor_Control {
 	private final ReentrantLock mutex;
 	private final Condition spectator_condition;
 	private final Condition broker_condidition;
-	
+
 	private int spectatorsWatchingRace;
 	private boolean raceIsOn;
 	private boolean eventNotEnd;
@@ -32,7 +32,7 @@ public class MonitorControlCenter implements IMonitor_Control {
 	private int totalSpectators;
 	private List<Integer> winners;
 	IRepository repo;
-        
+
         /**
         * RMI Register host name
         */
@@ -59,18 +59,18 @@ public class MonitorControlCenter implements IMonitor_Control {
 		}
 		spectatorsRelaxing=0;
 	}
-	
+
 	/**
 	*	Function for spectators to be able to watch the race. In the end of the race they are waken up.
 	*
-	*	@param spectator_id Spectator ID 
+	*	@param spectator_id Spectator ID
 	*/
 	@Override
 	public void goWatchTheRace(int spectator_id) {
-		
+
 		mutex.lock();
 		try {
-			
+
 			System.out.println("Spectator_"+spectator_id+" is watching the race!");
 			while(raceIsOn) {
 				try {
@@ -86,16 +86,16 @@ public class MonitorControlCenter implements IMonitor_Control {
 				raceIsOn=true;
 				spectatorsWatchingRace=0;
 			}
-	
+
 		}finally {
 			mutex.unlock();
 		}
-		
+
 	}
 	/**
-	*	Function for spectators know if they won the bet. 
+	*	Function for spectators know if they won the bet.
 	*
-	*	@param horsePicked horsePicked ID 
+	*	@param horsePicked horsePicked ID
 	*	@return boolean Returns true if the spectator won the bet.
 	*/
 	@Override
@@ -103,7 +103,7 @@ public class MonitorControlCenter implements IMonitor_Control {
 		boolean iWon=false;
 		mutex.lock();
 		try {
-			
+
 		/*	while(waitinghaveIwon) {
 				try {
 					//usar outra condicao?
@@ -113,21 +113,21 @@ public class MonitorControlCenter implements IMonitor_Control {
 					e.printStackTrace();
 				}
 			}*/
-			
-			
-	
+
+
+
 			for(int i = 0;i<winners.size();i++) {
 				if(winners.get(i)==horsePicked) {
 					iWon=true;
 				}
-				
+
 			}
-			
+
 			System.out.println("Spectator_"+spectator_id+" won: "+iWon);
 		} finally {
 			mutex.unlock();
 		}
-		
+
 		return iWon;
 	}
 	/**
@@ -172,9 +172,9 @@ public class MonitorControlCenter implements IMonitor_Control {
 		} finally {
 			mutex.unlock();
 		}
-		
-		
-		
+
+
+
 	}
 	/**
 	*	Function for spectators relax at the end of the race.
@@ -201,7 +201,7 @@ public class MonitorControlCenter implements IMonitor_Control {
 			if(spectatorsRelaxing==0) {
 				eventNotEnd=true;
 			}
-			
+
 		}finally {
 			mutex.unlock();
 		}
@@ -209,7 +209,7 @@ public class MonitorControlCenter implements IMonitor_Control {
 	/**
 	*	Function for broker wait for spectators.
 	*
-	*	
+	*
 	*/
 	@Override
 	public void entertainTheGuests() {
@@ -225,27 +225,24 @@ public class MonitorControlCenter implements IMonitor_Control {
 			}
 			eventNotEnd=false;
 			spectator_condition.signalAll();
-			
+
 		}finally {
 			mutex.unlock();
 		}
 	}
-        
+
         @Override
         public void signalShutdown() throws RemoteException, IOException {
             Register reg = null;
             Registry registry = null;
 
-            String rmiRegHostName;
-            int rmiRegPortNumb;
-
             Properties prop = new Properties();
             String propFileName = "config.properties";
 
             prop.load(new FileInputStream("resources/"+propFileName));
-            
-            rmiRegHostName = this.rmiRegHostName;
-            rmiRegPortNumb = this.rmiRegPortNumb;
+
+						String rmiRegHostName = prop.getProperty("rmiRegHostName");
+						int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
             try {
                 registry = LocateRegistry.getRegistry(rmiRegHostName, rmiRegPortNumb);
@@ -256,7 +253,7 @@ public class MonitorControlCenter implements IMonitor_Control {
             }
 
             String nameEntryBase = prop.getProperty("nameEntry");
-            String nameEntryObject = prop.getProperty("machine_ControlCenter");
+            String nameEntryObject = "stubControl";
 
 
             try {
@@ -274,11 +271,11 @@ public class MonitorControlCenter implements IMonitor_Control {
                 // Unregister ourself
                 reg.unbind(nameEntryObject);
             } catch (RemoteException e) {
-                System.out.println("Control Center registration exception: " + e.getMessage());
+                System.out.println("stubControl Registration exception: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             } catch (NotBoundException e) {
-                System.out.println("Control Center not bound exception: " + e.getMessage());
+                System.out.println("stubControl Not bound exception: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             }
