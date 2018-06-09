@@ -23,7 +23,7 @@ public class RunMonitorBettingCenter {
 		int portNumb = Integer.parseInt(prop.getProperty("portBettingCenter")); // numero do port em que o servico ee
                 String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
                 int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 	
-                String nameEntryBase = prop.getProperty("nameEntry"); 	
+                String nameEntryBase = prop.getProperty("5machine_BettingCenter"); 	
                 String nameEntryObject = "stubBettingCenter";
                 
                 IMonitor_BettingCenter stubBettingCenter = null;

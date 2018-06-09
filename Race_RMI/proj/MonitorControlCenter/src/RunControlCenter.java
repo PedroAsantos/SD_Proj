@@ -25,7 +25,7 @@ public class RunControlCenter {
 
 		 String rmiRegHostName = prop.getProperty("rmiRegHostName");
                 int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
-                String nameEntryBase = prop.getProperty("nameEntry");
+                String nameEntryBase = prop.getProperty("2machine_ControlCenter");
                 String nameEntryObject = "stubControl";
 
                 IMonitor_Control stubControl = null;

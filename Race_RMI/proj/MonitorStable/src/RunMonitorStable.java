@@ -21,7 +21,7 @@ public class RunMonitorStable {
             int portNumb = Integer.parseInt(prop.getProperty("portStable")); // numero do port em que o servico ee
             String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
             int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 	
-            String nameEntryBase = prop.getProperty("nameEntry"); 	
+            String nameEntryBase = prop.getProperty("6machine_Stable"); 	
             String nameEntryObject = "stubStable";
           
             IMonitor_Stable stubStable = null;
