@@ -31,13 +31,13 @@ public class ServerRegisterRemoteObject {
         
         prop.load(new FileInputStream("resources/"+propFileName));
                  
-        String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
+        String rmiRegHostName = prop.getProperty("10machine_Registry"); 
         int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 
         
         RegisterRemoteObject regEngine = new RegisterRemoteObject (rmiRegHostName, rmiRegPortNumb);
         Register regEngineStub = null;
         
-        int listeningPort = 22390;                            /* it should be set accordingly in each case */
+        int listeningPort = 22399;                            /* it should be set accordingly in each case */
 
         try
         { regEngineStub = (Register) UnicastRemoteObject.exportObject (regEngine, listeningPort);
