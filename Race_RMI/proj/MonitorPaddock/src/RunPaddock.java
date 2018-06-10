@@ -24,7 +24,7 @@ public class RunPaddock {
 		int portNumb = Integer.parseInt(prop.getProperty("portPaddock")); // numero do port em que o servico ee
 		 String rmiRegHostName = prop.getProperty("10machine_Registry");
                 int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
-                String nameEntryBase = prop.getProperty("3machine_Paddock");
+                String nameEntryBase = prop.getProperty("nameEntry");
                 String nameEntryObject = "stubPaddock";
 
                 IMonitor_Paddock stubPaddock = null;

@@ -25,7 +25,7 @@ public class RunMonitorRacingTrack {
 		int portNumb = Integer.parseInt(prop.getProperty("portRacingTrack")); // numero do port em que o servico ee	
 	        String rmiRegHostName = prop.getProperty("10machine_Registry");
                 int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
-                String nameEntryBase = prop.getProperty("4machine_RacingTrack");
+                String nameEntryBase = prop.getProperty("nameEntry");
                 String nameEntryObject = "stubRacingTrack";
 
                 IMonitor_Track stubRacingTrack = null;

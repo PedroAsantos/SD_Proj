@@ -29,7 +29,7 @@ public class RunRepository {
 		portNumb = Integer.parseInt(prop.getProperty("portRepository")); // numero do port em que o servico ee
                 String rmiRegHostName = prop.getProperty("10machine_Registry");
                 int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
-                String nameEntryBase = prop.getProperty("1machine_repository");
+                String nameEntryBase = prop.getProperty("nameEntry");
                 String nameEntryObject = "stubRepository";
                 int numberOfHorses = 20; //testar com numeros maiores.
 		int numberOfSpectators=4;
