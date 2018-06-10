@@ -339,7 +339,7 @@ public class MonitorBettingCenter implements IMonitor_BettingCenter {
 
             prop.load(new FileInputStream("resources/"+propFileName));
 
-						String rmiRegHostName = prop.getProperty("rmiRegHostName");
+						String rmiRegHostName = prop.getProperty("10machine_Registry");
 						int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
             try {

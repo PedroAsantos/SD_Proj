@@ -238,7 +238,7 @@ public class MonitorPaddock implements IMonitor_Paddock {
 
             prop.load(new FileInputStream("resources/"+propFileName));
 
-						String rmiRegHostName = prop.getProperty("rmiRegHostName");
+						String rmiRegHostName = prop.getProperty("10machine_Registry");
 						int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
 
             try {
