@@ -27,7 +27,7 @@ public class RunRepository {
 		prop.load(new FileInputStream("resources/"+propFileName));
 		
 		portNumb = Integer.parseInt(prop.getProperty("portRepository")); // numero do port em que o servico ee
-                String rmiRegHostName = prop.getProperty("rmiRegHostName");
+                String rmiRegHostName = prop.getProperty("10machine_Registry");
                 int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb"));
                 String nameEntryBase = prop.getProperty("1machine_repository");
                 String nameEntryObject = "stubRepository";

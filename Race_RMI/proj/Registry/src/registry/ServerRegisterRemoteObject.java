@@ -31,7 +31,7 @@ public class ServerRegisterRemoteObject {
         
         prop.load(new FileInputStream("resources/"+propFileName));
                  
-        String rmiRegHostName = prop.getProperty("10machine_Registry"); 
+        String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
         int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 
         
         RegisterRemoteObject regEngine = new RegisterRemoteObject (rmiRegHostName, rmiRegPortNumb);

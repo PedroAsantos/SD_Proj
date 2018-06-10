@@ -43,7 +43,7 @@ public class RunBroker {
             }
 	
             
-            String rmiRegHostName = prop.getProperty("rmiRegHostName"); 
+            String rmiRegHostName = prop.getProperty("10machine_Registry"); 
             int rmiRegPortNumb = Integer.parseInt(prop.getProperty("rmiRegPortNumb")); 	
             
           
