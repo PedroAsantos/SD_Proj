@@ -1,4 +1,4 @@
-sshpass -p depoisdecidimos ssh sd0309@l040101-ws10.ua.pt "cd SD_Proj/Race_RMI/proj/Registry/src/; rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false 22391 & sleep 2; javac registry/ServerRegisterRemoteObject.java;java registry.ServerRegisterRemoteObject" & sleep 2
+sshpass -p depoisdecidimos ssh sd0309@l040101-ws10.ua.pt "cd SD_Proj/Race_RMI/proj/Registry/; ./startRegistry.sh; " & sleep 2
 sshpass -p depoisdecidimos ssh sd0309@l040101-ws01.ua.pt "cd SD_Proj/Race_RMI/proj/Repository/src/; rm Enum/*.class;rm Interfaces/*.class;rm sharingRegions/*.class;rm *.class;echo Cleaned ; javac RunRepository.java; java RunRepository" & sleep 2
 sshpass -p depoisdecidimos ssh sd0309@l040101-ws02.ua.pt "cd SD_Proj/Race_RMI/proj/MonitorControlCenter/src/;rm Enum/*.class;rm Interfaces/*.class;rm sharingRegions/*.class;rm *.class; javac RunControlCenter.java; java RunControlCenter" & sleep 2
 sshpass -p depoisdecidimos ssh sd0309@l040101-ws03.ua.pt "cd SD_Proj/Race_RMI/proj/MonitorPaddock/src/;rm Enum/*.class;rm Interfaces/*.class;rm sharingRegions/*.class;rm *.class; javac RunPaddock.java; java RunPaddock" & sleep 2
