@@ -9,7 +9,6 @@ import Interfaces.IBroker_Track;
 import Interfaces.IMonitor_Paddock;
 import Interfaces.IRepository;
 
-
 public class Broker extends Thread {
     private volatile boolean running = true;
        

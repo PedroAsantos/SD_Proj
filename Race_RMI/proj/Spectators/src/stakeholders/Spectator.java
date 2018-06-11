@@ -9,7 +9,6 @@ import Interfaces.ISpectator_Control;
 import Interfaces.ISpectator_Paddock;
 import java.rmi.RemoteException;
 
-
 public class Spectator extends Thread {
 	private volatile boolean running = true;
 
