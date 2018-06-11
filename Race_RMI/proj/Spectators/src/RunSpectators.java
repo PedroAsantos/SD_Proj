@@ -13,10 +13,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Properties;
 import java.util.Random;
-import sharingRegions.MonitorBettingCenter;
-import sharingRegions.MonitorControlCenter;
-import sharingRegions.MonitorPaddock;
-import sharingRegions.Repository;
 import stakeholders.Spectator;
 
 public class RunSpectators {
