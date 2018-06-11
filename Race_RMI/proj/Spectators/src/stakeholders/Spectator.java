@@ -8,7 +8,6 @@ import Interfaces.ISpectator_BettingCenter;
 import Interfaces.ISpectator_Control;
 import Interfaces.ISpectator_Paddock;
 import java.rmi.RemoteException;
-import sharingRegions.*;
 
 public class Spectator extends Thread {
 	private volatile boolean running = true;
