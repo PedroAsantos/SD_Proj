@@ -3,7 +3,7 @@ Project developed in distributed systems course.
 
 The project was divided in 3 parts.
 ## Race_1
-The first part was a concurrent solution and this solution has to be un locally and it serves as the base for the 
+The first part was a concurrent solution and this solution has to be run locally and it serves as the base for the 
 distributed versions.
 
 ## Race_2
