@@ -1,7 +1,7 @@
 # SD_Proj
 Project developed in distributed systems course.
 
-The project was dividid in 3 parts.
+The project was divided in 3 parts.
 ## Race_1
 The first part was a concurrent solution and this solution has to be un locally and it serves as the base for the 
 distributed versions.
